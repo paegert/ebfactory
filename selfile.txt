@@ -1,0 +1,3 @@
+select * from stars 
+where varcls not like '%/%' and varcls not like '%=%' and 
+      varcls not like '%:%' and chi2 is not null;

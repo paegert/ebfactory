@@ -1,0 +1,2 @@
+select * from stars 
+where (varcls = 'RRAB' or varcls = 'RRC') and chi2 is not null;
