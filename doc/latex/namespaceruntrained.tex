@@ -1,0 +1,252 @@
+\hypertarget{namespaceruntrained}{
+\section{runtrained Namespace Reference}
+\label{namespaceruntrained}\index{runtrained@{runtrained}}
+}
+
+
+Created on Jul 6, 2012.  
+
+
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+string \hyperlink{namespaceruntrained_a4b1ea2d8f802d90d901c0d20819bc700}{usage} = '\%prog \mbox{[}options\mbox{]} \mbox{[}fitname\mbox{]}'
+\item 
+tuple \hyperlink{namespaceruntrained_a965f57e18609caa1e9410347cae7af38}{parser} = OptionParser(\hyperlink{namespaceruntrained_a4b1ea2d8f802d90d901c0d20819bc700}{usage}=\hyperlink{namespaceruntrained_a4b1ea2d8f802d90d901c0d20819bc700}{usage})
+\item 
+string \hyperlink{namespaceruntrained_a444d9fa1b0629211e1fccae2f9bb06fb}{default} = 'classes.txt'
+\item 
+string \hyperlink{namespaceruntrained_a32ffe7cf2f0e4d678b595d78bfdf3305}{help} = 'file with space separated classnames (classes.txt)'
+\item 
+tuple \hyperlink{namespaceruntrained_af1d361ee115528276a9091cc15b6a1e3}{fsel} = open(options.rootdir + options.selfile)
+\item 
+tuple \hyperlink{namespaceruntrained_a0781c6ec0fc8913052bfd0a74cdc84a0}{cls} = getattr(\hyperlink{namespaceruntrained_a61e7eef55d8919327ea79f96cc9e9b7f}{dbconfig}, 'Asas')
+\item 
+tuple \hyperlink{namespaceruntrained_a61e7eef55d8919327ea79f96cc9e9b7f}{dbconfig} = \hyperlink{namespaceruntrained_a0781c6ec0fc8913052bfd0a74cdc84a0}{cls}()
+\item 
+tuple \hyperlink{namespaceruntrained_a09e3ebddf40293824933bec6451dfd9a}{watch} = Stopwatch()
+\item 
+tuple \hyperlink{namespaceruntrained_a1593f2f52d1b27e50d8576ba7f72ef1e}{dictreader} = dbr.DbReader(options.rootdir + options.dictname)
+\item 
+tuple \hyperlink{namespaceruntrained_a72631b46f06124a8e59941c86e742ddd}{fitreader} = dbr.DbReader(options.rootdir + options.fitname)
+\item 
+tuple \hyperlink{namespaceruntrained_a2a2f2ebf0c161ef1aed89d58b4fa0c9e}{generator} = dictreader.traverse(options.select, None, 5000)
+\item 
+int \hyperlink{namespaceruntrained_a5aa5eb79d3fc0906fd344c0b3537bdc6}{nrstars} = 0
+\item 
+int \hyperlink{namespaceruntrained_ae20d562b30bfd0ee3392b557c477b792}{noclass} = 0
+\item 
+int \hyperlink{namespaceruntrained_ab5617d20b9cf0b904a46b74e9584f3c9}{curidx} = 0
+\item 
+tuple \hyperlink{namespaceruntrained_ab856260e49d1dca1bbdabe16218f90bb}{dictarr} = np.zeros(0, dtype = dbconfig.npdicttype)
+\item 
+tuple \hyperlink{namespaceruntrained_a52fa48450cb7cb0673f11611f1d49ca8}{coeffarr} = np.zeros(0, dtype = dbconfig.npcoefftype)
+\item 
+tuple \hyperlink{namespaceruntrained_a59a01d66886c51ec3cba425426d38f62}{coeffs} = fitreader.getlc(star\mbox{[}'uid'\mbox{]}, dbconfig.cfftname)
+\item 
+tuple \hyperlink{namespaceruntrained_a2ff49f98ec84b551c2023c8e83115825}{pf} = open(options.rootdir + options.resdir + '/' + options.picklename)
+\item 
+tuple \hyperlink{namespaceruntrained_a5c8cf741c34dad8832215a3523e21ee1}{net} = pickle.load(\hyperlink{namespaceruntrained_a2ff49f98ec84b551c2023c8e83115825}{pf})
+\item 
+tuple \hyperlink{namespaceruntrained_ae78e84f04d590cfe2564b1a02853e08c}{cm} = net.confmat(alld, allt, True)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Created on Jul 6, 2012. \begin{DoxyAuthor}{Author}
+map 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+\$Revision: 1.1 $ 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+\$Date: 2012/07/20 20:20:47 $
+\end{DoxyDate}
+\begin{DoxyParagraph}{Log:}
+\hyperlink{runtrained_8py}{runtrained.py},v 
+\end{DoxyParagraph}
+Revision 1.1 2012/07/06 20:34:19 paegerm Initial revision
+
+Initial revision 
+
+\subsection{Variable Documentation}
+\hypertarget{namespaceruntrained_a0781c6ec0fc8913052bfd0a74cdc84a0}{
+\index{runtrained@{runtrained}!cls@{cls}}
+\index{cls@{cls}!runtrained@{runtrained}}
+\subsubsection[{cls}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runtrained::cls} = getattr({\bf dbconfig}, 'Asas')}}
+\label{namespaceruntrained_a0781c6ec0fc8913052bfd0a74cdc84a0}
+
+
+Definition at line 90 of file runtrained.py.
+
+\hypertarget{namespaceruntrained_ae78e84f04d590cfe2564b1a02853e08c}{
+\index{runtrained@{runtrained}!cm@{cm}}
+\index{cm@{cm}!runtrained@{runtrained}}
+\subsubsection[{cm}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runtrained::cm} = net.confmat(alld, allt, True)}}
+\label{namespaceruntrained_ae78e84f04d590cfe2564b1a02853e08c}
+
+
+Definition at line 142 of file runtrained.py.
+
+\hypertarget{namespaceruntrained_a52fa48450cb7cb0673f11611f1d49ca8}{
+\index{runtrained@{runtrained}!coeffarr@{coeffarr}}
+\index{coeffarr@{coeffarr}!runtrained@{runtrained}}
+\subsubsection[{coeffarr}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runtrained::coeffarr} = np.zeros(0, dtype = dbconfig.npcoefftype)}}
+\label{namespaceruntrained_a52fa48450cb7cb0673f11611f1d49ca8}
+
+
+Definition at line 103 of file runtrained.py.
+
+\hypertarget{namespaceruntrained_a59a01d66886c51ec3cba425426d38f62}{
+\index{runtrained@{runtrained}!coeffs@{coeffs}}
+\index{coeffs@{coeffs}!runtrained@{runtrained}}
+\subsubsection[{coeffs}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runtrained::coeffs} = fitreader.getlc(star\mbox{[}'uid'\mbox{]}, dbconfig.cfftname)}}
+\label{namespaceruntrained_a59a01d66886c51ec3cba425426d38f62}
+
+
+Definition at line 110 of file runtrained.py.
+
+\hypertarget{namespaceruntrained_ab5617d20b9cf0b904a46b74e9584f3c9}{
+\index{runtrained@{runtrained}!curidx@{curidx}}
+\index{curidx@{curidx}!runtrained@{runtrained}}
+\subsubsection[{curidx}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf runtrained::curidx} = 0}}
+\label{namespaceruntrained_ab5617d20b9cf0b904a46b74e9584f3c9}
+
+
+Definition at line 101 of file runtrained.py.
+
+\hypertarget{namespaceruntrained_a61e7eef55d8919327ea79f96cc9e9b7f}{
+\index{runtrained@{runtrained}!dbconfig@{dbconfig}}
+\index{dbconfig@{dbconfig}!runtrained@{runtrained}}
+\subsubsection[{dbconfig}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runtrained::dbconfig} = {\bf cls}()}}
+\label{namespaceruntrained_a61e7eef55d8919327ea79f96cc9e9b7f}
+
+
+Definition at line 91 of file runtrained.py.
+
+\hypertarget{namespaceruntrained_a444d9fa1b0629211e1fccae2f9bb06fb}{
+\index{runtrained@{runtrained}!default@{default}}
+\index{default@{default}!runtrained@{runtrained}}
+\subsubsection[{default}]{\setlength{\rightskip}{0pt plus 5cm}string {\bf runtrained::default} = 'classes.txt'}}
+\label{namespaceruntrained_a444d9fa1b0629211e1fccae2f9bb06fb}
+
+
+Definition at line 41 of file runtrained.py.
+
+\hypertarget{namespaceruntrained_ab856260e49d1dca1bbdabe16218f90bb}{
+\index{runtrained@{runtrained}!dictarr@{dictarr}}
+\index{dictarr@{dictarr}!runtrained@{runtrained}}
+\subsubsection[{dictarr}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runtrained::dictarr} = np.zeros(0, dtype = dbconfig.npdicttype)}}
+\label{namespaceruntrained_ab856260e49d1dca1bbdabe16218f90bb}
+
+
+Definition at line 102 of file runtrained.py.
+
+\hypertarget{namespaceruntrained_a1593f2f52d1b27e50d8576ba7f72ef1e}{
+\index{runtrained@{runtrained}!dictreader@{dictreader}}
+\index{dictreader@{dictreader}!runtrained@{runtrained}}
+\subsubsection[{dictreader}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runtrained::dictreader} = dbr.DbReader(options.rootdir + options.dictname)}}
+\label{namespaceruntrained_a1593f2f52d1b27e50d8576ba7f72ef1e}
+
+
+Definition at line 96 of file runtrained.py.
+
+\hypertarget{namespaceruntrained_a72631b46f06124a8e59941c86e742ddd}{
+\index{runtrained@{runtrained}!fitreader@{fitreader}}
+\index{fitreader@{fitreader}!runtrained@{runtrained}}
+\subsubsection[{fitreader}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runtrained::fitreader} = dbr.DbReader(options.rootdir + options.fitname)}}
+\label{namespaceruntrained_a72631b46f06124a8e59941c86e742ddd}
+
+
+Definition at line 97 of file runtrained.py.
+
+\hypertarget{namespaceruntrained_af1d361ee115528276a9091cc15b6a1e3}{
+\index{runtrained@{runtrained}!fsel@{fsel}}
+\index{fsel@{fsel}!runtrained@{runtrained}}
+\subsubsection[{fsel}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runtrained::fsel} = open(options.rootdir + options.selfile)}}
+\label{namespaceruntrained_af1d361ee115528276a9091cc15b6a1e3}
+
+
+Definition at line 85 of file runtrained.py.
+
+\hypertarget{namespaceruntrained_a2a2f2ebf0c161ef1aed89d58b4fa0c9e}{
+\index{runtrained@{runtrained}!generator@{generator}}
+\index{generator@{generator}!runtrained@{runtrained}}
+\subsubsection[{generator}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runtrained::generator} = dictreader.traverse(options.select, None, 5000)}}
+\label{namespaceruntrained_a2a2f2ebf0c161ef1aed89d58b4fa0c9e}
+
+
+Definition at line 98 of file runtrained.py.
+
+\hypertarget{namespaceruntrained_a32ffe7cf2f0e4d678b595d78bfdf3305}{
+\index{runtrained@{runtrained}!help@{help}}
+\index{help@{help}!runtrained@{runtrained}}
+\subsubsection[{help}]{\setlength{\rightskip}{0pt plus 5cm}string {\bf runtrained::help} = 'file with space separated classnames (classes.txt)'}}
+\label{namespaceruntrained_a32ffe7cf2f0e4d678b595d78bfdf3305}
+
+
+Definition at line 42 of file runtrained.py.
+
+\hypertarget{namespaceruntrained_a5c8cf741c34dad8832215a3523e21ee1}{
+\index{runtrained@{runtrained}!net@{net}}
+\index{net@{net}!runtrained@{runtrained}}
+\subsubsection[{net}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runtrained::net} = pickle.load({\bf pf})}}
+\label{namespaceruntrained_a5c8cf741c34dad8832215a3523e21ee1}
+
+
+Definition at line 127 of file runtrained.py.
+
+\hypertarget{namespaceruntrained_ae20d562b30bfd0ee3392b557c477b792}{
+\index{runtrained@{runtrained}!noclass@{noclass}}
+\index{noclass@{noclass}!runtrained@{runtrained}}
+\subsubsection[{noclass}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf runtrained::noclass} = 0}}
+\label{namespaceruntrained_ae20d562b30bfd0ee3392b557c477b792}
+
+
+Definition at line 100 of file runtrained.py.
+
+\hypertarget{namespaceruntrained_a5aa5eb79d3fc0906fd344c0b3537bdc6}{
+\index{runtrained@{runtrained}!nrstars@{nrstars}}
+\index{nrstars@{nrstars}!runtrained@{runtrained}}
+\subsubsection[{nrstars}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf runtrained::nrstars} = 0}}
+\label{namespaceruntrained_a5aa5eb79d3fc0906fd344c0b3537bdc6}
+
+
+Definition at line 99 of file runtrained.py.
+
+\hypertarget{namespaceruntrained_a965f57e18609caa1e9410347cae7af38}{
+\index{runtrained@{runtrained}!parser@{parser}}
+\index{parser@{parser}!runtrained@{runtrained}}
+\subsubsection[{parser}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runtrained::parser} = OptionParser({\bf usage}={\bf usage})}}
+\label{namespaceruntrained_a965f57e18609caa1e9410347cae7af38}
+
+
+Definition at line 39 of file runtrained.py.
+
+\hypertarget{namespaceruntrained_a2ff49f98ec84b551c2023c8e83115825}{
+\index{runtrained@{runtrained}!pf@{pf}}
+\index{pf@{pf}!runtrained@{runtrained}}
+\subsubsection[{pf}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runtrained::pf} = open(options.rootdir + options.resdir + '/' + options.picklename)}}
+\label{namespaceruntrained_a2ff49f98ec84b551c2023c8e83115825}
+
+
+Definition at line 126 of file runtrained.py.
+
+\hypertarget{namespaceruntrained_a4b1ea2d8f802d90d901c0d20819bc700}{
+\index{runtrained@{runtrained}!usage@{usage}}
+\index{usage@{usage}!runtrained@{runtrained}}
+\subsubsection[{usage}]{\setlength{\rightskip}{0pt plus 5cm}string {\bf runtrained::usage} = '\%prog \mbox{[}options\mbox{]} \mbox{[}fitname\mbox{]}'}}
+\label{namespaceruntrained_a4b1ea2d8f802d90d901c0d20819bc700}
+
+
+Definition at line 38 of file runtrained.py.
+
+\hypertarget{namespaceruntrained_a09e3ebddf40293824933bec6451dfd9a}{
+\index{runtrained@{runtrained}!watch@{watch}}
+\index{watch@{watch}!runtrained@{runtrained}}
+\subsubsection[{watch}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runtrained::watch} = Stopwatch()}}
+\label{namespaceruntrained_a09e3ebddf40293824933bec6451dfd9a}
+
+
+Definition at line 93 of file runtrained.py.
+

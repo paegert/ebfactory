@@ -1,0 +1,56 @@
+\hypertarget{runtrained_8py}{
+\section{src/runtrained.py File Reference}
+\label{runtrained_8py}\index{src/runtrained.py@{src/runtrained.py}}
+}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \hyperlink{namespaceruntrained}{runtrained}
+
+
+\begin{DoxyCompactList}\small\item\em Created on Jul 6, 2012. \item\end{DoxyCompactList}
+
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+string \hyperlink{namespaceruntrained_a4b1ea2d8f802d90d901c0d20819bc700}{runtrained::usage} = '\%prog \mbox{[}options\mbox{]} \mbox{[}fitname\mbox{]}'
+\item 
+tuple \hyperlink{namespaceruntrained_a965f57e18609caa1e9410347cae7af38}{runtrained::parser} = OptionParser(usage=usage)
+\item 
+string \hyperlink{namespaceruntrained_a444d9fa1b0629211e1fccae2f9bb06fb}{runtrained::default} = 'classes.txt'
+\item 
+string \hyperlink{namespaceruntrained_a32ffe7cf2f0e4d678b595d78bfdf3305}{runtrained::help} = 'file with space separated classnames (classes.txt)'
+\item 
+tuple \hyperlink{namespaceruntrained_af1d361ee115528276a9091cc15b6a1e3}{runtrained::fsel} = open(options.rootdir + options.selfile)
+\item 
+tuple \hyperlink{namespaceruntrained_a0781c6ec0fc8913052bfd0a74cdc84a0}{runtrained::cls} = getattr(dbconfig, 'Asas')
+\item 
+tuple \hyperlink{namespaceruntrained_a61e7eef55d8919327ea79f96cc9e9b7f}{runtrained::dbconfig} = cls()
+\item 
+tuple \hyperlink{namespaceruntrained_a09e3ebddf40293824933bec6451dfd9a}{runtrained::watch} = Stopwatch()
+\item 
+tuple \hyperlink{namespaceruntrained_a1593f2f52d1b27e50d8576ba7f72ef1e}{runtrained::dictreader} = dbr.DbReader(options.rootdir + options.dictname)
+\item 
+tuple \hyperlink{namespaceruntrained_a72631b46f06124a8e59941c86e742ddd}{runtrained::fitreader} = dbr.DbReader(options.rootdir + options.fitname)
+\item 
+tuple \hyperlink{namespaceruntrained_a2a2f2ebf0c161ef1aed89d58b4fa0c9e}{runtrained::generator} = dictreader.traverse(options.select, None, 5000)
+\item 
+int \hyperlink{namespaceruntrained_a5aa5eb79d3fc0906fd344c0b3537bdc6}{runtrained::nrstars} = 0
+\item 
+int \hyperlink{namespaceruntrained_ae20d562b30bfd0ee3392b557c477b792}{runtrained::noclass} = 0
+\item 
+int \hyperlink{namespaceruntrained_ab5617d20b9cf0b904a46b74e9584f3c9}{runtrained::curidx} = 0
+\item 
+tuple \hyperlink{namespaceruntrained_ab856260e49d1dca1bbdabe16218f90bb}{runtrained::dictarr} = np.zeros(0, dtype = dbconfig.npdicttype)
+\item 
+tuple \hyperlink{namespaceruntrained_a52fa48450cb7cb0673f11611f1d49ca8}{runtrained::coeffarr} = np.zeros(0, dtype = dbconfig.npcoefftype)
+\item 
+tuple \hyperlink{namespaceruntrained_a59a01d66886c51ec3cba425426d38f62}{runtrained::coeffs} = fitreader.getlc(star\mbox{[}'uid'\mbox{]}, dbconfig.cfftname)
+\item 
+tuple \hyperlink{namespaceruntrained_a2ff49f98ec84b551c2023c8e83115825}{runtrained::pf} = open(options.rootdir + options.resdir + '/' + options.picklename)
+\item 
+tuple \hyperlink{namespaceruntrained_a5c8cf741c34dad8832215a3523e21ee1}{runtrained::net} = pickle.load(pf)
+\item 
+tuple \hyperlink{namespaceruntrained_ae78e84f04d590cfe2564b1a02853e08c}{runtrained::cm} = net.confmat(alld, allt, True)
+\end{DoxyCompactItemize}

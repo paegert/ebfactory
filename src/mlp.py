@@ -1,12 +1,21 @@
 '''
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.1 $
-@date     \$Date: 2012/07/06 20:34:19 $
+@version  \$Revision: 1.2 $
+@date     \$Date: 2012/07/20 20:22:22 $
 
 A simple muulti-layer perceptron, currently restricted to one hidden layer
 
+@requires: numpy
+
 $Log: mlp.py,v $
+Revision 1.2  2012/07/20 20:22:22  paegerm
+*** empty log message ***
+
+Adding documentation, adding normalize option to evaluate(), adding stopval to
+earlystopping()
+Adding MlpError class
+
 Revision 1.1  2012/07/06 20:34:19  paegerm
 Initial revision
 
@@ -15,13 +24,41 @@ Initial revision
 from numpy import *
 
 
-class mlp:
+
+class MlpError(Exception):
+	'''Exception class for mlp'''
+	def __init__(self, value):
+		'''
+		Constructor
+		
+		@param value: Exception value
+		'''
+		self.value = value
+		
+		
+	def __str__(self):
+		return repr(self.value)
+	
+	
+	
+
+class mlp(object):
 	""" A Multi-Layer Perceptron"""
 
 	def __init__(self, inputs, targets, nhidden, 
 				  beta = 1, momentum = 0.9, outtype = 'logistic',
 				  multires = False, mdelta = 0.01):
-		""" Constructor """
+		""" Constructor 
+		
+		@param  inputs     Input values
+		@param  targets    Target values (known classification for example)
+		@param  nhidden    Number of neurons in hidden layer
+		@param  beta       Scaling parameter for activation function (1.0)
+		@param  momentum   Influence of previous learning step (0.9)
+		@param  outtype    'linear' or 'logistic' (default) or 'softmax'
+		@param  multires   True if multiple results are allowed
+		@param  mdelta     Maximum difference for a given class (0.01) 
+		"""
 		
 		seterr(all = 'raise')
 		# Set up network size
@@ -63,28 +100,62 @@ class mlp:
 
 
 	def setnormvalues(self, subtract, devide):
+		'''
+		Set normalization vectors for input values:
+		    normalizedvalue = (value - subtract) / devide
+		Usually subtract is the mean value, devide the standard deviation
+		
+		@param  subtract    Vector of values to subtract from each input column
+		@param  devide      Vector of values to devide difference by
+		'''
 		self.normsubtract = subtract
 		self.normdevide   = devide
 	
 	
 	
 	def getnormvalues(self):
+		'''
+		Return normalization vectors
+		
+		@return (normsubtract, normdevide)
+		'''
 		return (self.normsubtract, self.normdevide)
 
 
 
 	def setclasses(self, classes):
+		'''
+		Set vector of classes
+		
+		@param  classes    String vector of classes to train on
+		'''
 		self.classes = classes
 	
 	
 	
 	def getclasses(self):
+		'''Return classes network has been trained on'''
 		return self.classes
 	
 
 
 	def earlystopping(self, inputs, targets, valid, validtargets, eta, 
-							  niterations = 100, makestats = True):
+					  niterations = 100, stopval = 0.001, makestats = True):
+		'''
+		Train network with validation set, stop if nothing else can be learned.
+		Learning stops if the validation error does falls below a limit.
+		
+		@param  inputs         Input values
+		@param  targets        Target values (known classification for example)
+		@param  valid          Validation set
+		@param  validtargets   Target values for validation set
+		@param  eta            Learning rate
+		@param  niterations    Number of iterations before shuffling 
+		@param  stopval        stop at this value of validation error
+		@param  makestats      True if statistics for report are generated (True)
+		
+		@return   (validationerror, trainingerror)
+		'''
 
 		# add the bias nodes
 		valid = concatenate((valid, -ones((shape(valid)[0], 1))), axis = 1)
@@ -107,13 +178,13 @@ class mlp:
 			savetxt(fnhidden, self.weights1, '%8.4f')
 			savetxt(fnoutput, self.weights2, '%8.4f')
 			
-		while (((old_val_error1 - self.validerror) > 0.001) or 
-			   ((old_val_error2 - old_val_error1) > 0.001)):
+		while (((old_val_error1 - self.validerror) > stopval) or 
+			   ((old_val_error2 - old_val_error1) > stopval)):
 			self.stopcount += 1
 			self.trainerror = self.mlptrain(inputs, targets, eta, niterations)
 			old_val_error2 = old_val_error1
 			old_val_error1 = self.validerror
-			validout = self.mlpfwd(valid)
+			validout = self._mlpfwd(valid)
 			self.validerror = 0.5 * sum((validtargets - validout) ** 2)
 			if (self.debug > 0):
 				fmt = '%3d  trainerr = %7.3f  validerr = %7.3f, ' + \
@@ -128,16 +199,21 @@ class mlp:
 			savetxt(fnhidden, self.weights1, '%8.4f')
 			savetxt(fnoutput, self.weights2, '%8.4f')
 
-		if (self.debug > 0):
-			print "Stopped", self.validerror, old_val_error1, old_val_error2
-			print old_val_error1 - self.validerror
-			print old_val_error2 - old_val_error1
 		return (self.validerror, self.trainerror)
 
 
 
 	def mlptrain(self, inputs, targets, eta, niterations):
-		""" Train the thing """
+		""" 
+		Train the network without validation set 
+
+		@param    inputs         Input values
+		@param    targets        Target values (known classification for example)
+		@param    eta            Learning rate
+		@param    niterations    Number of iterations
+		
+		@return   error
+		"""
 		# Add the inputs that match the bias node
 		inputs = concatenate((inputs, -ones((self.ndata, 1))), axis = 1)
 		change = range(self.ndata)
@@ -147,10 +223,10 @@ class mlp:
 
 		error = -1.0
 		self.niterations = niterations
-		seterr(under='ignore')
+		seterr(under = 'ignore')
 		for n in xrange(niterations):
 
-			self.outputs = self.mlpfwd(inputs)
+			self.outputs = self._mlpfwd(inputs)
 
 			error = 0.5 * sum((targets - self.outputs) ** 2)
 #			if (mod(n, 100) == 0):
@@ -166,7 +242,7 @@ class mlp:
 				#deltao = (targets - self.outputs) * self.outputs / self.ndata
 				deltao = (targets - self.outputs) / self.ndata
 			else:
-				print "error: illegal outtype"
+				print "Error: illegal outtype"
 
 			deltah = self.hidden * (1.0 - self.hidden) * \
 			         (dot(deltao, transpose(self.weights2)))
@@ -187,11 +263,25 @@ class mlp:
 
 
 
-	def mlpfwd(self, inputs):
-		""" Run the network forward """
+	def _mlpfwd(self, inputs):
+		""" 
+		Run the network forward (internal function)
+		
+		@param    inputs    Input values
+		
+		@return   output    Values of output layer  
+		"""
 
 		self.hidden = dot(inputs, self.weights1);
-		self.hidden = 1.0 / (1.0 + exp(-self.beta * self.hidden))
+		try:
+			self.hidden = 1.0 / (1.0 + exp(-self.beta * self.hidden))
+		except FloatingPointError as err:
+			print 'hidden shape = ', self.hidden.shape
+			maxpos = unravel_index(self.hidden.argmax(), self.hidden.shape)
+			minpos = unravel_index(self.hidden.argmin(), self.hidden.shape)  
+			print 'hidden max = ', self.hidden.max(), 'at', maxpos
+			print 'hidden min = ', self.hidden.min(), 'at', minpos
+			raise MlpError(minpos[0])
 		self.hidden = concatenate((self.hidden, -ones((shape(inputs)[0], 1))), 
 								  axis = 1)
 
@@ -215,16 +305,39 @@ class mlp:
 
 
 
-	def evaluate(self, inputs):
+	def evaluate(self, inputs, normalize = True):
+		'''
+		Evaluate input values
+		
+		@param    inputs    Input values
+		@param    normalize True (default) if inputs should be normalized
+		
+		@return   outputs   Values of output layer  
+		'''
+		
+		# normalize inputs
+		if ((normalize == True) and 
+			(self.normsubtract != None) and (self.normdevide != None)):
+			inputs = (inputs - self.normsubtract) / self.normdevide
+			
 		# add the bias nodes
 		bias = -ones((shape(inputs)[0], 1))
 		inputs = concatenate((inputs, bias), axis = 1)
-		outputs = self.mlpfwd(inputs)
+		outputs = self._mlpfwd(inputs)
 		return outputs
 
 
+
 	def confmat(self, inputs, targets, makestats = True):
-		"""Confusion matrix"""
+		"""
+		Build confusion matrix
+
+		@param    inputs         Input values
+		@param    targets        Target values (known classification f.e.)
+		@param    makestats      True (default) if computing statistics for report
+		
+		@return:  cm             Confusion matrix
+		"""
 
 		self.teststats = None
 		if (makestats == True):
@@ -232,7 +345,7 @@ class mlp:
 			
 		# Add the inputs that match the bias node
 		inputs = concatenate((inputs, -ones((shape(inputs)[0], 1))), axis = 1)
-		outputs = self.mlpfwd(inputs)
+		outputs = self._mlpfwd(inputs)
 
 		nclasses = shape(targets)[1]
 
@@ -271,8 +384,8 @@ class mlp:
 									(nclasses * shape(targets)[0])
 			
 #		print "Confusion matrix is:"
-#		print cm
-#		print "Percentage Correct: ", 1.0 * trace(cm) / sum(cm) * 100
+#		print self.cm
+#		print "Percentage Correct: ", 1.0 * trace(self.cm) / sum(self.cm) * 100
 
 		return self.cm
 
@@ -294,11 +407,13 @@ class mlp:
 			 (self.teststats != None)):
 			olines.append('Exemplars  ' + title + '    Sum')
 
+		nrtrain = 0
 		if (self.trainstats != None):
 			oline = 'Training   '
 			for i in xrange(len(self.trainstats)):
 				oline += intfmt % self.trainstats[i]
-			oline += intfmt % self.trainstats.sum()
+			nrtrain = self.trainstats.sum()
+			oline += intfmt % nrtrain
 			olines.append(oline)
 		
 		nrvalid = -1
@@ -309,13 +424,20 @@ class mlp:
 			nrvalid = self.validstats.sum()
 			oline += intfmt % nrvalid
 			olines.append(oline)
-		
+
+		nrtest = 0		
 		if (self.teststats != None):
 			oline = 'Testing    '
 			for i in xrange(len(self.teststats)):
 				oline += intfmt % self.teststats[i]
-			oline += intfmt % self.teststats.sum()
+			nrtest = self.teststats.sum()
+			oline += intfmt % nrtest
 			olines.append(oline)
+
+		olines.append('')
+		oline = 'Exemplars    = %d  (%d training, %d validating, %d testing)' % \
+				(nrtrain + nrvalid + nrtest, nrtrain, nrvalid, nrtest)
+		olines.append(oline)
 		
 		olines.append('')
 		olines.append('momentum         = %f' % self.momentum)
@@ -407,6 +529,17 @@ class mlp:
 
 	def report(self, titlefmt, intfmt, floatfmt, classes = None, ofname = None,
 			    firstcolfmt = '%7s '):
+		'''
+		Print or write report of training or evaluation of inputs
+		
+		@param titlefmt: Format string for class titles
+		@param intfmt:   Format string for integer values
+		@param floatfmt: Format string for floating point values
+		@param classes:  string with class-names (None = default = use self.classes)
+		@param ofname:   name of output file (default = None)
+		@param firstcolfmt: Format for first columns (classes, default "%7s")
+		'''
+		
 		if (classes != None):
 			self.classes = classes
 		olines = self._createreport(self.classes, titlefmt, intfmt, floatfmt,

@@ -1,0 +1,342 @@
+\hypertarget{namespacetrainnetmp}{
+\section{trainnetmp Namespace Reference}
+\label{namespacetrainnetmp}\index{trainnetmp@{trainnetmp}}
+}
+
+
+Created on Jul 18, 2012.  
+
+
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{namespacetrainnetmp_ae69cdeadf6d4d73bf96600ae218927c4}{callnet}
+\begin{DoxyCompactList}\small\item\em Wrapper function for calling the neural network. \item\end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{namespacetrainnetmp_ab566ffaeaa6913a2b2b347cff1a608a4}{resdir} = options.rootdir+options.resdir
+\item 
+\hyperlink{namespacetrainnetmp_a9ebecee08a7b0aefef2e0b192e970bda}{lfname} = None
+\item 
+tuple \hyperlink{namespacetrainnetmp_ac6c0cf0d61312a5dbd34443a74310689}{lf} = Logfile(\hyperlink{namespacetrainnetmp_a9ebecee08a7b0aefef2e0b192e970bda}{lfname}, True, True)
+\item 
+tuple \hyperlink{namespacetrainnetmp_ad12ea3655cd42b916f85fcedd267ad16}{cls} = getattr(\hyperlink{namespacetrainnetmp_a5b13bd831f315c6820696cabf93a0d85}{dbconfig}, 'Asas')
+\item 
+tuple \hyperlink{namespacetrainnetmp_a5b13bd831f315c6820696cabf93a0d85}{dbconfig} = \hyperlink{namespacetrainnetmp_ad12ea3655cd42b916f85fcedd267ad16}{cls}()
+\item 
+tuple \hyperlink{namespacetrainnetmp_ad0c5cbbe64c5ef22afe865ff2f038740}{watch} = Stopwatch()
+\item 
+tuple \hyperlink{namespacetrainnetmp_a0207abb6efd09545a76548318d6af4cf}{watchprep} = Stopwatch()
+\item 
+tuple \hyperlink{namespacetrainnetmp_a0ce23022a012fafdc81c769f9ea2ae84}{nrprocess} = int(os.environ\mbox{[}'OMP\_\-NUM\_\-THREADS'\mbox{]})
+\item 
+tuple \hyperlink{namespacetrainnetmp_aa0c8c776c3d1db6ced2d652b6ef39cec}{args} = (traind, traint, validd, validt, options.eta, options.nriter, True)
+\item 
+float \hyperlink{namespacetrainnetmp_ae484804d6f3c2525ab89fc23b715d8d0}{maxpercent} = 0.0
+\item 
+list \hyperlink{namespacetrainnetmp_acf60722e6b94f8b6613aff40c374d19f}{results} = \mbox{[}$\,$\mbox{]}
+\item 
+tuple \hyperlink{namespacetrainnetmp_a03c784c70244aab9be7a7f087f99f1e8}{pool} = Pool(processes = \hyperlink{namespacetrainnetmp_a0ce23022a012fafdc81c769f9ea2ae84}{nrprocess})
+\item 
+tuple \hyperlink{namespacetrainnetmp_abc8273df12ede80d1022efecac2e6883}{net}
+\item 
+dictionary \hyperlink{namespacetrainnetmp_afecb97f9f28c04c9cce1e3342010cd53}{kwargs} = \{'\hyperlink{namespacetrainnetmp_abc8273df12ede80d1022efecac2e6883}{net}': \hyperlink{namespacetrainnetmp_abc8273df12ede80d1022efecac2e6883}{net}, 'nrhidden': i, 'iteration': j, 'logfile': \hyperlink{namespacetrainnetmp_ac6c0cf0d61312a5dbd34443a74310689}{lf}\}
+\item 
+tuple \hyperlink{namespacetrainnetmp_aeaf295e503c8c7a7eb9d4e5a77ed5499}{nrres} = len(\hyperlink{namespacetrainnetmp_acf60722e6b94f8b6613aff40c374d19f}{results})
+\item 
+int \hyperlink{namespacetrainnetmp_a645db8b07923a52025222af462801dc2}{oldj} = 1
+\item 
+float \hyperlink{namespacetrainnetmp_a8647e1123b531e4df1080e929f352389}{mean} = 0.0
+\item 
+string \hyperlink{namespacetrainnetmp_a0fc6d0db466612f63fa6df1c682394d0}{oline} = '\%2d: '
+\item 
+string \hyperlink{namespacetrainnetmp_a01a4fd22ee2cc1aba08b4566d95bb2a4}{rname} = '/nrhidden'
+\item 
+tuple \hyperlink{namespacetrainnetmp_a5348e04a55d2a7563398585f1b851efa}{of} = open(\hyperlink{namespacetrainnetmp_ab566ffaeaa6913a2b2b347cff1a608a4}{resdir} + '/' + options.repname, 'w')
+\item 
+int \hyperlink{namespacetrainnetmp_aa4405feef7b967d4eb9749579d3b1dad}{jmax} = 1
+\item 
+int \hyperlink{namespacetrainnetmp_a8c5a189bb47054d719066421ae589642}{kmax} = 1
+\item 
+tuple \hyperlink{namespacetrainnetmp_af36e6597c6ab86263c1f5da739583e3f}{cm} = net.confmat(testd, testt, True)
+\item 
+\hyperlink{namespacetrainnetmp_a72596b0af8ecedd242cba70b6819b03d}{val} = net.allpercent
+\item 
+tuple \hyperlink{namespacetrainnetmp_a6b1fd4837c9650e7f0526c5e9b88fc05}{pf}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Created on Jul 18, 2012. \begin{DoxyAuthor}{Author}
+map 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+\$Revision\$ 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+\$Date\$
+\end{DoxyDate}
+Multi-\/processing training of multiple networks at once. Be sue to have the environment variable OMP\_\-NUM\_\-THREADS set to a reasonable value (number of CPUs for example). The default is working with just 2 processes.
+
+\$Log\$ Initial revision 
+
+\subsection{Function Documentation}
+\hypertarget{namespacetrainnetmp_ae69cdeadf6d4d73bf96600ae218927c4}{
+\index{trainnetmp@{trainnetmp}!callnet@{callnet}}
+\index{callnet@{callnet}!trainnetmp@{trainnetmp}}
+\subsubsection[{callnet}]{\setlength{\rightskip}{0pt plus 5cm}def trainnetmp::callnet (
+\begin{DoxyParamCaption}
+\item[{}]{args, }
+\item[{}]{kwargs}
+\end{DoxyParamCaption}
+)}}
+\label{namespacetrainnetmp_ae69cdeadf6d4d73bf96600ae218927c4}
+
+
+Wrapper function for calling the neural network. 
+
+
+
+Definition at line 37 of file trainnetmp.py.
+
+
+
+\subsection{Variable Documentation}
+\hypertarget{namespacetrainnetmp_aa0c8c776c3d1db6ced2d652b6ef39cec}{
+\index{trainnetmp@{trainnetmp}!args@{args}}
+\index{args@{args}!trainnetmp@{trainnetmp}}
+\subsubsection[{args}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf trainnetmp::args} = (traind, traint, validd, validt, options.eta, options.nriter, True)}}
+\label{namespacetrainnetmp_aa0c8c776c3d1db6ced2d652b6ef39cec}
+
+
+Definition at line 89 of file trainnetmp.py.
+
+\hypertarget{namespacetrainnetmp_ad12ea3655cd42b916f85fcedd267ad16}{
+\index{trainnetmp@{trainnetmp}!cls@{cls}}
+\index{cls@{cls}!trainnetmp@{trainnetmp}}
+\subsubsection[{cls}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf trainnetmp::cls} = getattr({\bf dbconfig}, 'Asas')}}
+\label{namespacetrainnetmp_ad12ea3655cd42b916f85fcedd267ad16}
+
+
+Definition at line 59 of file trainnetmp.py.
+
+\hypertarget{namespacetrainnetmp_af36e6597c6ab86263c1f5da739583e3f}{
+\index{trainnetmp@{trainnetmp}!cm@{cm}}
+\index{cm@{cm}!trainnetmp@{trainnetmp}}
+\subsubsection[{cm}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf trainnetmp::cm} = net.confmat(testd, testt, True)}}
+\label{namespacetrainnetmp_af36e6597c6ab86263c1f5da739583e3f}
+
+
+Definition at line 142 of file trainnetmp.py.
+
+\hypertarget{namespacetrainnetmp_a5b13bd831f315c6820696cabf93a0d85}{
+\index{trainnetmp@{trainnetmp}!dbconfig@{dbconfig}}
+\index{dbconfig@{dbconfig}!trainnetmp@{trainnetmp}}
+\subsubsection[{dbconfig}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf trainnetmp::dbconfig} = {\bf cls}()}}
+\label{namespacetrainnetmp_a5b13bd831f315c6820696cabf93a0d85}
+
+
+Definition at line 60 of file trainnetmp.py.
+
+\hypertarget{namespacetrainnetmp_aa4405feef7b967d4eb9749579d3b1dad}{
+\index{trainnetmp@{trainnetmp}!jmax@{jmax}}
+\index{jmax@{jmax}!trainnetmp@{trainnetmp}}
+\subsubsection[{jmax}]{\setlength{\rightskip}{0pt plus 5cm}{\bf trainnetmp::jmax} = 1}}
+\label{namespacetrainnetmp_aa4405feef7b967d4eb9749579d3b1dad}
+
+
+Definition at line 128 of file trainnetmp.py.
+
+\hypertarget{namespacetrainnetmp_a8c5a189bb47054d719066421ae589642}{
+\index{trainnetmp@{trainnetmp}!kmax@{kmax}}
+\index{kmax@{kmax}!trainnetmp@{trainnetmp}}
+\subsubsection[{kmax}]{\setlength{\rightskip}{0pt plus 5cm}{\bf trainnetmp::kmax} = 1}}
+\label{namespacetrainnetmp_a8c5a189bb47054d719066421ae589642}
+
+
+Definition at line 129 of file trainnetmp.py.
+
+\hypertarget{namespacetrainnetmp_afecb97f9f28c04c9cce1e3342010cd53}{
+\index{trainnetmp@{trainnetmp}!kwargs@{kwargs}}
+\index{kwargs@{kwargs}!trainnetmp@{trainnetmp}}
+\subsubsection[{kwargs}]{\setlength{\rightskip}{0pt plus 5cm}dictionary {\bf trainnetmp::kwargs} = \{'{\bf net}': {\bf net}, 'nrhidden': i, 'iteration': j, 'logfile': {\bf lf}\}}}
+\label{namespacetrainnetmp_afecb97f9f28c04c9cce1e3342010cd53}
+
+
+Definition at line 112 of file trainnetmp.py.
+
+\hypertarget{namespacetrainnetmp_ac6c0cf0d61312a5dbd34443a74310689}{
+\index{trainnetmp@{trainnetmp}!lf@{lf}}
+\index{lf@{lf}!trainnetmp@{trainnetmp}}
+\subsubsection[{lf}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf trainnetmp::lf} = Logfile({\bf lfname}, True, True)}}
+\label{namespacetrainnetmp_ac6c0cf0d61312a5dbd34443a74310689}
+
+
+Definition at line 57 of file trainnetmp.py.
+
+\hypertarget{namespacetrainnetmp_a9ebecee08a7b0aefef2e0b192e970bda}{
+\index{trainnetmp@{trainnetmp}!lfname@{lfname}}
+\index{lfname@{lfname}!trainnetmp@{trainnetmp}}
+\subsubsection[{lfname}]{\setlength{\rightskip}{0pt plus 5cm}string {\bf trainnetmp::lfname} = None}}
+\label{namespacetrainnetmp_a9ebecee08a7b0aefef2e0b192e970bda}
+
+
+Definition at line 54 of file trainnetmp.py.
+
+\hypertarget{namespacetrainnetmp_ae484804d6f3c2525ab89fc23b715d8d0}{
+\index{trainnetmp@{trainnetmp}!maxpercent@{maxpercent}}
+\index{maxpercent@{maxpercent}!trainnetmp@{trainnetmp}}
+\subsubsection[{maxpercent}]{\setlength{\rightskip}{0pt plus 5cm}float {\bf trainnetmp::maxpercent} = 0.0}}
+\label{namespacetrainnetmp_ae484804d6f3c2525ab89fc23b715d8d0}
+
+
+Definition at line 90 of file trainnetmp.py.
+
+\hypertarget{namespacetrainnetmp_a8647e1123b531e4df1080e929f352389}{
+\index{trainnetmp@{trainnetmp}!mean@{mean}}
+\index{mean@{mean}!trainnetmp@{trainnetmp}}
+\subsubsection[{mean}]{\setlength{\rightskip}{0pt plus 5cm}float {\bf trainnetmp::mean} = 0.0}}
+\label{namespacetrainnetmp_a8647e1123b531e4df1080e929f352389}
+
+
+Definition at line 121 of file trainnetmp.py.
+
+\hypertarget{namespacetrainnetmp_abc8273df12ede80d1022efecac2e6883}{
+\index{trainnetmp@{trainnetmp}!net@{net}}
+\index{net@{net}!trainnetmp@{trainnetmp}}
+\subsubsection[{net}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf trainnetmp::net}}}
+\label{namespacetrainnetmp_abc8273df12ede80d1022efecac2e6883}
+{\bfseries Initial value:}
+\begin{DoxyCode}
+1 mlp.mlp(traind, traint, nhidden = i,
+2                           beta = options.beta, momentum = options.momentum, 
+3                           outtype = options.outtype, 
+4                           multires = options.multi, mdelta = options.mdelta)
+\end{DoxyCode}
+
+
+Definition at line 103 of file trainnetmp.py.
+
+\hypertarget{namespacetrainnetmp_a0ce23022a012fafdc81c769f9ea2ae84}{
+\index{trainnetmp@{trainnetmp}!nrprocess@{nrprocess}}
+\index{nrprocess@{nrprocess}!trainnetmp@{trainnetmp}}
+\subsubsection[{nrprocess}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf trainnetmp::nrprocess} = int(os.environ\mbox{[}'OMP\_\-NUM\_\-THREADS'\mbox{]})}}
+\label{namespacetrainnetmp_a0ce23022a012fafdc81c769f9ea2ae84}
+
+
+Definition at line 85 of file trainnetmp.py.
+
+\hypertarget{namespacetrainnetmp_aeaf295e503c8c7a7eb9d4e5a77ed5499}{
+\index{trainnetmp@{trainnetmp}!nrres@{nrres}}
+\index{nrres@{nrres}!trainnetmp@{trainnetmp}}
+\subsubsection[{nrres}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf trainnetmp::nrres} = len({\bf results})}}
+\label{namespacetrainnetmp_aeaf295e503c8c7a7eb9d4e5a77ed5499}
+
+
+Definition at line 119 of file trainnetmp.py.
+
+\hypertarget{namespacetrainnetmp_a5348e04a55d2a7563398585f1b851efa}{
+\index{trainnetmp@{trainnetmp}!of@{of}}
+\index{of@{of}!trainnetmp@{trainnetmp}}
+\subsubsection[{of}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf trainnetmp::of} = open({\bf resdir} + '/' + options.repname, 'w')}}
+\label{namespacetrainnetmp_a5348e04a55d2a7563398585f1b851efa}
+
+
+Definition at line 126 of file trainnetmp.py.
+
+\hypertarget{namespacetrainnetmp_a645db8b07923a52025222af462801dc2}{
+\index{trainnetmp@{trainnetmp}!oldj@{oldj}}
+\index{oldj@{oldj}!trainnetmp@{trainnetmp}}
+\subsubsection[{oldj}]{\setlength{\rightskip}{0pt plus 5cm}{\bf trainnetmp::oldj} = 1}}
+\label{namespacetrainnetmp_a645db8b07923a52025222af462801dc2}
+
+
+Definition at line 120 of file trainnetmp.py.
+
+\hypertarget{namespacetrainnetmp_a0fc6d0db466612f63fa6df1c682394d0}{
+\index{trainnetmp@{trainnetmp}!oline@{oline}}
+\index{oline@{oline}!trainnetmp@{trainnetmp}}
+\subsubsection[{oline}]{\setlength{\rightskip}{0pt plus 5cm}string {\bf trainnetmp::oline} = '\%2d: '}}
+\label{namespacetrainnetmp_a0fc6d0db466612f63fa6df1c682394d0}
+
+
+Definition at line 123 of file trainnetmp.py.
+
+\hypertarget{namespacetrainnetmp_a6b1fd4837c9650e7f0526c5e9b88fc05}{
+\index{trainnetmp@{trainnetmp}!pf@{pf}}
+\index{pf@{pf}!trainnetmp@{trainnetmp}}
+\subsubsection[{pf}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf trainnetmp::pf}}}
+\label{namespacetrainnetmp_a6b1fd4837c9650e7f0526c5e9b88fc05}
+{\bfseries Initial value:}
+\begin{DoxyCode}
+1 open(resdir + '/max' + str(options.minhidden) + '_' + 
+2                       str(options.maxhidden) + '.pickle', 'w')
+\end{DoxyCode}
+
+
+Definition at line 150 of file trainnetmp.py.
+
+\hypertarget{namespacetrainnetmp_a03c784c70244aab9be7a7f087f99f1e8}{
+\index{trainnetmp@{trainnetmp}!pool@{pool}}
+\index{pool@{pool}!trainnetmp@{trainnetmp}}
+\subsubsection[{pool}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf trainnetmp::pool} = Pool(processes = {\bf nrprocess})}}
+\label{namespacetrainnetmp_a03c784c70244aab9be7a7f087f99f1e8}
+
+
+Definition at line 92 of file trainnetmp.py.
+
+\hypertarget{namespacetrainnetmp_ab566ffaeaa6913a2b2b347cff1a608a4}{
+\index{trainnetmp@{trainnetmp}!resdir@{resdir}}
+\index{resdir@{resdir}!trainnetmp@{trainnetmp}}
+\subsubsection[{resdir}]{\setlength{\rightskip}{0pt plus 5cm}{\bf trainnetmp::resdir} = options.rootdir+options.resdir}}
+\label{namespacetrainnetmp_ab566ffaeaa6913a2b2b347cff1a608a4}
+
+
+Definition at line 51 of file trainnetmp.py.
+
+\hypertarget{namespacetrainnetmp_acf60722e6b94f8b6613aff40c374d19f}{
+\index{trainnetmp@{trainnetmp}!results@{results}}
+\index{results@{results}!trainnetmp@{trainnetmp}}
+\subsubsection[{results}]{\setlength{\rightskip}{0pt plus 5cm}list {\bf trainnetmp::results} = \mbox{[}$\,$\mbox{]}}}
+\label{namespacetrainnetmp_acf60722e6b94f8b6613aff40c374d19f}
+
+
+Definition at line 91 of file trainnetmp.py.
+
+\hypertarget{namespacetrainnetmp_a01a4fd22ee2cc1aba08b4566d95bb2a4}{
+\index{trainnetmp@{trainnetmp}!rname@{rname}}
+\index{rname@{rname}!trainnetmp@{trainnetmp}}
+\subsubsection[{rname}]{\setlength{\rightskip}{0pt plus 5cm}string {\bf trainnetmp::rname} = '/nrhidden'}}
+\label{namespacetrainnetmp_a01a4fd22ee2cc1aba08b4566d95bb2a4}
+
+
+Definition at line 124 of file trainnetmp.py.
+
+\hypertarget{namespacetrainnetmp_a72596b0af8ecedd242cba70b6819b03d}{
+\index{trainnetmp@{trainnetmp}!val@{val}}
+\index{val@{val}!trainnetmp@{trainnetmp}}
+\subsubsection[{val}]{\setlength{\rightskip}{0pt plus 5cm}{\bf trainnetmp::val} = net.allpercent}}
+\label{namespacetrainnetmp_a72596b0af8ecedd242cba70b6819b03d}
+
+
+Definition at line 144 of file trainnetmp.py.
+
+\hypertarget{namespacetrainnetmp_ad0c5cbbe64c5ef22afe865ff2f038740}{
+\index{trainnetmp@{trainnetmp}!watch@{watch}}
+\index{watch@{watch}!trainnetmp@{trainnetmp}}
+\subsubsection[{watch}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf trainnetmp::watch} = Stopwatch()}}
+\label{namespacetrainnetmp_ad0c5cbbe64c5ef22afe865ff2f038740}
+
+
+Definition at line 62 of file trainnetmp.py.
+
+\hypertarget{namespacetrainnetmp_a0207abb6efd09545a76548318d6af4cf}{
+\index{trainnetmp@{trainnetmp}!watchprep@{watchprep}}
+\index{watchprep@{watchprep}!trainnetmp@{trainnetmp}}
+\subsubsection[{watchprep}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf trainnetmp::watchprep} = Stopwatch()}}
+\label{namespacetrainnetmp_a0207abb6efd09545a76548318d6af4cf}
+
+
+Definition at line 64 of file trainnetmp.py.
+

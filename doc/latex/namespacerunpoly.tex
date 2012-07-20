@@ -1,0 +1,312 @@
+\hypertarget{namespacerunpoly}{
+\section{runpoly Namespace Reference}
+\label{namespacerunpoly}\index{runpoly@{runpoly}}
+}
+
+
+Created on Jul 2, 2012.  
+
+
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{namespacerunpoly_aa4866b028ef0d94a7b9f237490073b28}{getfit}
+\item 
+def \hyperlink{namespacerunpoly_a19c006c67315b888598650bbd005e703}{fitlc}
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+string \hyperlink{namespacerunpoly_aac16bfb405f5f32d626a3c0bd057a781}{usage} = '\%prog \mbox{[}options\mbox{]} \mbox{[}fitname\mbox{]}'
+\item 
+tuple \hyperlink{namespacerunpoly_a366967b50d48b6d7ab51bb4bd156ff40}{parser} = OptionParser(\hyperlink{namespacerunpoly_aac16bfb405f5f32d626a3c0bd057a781}{usage}=\hyperlink{namespacerunpoly_aac16bfb405f5f32d626a3c0bd057a781}{usage})
+\item 
+string \hyperlink{namespacerunpoly_afb3be1048713b880f7ac5b701514765d}{default} = 'asasblc.sqlite'
+\item 
+string \hyperlink{namespacerunpoly_a7258195372f4a253f10006e02792d22b}{help} = 'database file with binned light curves'
+\item 
+tuple \hyperlink{namespacerunpoly_ae53c9938e3373cc687af5896e211fcc4}{cls} = getattr(\hyperlink{namespacerunpoly_a23238d44f53fedb2335ddfd9e0ba563a}{dbconfig}, 'Asas')
+\item 
+tuple \hyperlink{namespacerunpoly_a23238d44f53fedb2335ddfd9e0ba563a}{dbconfig} = \hyperlink{namespacerunpoly_ae53c9938e3373cc687af5896e211fcc4}{cls}()
+\item 
+tuple \hyperlink{namespacerunpoly_ac9f61a81e4f1d37afe226eb29a552c68}{tmpwriter}
+\item 
+tuple \hyperlink{namespacerunpoly_ac573a8d4d7a1ebbf405bd0b69fa9361b}{watch} = Stopwatch()
+\item 
+tuple \hyperlink{namespacerunpoly_a41be213241b93ac1aaaf0a0dcd1818f2}{dictreader} = dbr.DbReader(options.rootdir + options.dictname)
+\item 
+tuple \hyperlink{namespacerunpoly_afb96306fccc8888ba0c85e13ab7a5598}{plcreader} = dbr.DbReader(options.rootdir + options.plcname)
+\item 
+tuple \hyperlink{namespacerunpoly_ac06d4b8419f2f541233264830433e74d}{blcreader} = dbr.DbReader(options.rootdir + options.blcname)
+\item 
+tuple \hyperlink{namespacerunpoly_a09493fdc135109309376e8ac388a3fde}{dictwriter}
+\item 
+tuple \hyperlink{namespacerunpoly_a19b081e3078cf18f986b0d40995ddd86}{cffwriter}
+\item 
+tuple \hyperlink{namespacerunpoly_a270c35c20bdd6aa659cab1358e8f9475}{fitwriter}
+\item 
+tuple \hyperlink{namespacerunpoly_a66f644ff5f02e8d9724a514873ac1be4}{generator} = dictreader.traverse(options.select, None, 1000)
+\item 
+int \hyperlink{namespacerunpoly_aa86a45877f78f52e3357c19a9221feed}{nrstars} = 0
+\item 
+int \hyperlink{namespacerunpoly_a77eea5c10faa8e40af7173ac7eda3478}{failed} = 0
+\item 
+\hyperlink{namespacerunpoly_a429eb81cafed3ca14e2465cbd91d3224}{olddir} = options.rootdir
+\item 
+tuple \hyperlink{namespacerunpoly_a079d0116a1dcdb50fd810307fa37f4b4}{plc} = plcreader.getlc(star\mbox{[}'uid'\mbox{]}, 'stars', 'phase')
+\item 
+tuple \hyperlink{namespacerunpoly_ae215f3ab3bd79ffc8502386a8e0ca6c6}{blc} = blcreader.getlc(star\mbox{[}'uid'\mbox{]}, 'stars', 'phase')
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Created on Jul 2, 2012. \begin{DoxyAuthor}{Author}
+map 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+\$Revision: 1.1 $ 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+\$Date: 2012/07/20 20:20:46 $
+\end{DoxyDate}
+\begin{DoxyParagraph}{Log:}
+\hyperlink{runpoly_8py}{runpoly.py},v 
+\end{DoxyParagraph}
+Revision 1.1 2012/07/06 20:34:19 paegerm Initial revision
+
+Initial revision 
+
+\subsection{Function Documentation}
+\hypertarget{namespacerunpoly_a19c006c67315b888598650bbd005e703}{
+\index{runpoly@{runpoly}!fitlc@{fitlc}}
+\index{fitlc@{fitlc}!runpoly@{runpoly}}
+\subsubsection[{fitlc}]{\setlength{\rightskip}{0pt plus 5cm}def runpoly::fitlc (
+\begin{DoxyParamCaption}
+\item[{}]{star, }
+\item[{}]{plc, }
+\item[{}]{blc}
+\end{DoxyParamCaption}
+)}}
+\label{namespacerunpoly_a19c006c67315b888598650bbd005e703}
+
+
+Definition at line 58 of file runpoly.py.
+
+\hypertarget{namespacerunpoly_aa4866b028ef0d94a7b9f237490073b28}{
+\index{runpoly@{runpoly}!getfit@{getfit}}
+\index{getfit@{getfit}!runpoly@{runpoly}}
+\subsubsection[{getfit}]{\setlength{\rightskip}{0pt plus 5cm}def runpoly::getfit (
+\begin{DoxyParamCaption}
+\item[{}]{outstring, }
+\item[{}]{staruid}
+\end{DoxyParamCaption}
+)}}
+\label{namespacerunpoly_aa4866b028ef0d94a7b9f237490073b28}
+
+
+Definition at line 32 of file runpoly.py.
+
+
+
+\subsection{Variable Documentation}
+\hypertarget{namespacerunpoly_ae215f3ab3bd79ffc8502386a8e0ca6c6}{
+\index{runpoly@{runpoly}!blc@{blc}}
+\index{blc@{blc}!runpoly@{runpoly}}
+\subsubsection[{blc}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runpoly::blc} = blcreader.getlc(star\mbox{[}'uid'\mbox{]}, 'stars', 'phase')}}
+\label{namespacerunpoly_ae215f3ab3bd79ffc8502386a8e0ca6c6}
+
+
+Definition at line 223 of file runpoly.py.
+
+\hypertarget{namespacerunpoly_ac06d4b8419f2f541233264830433e74d}{
+\index{runpoly@{runpoly}!blcreader@{blcreader}}
+\index{blcreader@{blcreader}!runpoly@{runpoly}}
+\subsubsection[{blcreader}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runpoly::blcreader} = dbr.DbReader(options.rootdir + options.blcname)}}
+\label{namespacerunpoly_ac06d4b8419f2f541233264830433e74d}
+
+
+Definition at line 207 of file runpoly.py.
+
+\hypertarget{namespacerunpoly_a19b081e3078cf18f986b0d40995ddd86}{
+\index{runpoly@{runpoly}!cffwriter@{cffwriter}}
+\index{cffwriter@{cffwriter}!runpoly@{runpoly}}
+\subsubsection[{cffwriter}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runpoly::cffwriter}}}
+\label{namespacerunpoly_a19b081e3078cf18f986b0d40995ddd86}
+{\bfseries Initial value:}
+\begin{DoxyCode}
+1 dbw.DbWriter(options.rootdir + options.fitname, 
+2                               dbconfig.cffcols, dbconfig.cfftname)
+\end{DoxyCode}
+
+
+Definition at line 211 of file runpoly.py.
+
+\hypertarget{namespacerunpoly_ae53c9938e3373cc687af5896e211fcc4}{
+\index{runpoly@{runpoly}!cls@{cls}}
+\index{cls@{cls}!runpoly@{runpoly}}
+\subsubsection[{cls}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runpoly::cls} = getattr({\bf dbconfig}, 'Asas')}}
+\label{namespacerunpoly_ae53c9938e3373cc687af5896e211fcc4}
+
+
+Definition at line 189 of file runpoly.py.
+
+\hypertarget{namespacerunpoly_a23238d44f53fedb2335ddfd9e0ba563a}{
+\index{runpoly@{runpoly}!dbconfig@{dbconfig}}
+\index{dbconfig@{dbconfig}!runpoly@{runpoly}}
+\subsubsection[{dbconfig}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runpoly::dbconfig} = {\bf cls}()}}
+\label{namespacerunpoly_a23238d44f53fedb2335ddfd9e0ba563a}
+
+
+Definition at line 190 of file runpoly.py.
+
+\hypertarget{namespacerunpoly_afb3be1048713b880f7ac5b701514765d}{
+\index{runpoly@{runpoly}!default@{default}}
+\index{default@{default}!runpoly@{runpoly}}
+\subsubsection[{default}]{\setlength{\rightskip}{0pt plus 5cm}string {\bf runpoly::default} = 'asasblc.sqlite'}}
+\label{namespacerunpoly_afb3be1048713b880f7ac5b701514765d}
+
+
+Definition at line 160 of file runpoly.py.
+
+\hypertarget{namespacerunpoly_a41be213241b93ac1aaaf0a0dcd1818f2}{
+\index{runpoly@{runpoly}!dictreader@{dictreader}}
+\index{dictreader@{dictreader}!runpoly@{runpoly}}
+\subsubsection[{dictreader}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runpoly::dictreader} = dbr.DbReader(options.rootdir + options.dictname)}}
+\label{namespacerunpoly_a41be213241b93ac1aaaf0a0dcd1818f2}
+
+
+Definition at line 205 of file runpoly.py.
+
+\hypertarget{namespacerunpoly_a09493fdc135109309376e8ac388a3fde}{
+\index{runpoly@{runpoly}!dictwriter@{dictwriter}}
+\index{dictwriter@{dictwriter}!runpoly@{runpoly}}
+\subsubsection[{dictwriter}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runpoly::dictwriter}}}
+\label{namespacerunpoly_a09493fdc135109309376e8ac388a3fde}
+{\bfseries Initial value:}
+\begin{DoxyCode}
+1 dbw.DbWriter(options.rootdir + options.dictname, 
+2                               dbconfig.dictcols)
+\end{DoxyCode}
+
+
+Definition at line 209 of file runpoly.py.
+
+\hypertarget{namespacerunpoly_a77eea5c10faa8e40af7173ac7eda3478}{
+\index{runpoly@{runpoly}!failed@{failed}}
+\index{failed@{failed}!runpoly@{runpoly}}
+\subsubsection[{failed}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf runpoly::failed} = 0}}
+\label{namespacerunpoly_a77eea5c10faa8e40af7173ac7eda3478}
+
+
+Definition at line 218 of file runpoly.py.
+
+\hypertarget{namespacerunpoly_a270c35c20bdd6aa659cab1358e8f9475}{
+\index{runpoly@{runpoly}!fitwriter@{fitwriter}}
+\index{fitwriter@{fitwriter}!runpoly@{runpoly}}
+\subsubsection[{fitwriter}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runpoly::fitwriter}}}
+\label{namespacerunpoly_a270c35c20bdd6aa659cab1358e8f9475}
+{\bfseries Initial value:}
+\begin{DoxyCode}
+1 dbw.DbWriter(options.rootdir + options.fitname, 
+2                               dbconfig.fitcols, dbconfig.fittname)
+\end{DoxyCode}
+
+
+Definition at line 213 of file runpoly.py.
+
+\hypertarget{namespacerunpoly_a66f644ff5f02e8d9724a514873ac1be4}{
+\index{runpoly@{runpoly}!generator@{generator}}
+\index{generator@{generator}!runpoly@{runpoly}}
+\subsubsection[{generator}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runpoly::generator} = dictreader.traverse(options.select, None, 1000)}}
+\label{namespacerunpoly_a66f644ff5f02e8d9724a514873ac1be4}
+
+
+Definition at line 216 of file runpoly.py.
+
+\hypertarget{namespacerunpoly_a7258195372f4a253f10006e02792d22b}{
+\index{runpoly@{runpoly}!help@{help}}
+\index{help@{help}!runpoly@{runpoly}}
+\subsubsection[{help}]{\setlength{\rightskip}{0pt plus 5cm}string {\bf runpoly::help} = 'database file with binned light curves'}}
+\label{namespacerunpoly_a7258195372f4a253f10006e02792d22b}
+
+
+Definition at line 161 of file runpoly.py.
+
+\hypertarget{namespacerunpoly_aa86a45877f78f52e3357c19a9221feed}{
+\index{runpoly@{runpoly}!nrstars@{nrstars}}
+\index{nrstars@{nrstars}!runpoly@{runpoly}}
+\subsubsection[{nrstars}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf runpoly::nrstars} = 0}}
+\label{namespacerunpoly_aa86a45877f78f52e3357c19a9221feed}
+
+
+Definition at line 217 of file runpoly.py.
+
+\hypertarget{namespacerunpoly_a429eb81cafed3ca14e2465cbd91d3224}{
+\index{runpoly@{runpoly}!olddir@{olddir}}
+\index{olddir@{olddir}!runpoly@{runpoly}}
+\subsubsection[{olddir}]{\setlength{\rightskip}{0pt plus 5cm}list {\bf runpoly::olddir} = options.rootdir}}
+\label{namespacerunpoly_a429eb81cafed3ca14e2465cbd91d3224}
+
+
+Definition at line 219 of file runpoly.py.
+
+\hypertarget{namespacerunpoly_a366967b50d48b6d7ab51bb4bd156ff40}{
+\index{runpoly@{runpoly}!parser@{parser}}
+\index{parser@{parser}!runpoly@{runpoly}}
+\subsubsection[{parser}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runpoly::parser} = OptionParser({\bf usage}={\bf usage})}}
+\label{namespacerunpoly_a366967b50d48b6d7ab51bb4bd156ff40}
+
+
+Definition at line 158 of file runpoly.py.
+
+\hypertarget{namespacerunpoly_a079d0116a1dcdb50fd810307fa37f4b4}{
+\index{runpoly@{runpoly}!plc@{plc}}
+\index{plc@{plc}!runpoly@{runpoly}}
+\subsubsection[{plc}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runpoly::plc} = plcreader.getlc(star\mbox{[}'uid'\mbox{]}, 'stars', 'phase')}}
+\label{namespacerunpoly_a079d0116a1dcdb50fd810307fa37f4b4}
+
+
+Definition at line 222 of file runpoly.py.
+
+\hypertarget{namespacerunpoly_afb96306fccc8888ba0c85e13ab7a5598}{
+\index{runpoly@{runpoly}!plcreader@{plcreader}}
+\index{plcreader@{plcreader}!runpoly@{runpoly}}
+\subsubsection[{plcreader}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runpoly::plcreader} = dbr.DbReader(options.rootdir + options.plcname)}}
+\label{namespacerunpoly_afb96306fccc8888ba0c85e13ab7a5598}
+
+
+Definition at line 206 of file runpoly.py.
+
+\hypertarget{namespacerunpoly_ac9f61a81e4f1d37afe226eb29a552c68}{
+\index{runpoly@{runpoly}!tmpwriter@{tmpwriter}}
+\index{tmpwriter@{tmpwriter}!runpoly@{runpoly}}
+\subsubsection[{tmpwriter}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runpoly::tmpwriter}}}
+\label{namespacerunpoly_ac9f61a81e4f1d37afe226eb29a552c68}
+{\bfseries Initial value:}
+\begin{DoxyCode}
+1 dbw.DbWriter(options.rootdir + options.fitname, 
+2                              dbconfig.cffcols, dbconfig.cfftname, 
+3                              dbconfig.cfftypes, dbconfig.cffnulls)
+\end{DoxyCode}
+
+
+Definition at line 193 of file runpoly.py.
+
+\hypertarget{namespacerunpoly_aac16bfb405f5f32d626a3c0bd057a781}{
+\index{runpoly@{runpoly}!usage@{usage}}
+\index{usage@{usage}!runpoly@{runpoly}}
+\subsubsection[{usage}]{\setlength{\rightskip}{0pt plus 5cm}string {\bf runpoly::usage} = '\%prog \mbox{[}options\mbox{]} \mbox{[}fitname\mbox{]}'}}
+\label{namespacerunpoly_aac16bfb405f5f32d626a3c0bd057a781}
+
+
+Definition at line 157 of file runpoly.py.
+
+\hypertarget{namespacerunpoly_ac573a8d4d7a1ebbf405bd0b69fa9361b}{
+\index{runpoly@{runpoly}!watch@{watch}}
+\index{watch@{watch}!runpoly@{runpoly}}
+\subsubsection[{watch}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runpoly::watch} = Stopwatch()}}
+\label{namespacerunpoly_ac573a8d4d7a1ebbf405bd0b69fa9361b}
+
+
+Definition at line 202 of file runpoly.py.
+

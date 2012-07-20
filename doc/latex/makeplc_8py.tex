@@ -1,0 +1,46 @@
+\hypertarget{makeplc_8py}{
+\section{src/makeplc.py File Reference}
+\label{makeplc_8py}\index{src/makeplc.py@{src/makeplc.py}}
+}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \hyperlink{namespacemakeplc}{makeplc}
+\item 
+namespace \hyperlink{namespaceebf}{ebf}
+
+
+\begin{DoxyCompactList}\small\item\em Created on Jun 19, 2012. \item\end{DoxyCompactList}
+
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+string \hyperlink{namespacemakeplc_a9a367257ba494afb85e43b8b3330f85d}{makeplc::usage} = '\%prog \mbox{[}options\mbox{]} plcdbfile'
+\item 
+tuple \hyperlink{namespacemakeplc_aab6ec9062bd8992b365ca1b87bdefa96}{makeplc::parser} = OptionParser(usage=usage)
+\item 
+string \hyperlink{namespacemakeplc_a10fe047bfff2e759a4f8901770a6597c}{makeplc::help} = 'debug setting (default: 1)'
+\item 
+string \hyperlink{namespacemakeplc_ad959572cd67a037ec770664dbb029f57}{makeplc::default} = 'asasdict.sqlite'
+\item 
+tuple \hyperlink{namespacemakeplc_a1864a766ba17f82fb5daa30ec53ebfee}{makeplc::watch} = Stopwatch()
+\item 
+tuple \hyperlink{namespacemakeplc_aa363cd785ab9133a4d9130ea47440558}{makeplc::cls} = getattr(dbconfig, 'Asas')
+\item 
+tuple \hyperlink{namespacemakeplc_aa325dc07aa5dad58f7a5a218990db561}{makeplc::dbconfig} = cls()
+\item 
+tuple \hyperlink{namespacemakeplc_ad8e5963c381ce077742f668aeef37804}{makeplc::dictreader} = dbr.DbReader(options.rootdir + options.dictname)
+\item 
+tuple \hyperlink{namespacemakeplc_a17113af2691a7272ebf921222e1324f5}{makeplc::generator} = dictreader.traverse(options.select, None, 1000)
+\item 
+int \hyperlink{namespacemakeplc_a43b5a6c8a05f627a17aa3b40af795fa1}{makeplc::nrstars} = 0
+\item 
+tuple \hyperlink{namespacemakeplc_af91c68b5354b2ec9e425193cbef8c891}{makeplc::lcreader} = dbr.DbReader(options.rootdir + options.rawlcname)
+\item 
+tuple \hyperlink{namespacemakeplc_a2c82609fe79c419d6b3d30f44248d69d}{makeplc::plcwriter} = dbw.DbWriter(options.rootdir + options.plcname, dbconfig.plccols)
+\item 
+tuple \hyperlink{namespacemakeplc_af12c0b1bc2c82c6cf31e8b47b879ad3c}{makeplc::lc} = lcreader.getlc(star\mbox{[}'uid'\mbox{]}, 'stars', 'hjd')
+\item 
+tuple \hyperlink{namespacemakeplc_a4f42d119fcf8a7c4857425571da8bcf4}{makeplc::plc} = makephasedlc(lc, star\mbox{[}'t0'\mbox{]}, star\mbox{[}'vmag'\mbox{]}, star\mbox{[}'period'\mbox{]})
+\end{DoxyCompactItemize}

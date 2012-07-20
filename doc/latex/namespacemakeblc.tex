@@ -1,0 +1,186 @@
+\hypertarget{namespacemakeblc}{
+\section{makeblc Namespace Reference}
+\label{namespacemakeblc}\index{makeblc@{makeblc}}
+}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+string \hyperlink{namespacemakeblc_af9d26964de16c4985555854c8d72580b}{usage} = '\%prog \mbox{[}options\mbox{]} plcdbfile'
+\item 
+tuple \hyperlink{namespacemakeblc_a0dea09705bbc782eda44fd29626ff35b}{parser} = OptionParser(\hyperlink{namespacemakeblc_af9d26964de16c4985555854c8d72580b}{usage}=\hyperlink{namespacemakeblc_af9d26964de16c4985555854c8d72580b}{usage})
+\item 
+string \hyperlink{namespacemakeblc_a65838550e6d468b9df26e64e07388457}{default} = 'asasblc.sqlite'
+\item 
+string \hyperlink{namespacemakeblc_a6dea7c4e16e828d56e7094476327ae97}{help} = 'database file with phased light curves'
+\item 
+tuple \hyperlink{namespacemakeblc_a76c6a65c85e7590a747c0f90985c02c6}{cls} = getattr(\hyperlink{namespacemakeblc_a69d352c98ad45dc93ce0c036904382ea}{dbconfig}, 'Asas')
+\item 
+tuple \hyperlink{namespacemakeblc_a69d352c98ad45dc93ce0c036904382ea}{dbconfig} = \hyperlink{namespacemakeblc_a76c6a65c85e7590a747c0f90985c02c6}{cls}()
+\item 
+tuple \hyperlink{namespacemakeblc_ac747659361bfa898ab3b4503fd962e9c}{watch} = Stopwatch()
+\item 
+tuple \hyperlink{namespacemakeblc_a076cfa54febea93ec0a0367d9766b59b}{dictreader} = dbr.DbReader(options.rootdir + options.dictname)
+\item 
+tuple \hyperlink{namespacemakeblc_a0eac396194b25b741b019161364a481e}{generator} = dictreader.traverse(options.select, None, 1000)
+\item 
+int \hyperlink{namespacemakeblc_abd854e539cc9c9fe5d64b72438f277f2}{nrstars} = 0
+\item 
+list \hyperlink{namespacemakeblc_aaf2dbaa320a13bde9a473d47104f7cb4}{dictupd} = \mbox{[}$\,$\mbox{]}
+\item 
+tuple \hyperlink{namespacemakeblc_a0f835803cfdefeaeb151f6a83e76368f}{plcreader} = dbr.DbReader(options.rootdir + options.plcname)
+\item 
+tuple \hyperlink{namespacemakeblc_aafed17d883003aa9d1b25476acf0dcb0}{blcwriter} = dbw.DbWriter(options.rootdir + options.blcname, dbconfig.blccols)
+\item 
+tuple \hyperlink{namespacemakeblc_af310689cda88b823a447e448e95ee55d}{plc} = plcreader.getlc(star\mbox{[}'uid'\mbox{]}, 'phase')
+\item 
+tuple \hyperlink{namespacemakeblc_a9cc6d5510f03009615ff8d73f8823bfd}{dictwriter} = dbw.DbWriter(options.rootdir + options.dictname, dbconfig.dictcols)
+\item 
+string \hyperlink{namespacemakeblc_a7d13b64b84badf069728c58a2165c03d}{updcmd} = 'update stars set fmin = ?, fmax = ?, stddev = ? where uid = ?;'
+\end{DoxyCompactItemize}
+
+
+\subsection{Variable Documentation}
+\hypertarget{namespacemakeblc_aafed17d883003aa9d1b25476acf0dcb0}{
+\index{makeblc@{makeblc}!blcwriter@{blcwriter}}
+\index{blcwriter@{blcwriter}!makeblc@{makeblc}}
+\subsubsection[{blcwriter}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf makeblc::blcwriter} = dbw.DbWriter(options.rootdir + options.blcname, dbconfig.blccols)}}
+\label{namespacemakeblc_aafed17d883003aa9d1b25476acf0dcb0}
+
+
+Definition at line 72 of file makeblc.py.
+
+\hypertarget{namespacemakeblc_a76c6a65c85e7590a747c0f90985c02c6}{
+\index{makeblc@{makeblc}!cls@{cls}}
+\index{cls@{cls}!makeblc@{makeblc}}
+\subsubsection[{cls}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf makeblc::cls} = getattr({\bf dbconfig}, 'Asas')}}
+\label{namespacemakeblc_a76c6a65c85e7590a747c0f90985c02c6}
+
+
+Definition at line 60 of file makeblc.py.
+
+\hypertarget{namespacemakeblc_a69d352c98ad45dc93ce0c036904382ea}{
+\index{makeblc@{makeblc}!dbconfig@{dbconfig}}
+\index{dbconfig@{dbconfig}!makeblc@{makeblc}}
+\subsubsection[{dbconfig}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf makeblc::dbconfig} = {\bf cls}()}}
+\label{namespacemakeblc_a69d352c98ad45dc93ce0c036904382ea}
+
+
+Definition at line 61 of file makeblc.py.
+
+\hypertarget{namespacemakeblc_a65838550e6d468b9df26e64e07388457}{
+\index{makeblc@{makeblc}!default@{default}}
+\index{default@{default}!makeblc@{makeblc}}
+\subsubsection[{default}]{\setlength{\rightskip}{0pt plus 5cm}string {\bf makeblc::default} = 'asasblc.sqlite'}}
+\label{namespacemakeblc_a65838550e6d468b9df26e64e07388457}
+
+
+Definition at line 33 of file makeblc.py.
+
+\hypertarget{namespacemakeblc_a076cfa54febea93ec0a0367d9766b59b}{
+\index{makeblc@{makeblc}!dictreader@{dictreader}}
+\index{dictreader@{dictreader}!makeblc@{makeblc}}
+\subsubsection[{dictreader}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf makeblc::dictreader} = dbr.DbReader(options.rootdir + options.dictname)}}
+\label{namespacemakeblc_a076cfa54febea93ec0a0367d9766b59b}
+
+
+Definition at line 66 of file makeblc.py.
+
+\hypertarget{namespacemakeblc_aaf2dbaa320a13bde9a473d47104f7cb4}{
+\index{makeblc@{makeblc}!dictupd@{dictupd}}
+\index{dictupd@{dictupd}!makeblc@{makeblc}}
+\subsubsection[{dictupd}]{\setlength{\rightskip}{0pt plus 5cm}list {\bf makeblc::dictupd} = \mbox{[}$\,$\mbox{]}}}
+\label{namespacemakeblc_aaf2dbaa320a13bde9a473d47104f7cb4}
+
+
+Definition at line 70 of file makeblc.py.
+
+\hypertarget{namespacemakeblc_a9cc6d5510f03009615ff8d73f8823bfd}{
+\index{makeblc@{makeblc}!dictwriter@{dictwriter}}
+\index{dictwriter@{dictwriter}!makeblc@{makeblc}}
+\subsubsection[{dictwriter}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf makeblc::dictwriter} = dbw.DbWriter(options.rootdir + options.dictname, dbconfig.dictcols)}}
+\label{namespacemakeblc_a9cc6d5510f03009615ff8d73f8823bfd}
+
+
+Definition at line 85 of file makeblc.py.
+
+\hypertarget{namespacemakeblc_a0eac396194b25b741b019161364a481e}{
+\index{makeblc@{makeblc}!generator@{generator}}
+\index{generator@{generator}!makeblc@{makeblc}}
+\subsubsection[{generator}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf makeblc::generator} = dictreader.traverse(options.select, None, 1000)}}
+\label{namespacemakeblc_a0eac396194b25b741b019161364a481e}
+
+
+Definition at line 68 of file makeblc.py.
+
+\hypertarget{namespacemakeblc_a6dea7c4e16e828d56e7094476327ae97}{
+\index{makeblc@{makeblc}!help@{help}}
+\index{help@{help}!makeblc@{makeblc}}
+\subsubsection[{help}]{\setlength{\rightskip}{0pt plus 5cm}string {\bf makeblc::help} = 'database file with phased light curves'}}
+\label{namespacemakeblc_a6dea7c4e16e828d56e7094476327ae97}
+
+
+Definition at line 34 of file makeblc.py.
+
+\hypertarget{namespacemakeblc_abd854e539cc9c9fe5d64b72438f277f2}{
+\index{makeblc@{makeblc}!nrstars@{nrstars}}
+\index{nrstars@{nrstars}!makeblc@{makeblc}}
+\subsubsection[{nrstars}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf makeblc::nrstars} = 0}}
+\label{namespacemakeblc_abd854e539cc9c9fe5d64b72438f277f2}
+
+
+Definition at line 69 of file makeblc.py.
+
+\hypertarget{namespacemakeblc_a0dea09705bbc782eda44fd29626ff35b}{
+\index{makeblc@{makeblc}!parser@{parser}}
+\index{parser@{parser}!makeblc@{makeblc}}
+\subsubsection[{parser}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf makeblc::parser} = OptionParser({\bf usage}={\bf usage})}}
+\label{namespacemakeblc_a0dea09705bbc782eda44fd29626ff35b}
+
+
+Definition at line 31 of file makeblc.py.
+
+\hypertarget{namespacemakeblc_af310689cda88b823a447e448e95ee55d}{
+\index{makeblc@{makeblc}!plc@{plc}}
+\index{plc@{plc}!makeblc@{makeblc}}
+\subsubsection[{plc}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf makeblc::plc} = plcreader.getlc(star\mbox{[}'uid'\mbox{]}, 'phase')}}
+\label{namespacemakeblc_af310689cda88b823a447e448e95ee55d}
+
+
+Definition at line 75 of file makeblc.py.
+
+\hypertarget{namespacemakeblc_a0f835803cfdefeaeb151f6a83e76368f}{
+\index{makeblc@{makeblc}!plcreader@{plcreader}}
+\index{plcreader@{plcreader}!makeblc@{makeblc}}
+\subsubsection[{plcreader}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf makeblc::plcreader} = dbr.DbReader(options.rootdir + options.plcname)}}
+\label{namespacemakeblc_a0f835803cfdefeaeb151f6a83e76368f}
+
+
+Definition at line 71 of file makeblc.py.
+
+\hypertarget{namespacemakeblc_a7d13b64b84badf069728c58a2165c03d}{
+\index{makeblc@{makeblc}!updcmd@{updcmd}}
+\index{updcmd@{updcmd}!makeblc@{makeblc}}
+\subsubsection[{updcmd}]{\setlength{\rightskip}{0pt plus 5cm}string {\bf makeblc::updcmd} = 'update stars set fmin = ?, fmax = ?, stddev = ? where uid = ?;'}}
+\label{namespacemakeblc_a7d13b64b84badf069728c58a2165c03d}
+
+
+Definition at line 86 of file makeblc.py.
+
+\hypertarget{namespacemakeblc_af9d26964de16c4985555854c8d72580b}{
+\index{makeblc@{makeblc}!usage@{usage}}
+\index{usage@{usage}!makeblc@{makeblc}}
+\subsubsection[{usage}]{\setlength{\rightskip}{0pt plus 5cm}string {\bf makeblc::usage} = '\%prog \mbox{[}options\mbox{]} plcdbfile'}}
+\label{namespacemakeblc_af9d26964de16c4985555854c8d72580b}
+
+
+Definition at line 30 of file makeblc.py.
+
+\hypertarget{namespacemakeblc_ac747659361bfa898ab3b4503fd962e9c}{
+\index{makeblc@{makeblc}!watch@{watch}}
+\index{watch@{watch}!makeblc@{makeblc}}
+\subsubsection[{watch}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf makeblc::watch} = Stopwatch()}}
+\label{namespacemakeblc_ac747659361bfa898ab3b4503fd962e9c}
+
+
+Definition at line 63 of file makeblc.py.
+

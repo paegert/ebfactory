@@ -1,0 +1,53 @@
+\hypertarget{trainnet_8py}{
+\section{src/trainnet.py File Reference}
+\label{trainnet_8py}\index{src/trainnet.py@{src/trainnet.py}}
+}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \hyperlink{namespacetrainnet}{trainnet}
+
+
+\begin{DoxyCompactList}\small\item\em Created on Jul 5, 2012. \item\end{DoxyCompactList}
+
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{namespacetrainnet_af0ab122647716d110c3d20d71bca7517}{trainnet::maketarget}
+\begin{DoxyCompactList}\small\item\em Set the target vector for a single object. \item\end{DoxyCompactList}\item 
+def \hyperlink{namespacetrainnet_a3770060027ff2b2ac850672baaedc954}{trainnet::prepdata}
+\begin{DoxyCompactList}\small\item\em Prepare data for neural network (assemble and normalize). \item\end{DoxyCompactList}\item 
+def \hyperlink{namespacetrainnet_a6b2a6c6ee5f126bec6cf862ebcee3d7c}{trainnet::readdata}
+\begin{DoxyCompactList}\small\item\em read data from database \item\end{DoxyCompactList}\item 
+def \hyperlink{namespacetrainnet_ade5fd81c145ae647da27e5108ecbc83b}{trainnet::reshuffle}
+\begin{DoxyCompactList}\small\item\em re-\/shuffling the data \item\end{DoxyCompactList}\item 
+def \hyperlink{namespacetrainnet_a38102ec29b7d6d2fbf74196151247213}{trainnet::parseoptions}
+\begin{DoxyCompactList}\small\item\em Parse command line options. \item\end{DoxyCompactList}\item 
+def \hyperlink{namespacetrainnet_af0eeb2aa38d66cbd67256b1b27066ea4}{trainnet::splitdata}
+\begin{DoxyCompactList}\small\item\em Split data into training, validation and testing set according to given fractions. \item\end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+tuple \hyperlink{namespacetrainnet_a92c95c206ed27e0de8dec1cb68a1f6bb}{trainnet::cls} = getattr(dbconfig, 'Asas')
+\item 
+tuple \hyperlink{namespacetrainnet_a293be6aa425ca070702d0f999f1ea68d}{trainnet::dbconfig} = cls()
+\item 
+tuple \hyperlink{namespacetrainnet_a53e6fa3504764aa1a0d61b916af6358a}{trainnet::watch} = Stopwatch()
+\item 
+tuple \hyperlink{namespacetrainnet_ad40ddd24354da1881bc9fe8b6547b5fa}{trainnet::watchprep} = Stopwatch()
+\item 
+tuple \hyperlink{namespacetrainnet_afce55f5d26936ba4b8622fc19ba56446}{trainnet::net}
+\item 
+\hyperlink{namespacetrainnet_a6eceefa845bebe7f22951cbc18af394b}{trainnet::eta} = options.eta,
+\item 
+\hyperlink{namespacetrainnet_a531ebfd51f4947ab5422381d729a8756}{trainnet::niterations} = options.nriter,
+\item 
+\hyperlink{namespacetrainnet_a8c0014c8c751971aa9ac67420b64d9a5}{trainnet::stopval} = options.stopval,makestatsTrue)
+\item 
+tuple \hyperlink{namespacetrainnet_afdfd7e6bbac45ccf3826d60cf8636299}{trainnet::cm} = net.confmat(testd, testt, True)
+\item 
+\hyperlink{namespacetrainnet_a3e3b093ef37c5ac35ebdcbfc08bf52e1}{trainnet::ofname} = options.repname)
+\item 
+tuple \hyperlink{namespacetrainnet_aacdb2e9555d0d0aa59e25c64e45d48b2}{trainnet::pf} = open(net.subdir + '/' + options.picklename, 'w')
+\end{DoxyCompactItemize}

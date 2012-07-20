@@ -1,0 +1,770 @@
+\hypertarget{classmlp_1_1mlp}{
+\section{mlp::mlp Class Reference}
+\label{classmlp_1_1mlp}\index{mlp::mlp@{mlp::mlp}}
+}
+
+
+A Multi-\/Layer Perceptron.  
+
+
+
+
+Inheritance diagram for mlp::mlp:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=134pt]{classmlp_1_1mlp__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for mlp::mlp:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=134pt]{classmlp_1_1mlp__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{classmlp_1_1mlp_a2bef8117288f389f454a7a96d044db73}{\_\-\_\-init\_\-\_\-}
+\begin{DoxyCompactList}\small\item\em Constructor. \item\end{DoxyCompactList}\item 
+def \hyperlink{classmlp_1_1mlp_a9e27c383a6bb840545bad2b0b6c18cfd}{setnormvalues}
+\begin{DoxyCompactList}\small\item\em Set normalization vectors for input values: normalizedvalue = (value -\/ subtract) / devide Usually subtract is the mean value, devide the standard deviation. \item\end{DoxyCompactList}\item 
+def \hyperlink{classmlp_1_1mlp_a3fadca9214b0ef2eb801f820cbe34196}{getnormvalues}
+\begin{DoxyCompactList}\small\item\em Return normalization vectors. \item\end{DoxyCompactList}\item 
+def \hyperlink{classmlp_1_1mlp_a8411b7d198a35a86ef134f6f7ed7045f}{setclasses}
+\begin{DoxyCompactList}\small\item\em Set vector of classes. \item\end{DoxyCompactList}\item 
+def \hyperlink{classmlp_1_1mlp_af3f30cb683a757eb4e9286ec48817dc4}{getclasses}
+\begin{DoxyCompactList}\small\item\em Return classes network has been trained on. \item\end{DoxyCompactList}\item 
+def \hyperlink{classmlp_1_1mlp_a5a681e9f1fe0aa039aa75dfb99f69f8c}{earlystopping}
+\begin{DoxyCompactList}\small\item\em Train network with validation set, stop if nothing else can be learned. \item\end{DoxyCompactList}\item 
+def \hyperlink{classmlp_1_1mlp_a494984c787706714539fe8f1d78efa30}{mlptrain}
+\begin{DoxyCompactList}\small\item\em Train the network without validation set. \item\end{DoxyCompactList}\item 
+def \hyperlink{classmlp_1_1mlp_af0925b47c421fbaeaa96dc90b0f9b6d5}{evaluate}
+\begin{DoxyCompactList}\small\item\em Evaluate input values. \item\end{DoxyCompactList}\item 
+def \hyperlink{classmlp_1_1mlp_a809353450c250aa532e07119c4a731ee}{confmat}
+\begin{DoxyCompactList}\small\item\em Build confusion matrix. \item\end{DoxyCompactList}\item 
+def \hyperlink{classmlp_1_1mlp_ad5d52821223492fb389df89622053965}{report}
+\begin{DoxyCompactList}\small\item\em Print or write report of training or evaluation of inputs. \item\end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classmlp_1_1mlp_a2769bdf0e5833e3999418868122feb28}{nin}
+\item 
+\hyperlink{classmlp_1_1mlp_a063008228bc8423626c2fa6e9a2664e9}{nout}
+\item 
+\hyperlink{classmlp_1_1mlp_a463f6e1b39fb817f6a302e522e591516}{ndata}
+\item 
+\hyperlink{classmlp_1_1mlp_aa34217744fa9bc0bf1e8a3b358ed0c96}{nhidden}
+\item 
+\hyperlink{classmlp_1_1mlp_a2f75a4b3429e0307568fc45d7e6950da}{beta}
+\item 
+\hyperlink{classmlp_1_1mlp_a3a4586ea27492667965ae101786a1fc8}{momentum}
+\item 
+\hyperlink{classmlp_1_1mlp_a1b81b434ce0227f55d266dbb4c1e03a1}{eta}
+\item 
+\hyperlink{classmlp_1_1mlp_a79bb54ad6f2b84903e62c0b5f5eb7344}{niterations}
+\item 
+\hyperlink{classmlp_1_1mlp_ad85e6054d661877c130574e54434ce16}{outtype}
+\item 
+\hyperlink{classmlp_1_1mlp_aa43f6dfd1707a355a974181d013e8f00}{multires}
+\item 
+\hyperlink{classmlp_1_1mlp_a6a417dee0a55db5f56349db1249a3ec9}{mdelta}
+\item 
+\hyperlink{classmlp_1_1mlp_a0573cbd708236e8af5fb46edc9c36660}{cm}
+\item 
+\hyperlink{classmlp_1_1mlp_a93598c8f15a234b94c33a853527bec31}{traintstats}
+\item 
+\hyperlink{classmlp_1_1mlp_a6ede6eef42e61e87fd2e79cf61529688}{validstats}
+\item 
+\hyperlink{classmlp_1_1mlp_a60e5b36a360073418d45d221ff5c47f2}{teststats}
+\item 
+\hyperlink{classmlp_1_1mlp_a4e81b494e111fb2c72000efbaa647963}{trainerror}
+\item 
+\hyperlink{classmlp_1_1mlp_a778e5d4e1b507b330dcb6804455ac416}{validerror}
+\item 
+\hyperlink{classmlp_1_1mlp_aa9d78571a75937654b1dbb2c78960aa1}{stopcount}
+\item 
+\hyperlink{classmlp_1_1mlp_aab9e6c1e9b3661fa3f276d09baf27144}{allpercent}
+\item 
+\hyperlink{classmlp_1_1mlp_a21e9d80982176c49feb06586010fa686}{debug}
+\item 
+\hyperlink{classmlp_1_1mlp_ad29044bad5109b92f57149d8bec68e14}{subdir}
+\item 
+\hyperlink{classmlp_1_1mlp_a07b85e2f033556b9ef42dbc9b05011c6}{writeweights}
+\item 
+\hyperlink{classmlp_1_1mlp_a9f1194a28bf6345709b62f34ef41a8f5}{normsubtract}
+\item 
+\hyperlink{classmlp_1_1mlp_a667ab65d926bd62ef896add5f059ce06}{normdevide}
+\item 
+\hyperlink{classmlp_1_1mlp_ae97e72b20c044203c2a86adc234eb9c5}{classes}
+\item 
+\hyperlink{classmlp_1_1mlp_af03c95450f5cae7754975376c0b80a66}{weights1}
+\item 
+\hyperlink{classmlp_1_1mlp_aab855561bd19a52513ee8b2c84facaba}{weights2}
+\item 
+\hyperlink{classmlp_1_1mlp_adf2a63cd452121ea5e135c191dc5723d}{trainstats}
+\item 
+\hyperlink{classmlp_1_1mlp_ad6d42a5405728d749f144b938b323ce1}{outputs}
+\item 
+\hyperlink{classmlp_1_1mlp_a4988ae34b275886fce8a1d4c6a167529}{hidden}
+\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{classmlp_1_1mlp_a50fab3d7313376cf2de90bcfc80db3a5}{\_\-mlpfwd}
+\begin{DoxyCompactList}\small\item\em Run the network forward (internal function) \item\end{DoxyCompactList}\item 
+def \hyperlink{classmlp_1_1mlp_a6adedb6cd519479a5bdec3ca7b3e0c08}{\_\-createreport}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+A Multi-\/Layer Perceptron. 
+
+Definition at line 47 of file mlp.py.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classmlp_1_1mlp_a2bef8117288f389f454a7a96d044db73}{
+\index{mlp::mlp@{mlp::mlp}!\_\-\_\-init\_\-\_\-@{\_\-\_\-init\_\-\_\-}}
+\index{\_\-\_\-init\_\-\_\-@{\_\-\_\-init\_\-\_\-}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{\_\-\_\-init\_\-\_\-}]{\setlength{\rightskip}{0pt plus 5cm}def mlp::mlp::\_\-\_\-init\_\-\_\- (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{inputs, }
+\item[{}]{targets, }
+\item[{}]{nhidden, }
+\item[{}]{beta = {\ttfamily 1}, }
+\item[{}]{momentum = {\ttfamily 0.9}, }
+\item[{}]{outtype = {\ttfamily 'logistic'}, }
+\item[{}]{multires = {\ttfamily False}, }
+\item[{}]{mdelta = {\ttfamily 0.01}}
+\end{DoxyParamCaption}
+)}}
+\label{classmlp_1_1mlp_a2bef8117288f389f454a7a96d044db73}
+
+
+Constructor. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em inputs} & Input values \\
+\hline
+{\em targets} & Target values (known classification for example) \\
+\hline
+{\em nhidden} & Number of neurons in hidden layer \\
+\hline
+{\em beta} & Scaling parameter for activation function (1.0) \\
+\hline
+{\em momentum} & Influence of previous learning step (0.9) \\
+\hline
+{\em outtype} & 'linear' or 'logistic' (default) or 'softmax' \\
+\hline
+{\em multires} & True if multiple results are allowed \\
+\hline
+{\em mdelta} & Maximum difference for a given class (0.01) \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 61 of file mlp.py.
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classmlp_1_1mlp_a6adedb6cd519479a5bdec3ca7b3e0c08}{
+\index{mlp::mlp@{mlp::mlp}!\_\-createreport@{\_\-createreport}}
+\index{\_\-createreport@{\_\-createreport}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{\_\-createreport}]{\setlength{\rightskip}{0pt plus 5cm}def mlp::mlp::\_\-createreport (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{classes, }
+\item[{}]{titlefmt, }
+\item[{}]{intfmt, }
+\item[{}]{floatfmt, }
+\item[{}]{firstcolfmt}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}private\mbox{]}}}}
+\label{classmlp_1_1mlp_a6adedb6cd519479a5bdec3ca7b3e0c08}
+
+
+Definition at line 405 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_a50fab3d7313376cf2de90bcfc80db3a5}{
+\index{mlp::mlp@{mlp::mlp}!\_\-mlpfwd@{\_\-mlpfwd}}
+\index{\_\-mlpfwd@{\_\-mlpfwd}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{\_\-mlpfwd}]{\setlength{\rightskip}{0pt plus 5cm}def mlp::mlp::\_\-mlpfwd (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{inputs}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}private\mbox{]}}}}
+\label{classmlp_1_1mlp_a50fab3d7313376cf2de90bcfc80db3a5}
+
+
+Run the network forward (internal function) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em inputs} & Input values\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+output Values of output layer 
+\end{DoxyReturn}
+
+
+Definition at line 282 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_a809353450c250aa532e07119c4a731ee}{
+\index{mlp::mlp@{mlp::mlp}!confmat@{confmat}}
+\index{confmat@{confmat}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{confmat}]{\setlength{\rightskip}{0pt plus 5cm}def mlp::mlp::confmat (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{inputs, }
+\item[{}]{targets, }
+\item[{}]{makestats = {\ttfamily True}}
+\end{DoxyParamCaption}
+)}}
+\label{classmlp_1_1mlp_a809353450c250aa532e07119c4a731ee}
+
+
+Build confusion matrix. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em inputs} & Input values \\
+\hline
+{\em targets} & Target values (known classification f.e.) \\
+\hline
+{\em makestats} & True (default) if computing statistics for report\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+: cm Confusion matrix 
+\end{DoxyReturn}
+
+
+Definition at line 351 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_a5a681e9f1fe0aa039aa75dfb99f69f8c}{
+\index{mlp::mlp@{mlp::mlp}!earlystopping@{earlystopping}}
+\index{earlystopping@{earlystopping}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{earlystopping}]{\setlength{\rightskip}{0pt plus 5cm}def mlp::mlp::earlystopping (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{inputs, }
+\item[{}]{targets, }
+\item[{}]{valid, }
+\item[{}]{validtargets, }
+\item[{}]{eta, }
+\item[{}]{niterations = {\ttfamily 100}, }
+\item[{}]{stopval = {\ttfamily 0.001}, }
+\item[{}]{makestats = {\ttfamily True}}
+\end{DoxyParamCaption}
+)}}
+\label{classmlp_1_1mlp_a5a681e9f1fe0aa039aa75dfb99f69f8c}
+
+
+Train network with validation set, stop if nothing else can be learned. 
+
+Learning stops if the validation error does falls below a limit.
+
+
+\begin{DoxyParams}{Parameters}
+{\em inputs} & Input values \\
+\hline
+{\em targets} & Target values (known classification for example) \\
+\hline
+{\em valid} & Validation set \\
+\hline
+{\em validtargets} & Target values for validation set \\
+\hline
+{\em eta} & Learning rate \\
+\hline
+{\em niterations} & Number of iterations before shuffling \\
+\hline
+{\em stopval} & stop at this value of validation error \\
+\hline
+{\em makestats} & True if statistics for report are generated (True)\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+(validationerror, trainingerror) 
+\end{DoxyReturn}
+
+
+Definition at line 164 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_af0925b47c421fbaeaa96dc90b0f9b6d5}{
+\index{mlp::mlp@{mlp::mlp}!evaluate@{evaluate}}
+\index{evaluate@{evaluate}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{evaluate}]{\setlength{\rightskip}{0pt plus 5cm}def mlp::mlp::evaluate (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{inputs, }
+\item[{}]{normalize = {\ttfamily True}}
+\end{DoxyParamCaption}
+)}}
+\label{classmlp_1_1mlp_af0925b47c421fbaeaa96dc90b0f9b6d5}
+
+
+Evaluate input values. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em inputs} & Input values \\
+\hline
+{\em normalize} & True (default) if inputs should be normalized\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+outputs Values of output layer 
+\end{DoxyReturn}
+
+
+Definition at line 326 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_af3f30cb683a757eb4e9286ec48817dc4}{
+\index{mlp::mlp@{mlp::mlp}!getclasses@{getclasses}}
+\index{getclasses@{getclasses}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{getclasses}]{\setlength{\rightskip}{0pt plus 5cm}def mlp::mlp::getclasses (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}}
+\label{classmlp_1_1mlp_af3f30cb683a757eb4e9286ec48817dc4}
+
+
+Return classes network has been trained on. 
+
+
+
+Definition at line 143 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_a3fadca9214b0ef2eb801f820cbe34196}{
+\index{mlp::mlp@{mlp::mlp}!getnormvalues@{getnormvalues}}
+\index{getnormvalues@{getnormvalues}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{getnormvalues}]{\setlength{\rightskip}{0pt plus 5cm}def mlp::mlp::getnormvalues (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}}
+\label{classmlp_1_1mlp_a3fadca9214b0ef2eb801f820cbe34196}
+
+
+Return normalization vectors. 
+
+\begin{DoxyReturn}{Returns}
+(normsubtract, normdevide) 
+\end{DoxyReturn}
+
+
+Definition at line 125 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_a494984c787706714539fe8f1d78efa30}{
+\index{mlp::mlp@{mlp::mlp}!mlptrain@{mlptrain}}
+\index{mlptrain@{mlptrain}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{mlptrain}]{\setlength{\rightskip}{0pt plus 5cm}def mlp::mlp::mlptrain (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{inputs, }
+\item[{}]{targets, }
+\item[{}]{eta, }
+\item[{}]{niterations}
+\end{DoxyParamCaption}
+)}}
+\label{classmlp_1_1mlp_a494984c787706714539fe8f1d78efa30}
+
+
+Train the network without validation set. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em inputs} & Input values \\
+\hline
+{\em targets} & Target values (known classification for example) \\
+\hline
+{\em eta} & Learning rate \\
+\hline
+{\em niterations} & Number of iterations\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+error 
+\end{DoxyReturn}
+
+
+Definition at line 224 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_ad5d52821223492fb389df89622053965}{
+\index{mlp::mlp@{mlp::mlp}!report@{report}}
+\index{report@{report}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{report}]{\setlength{\rightskip}{0pt plus 5cm}def mlp::mlp::report (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{titlefmt, }
+\item[{}]{intfmt, }
+\item[{}]{floatfmt, }
+\item[{}]{classes = {\ttfamily None}, }
+\item[{}]{ofname = {\ttfamily None}, }
+\item[{}]{firstcolfmt = {\ttfamily '\%7s~'}}
+\end{DoxyParamCaption}
+)}}
+\label{classmlp_1_1mlp_ad5d52821223492fb389df89622053965}
+
+
+Print or write report of training or evaluation of inputs. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em titlefmt,:} & Format string for class titles \\
+\hline
+{\em intfmt,:} & Format string for integer values \\
+\hline
+{\em floatfmt,:} & Format string for floating point values \\
+\hline
+{\em classes,:} & string with class-\/names (None = default = use self.classes) \\
+\hline
+{\em ofname,:} & name of output file (default = None) \\
+\hline
+{\em firstcolfmt,:} & Format for first columns (classes, default \char`\"{}\%7s\char`\"{}) \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 552 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_a8411b7d198a35a86ef134f6f7ed7045f}{
+\index{mlp::mlp@{mlp::mlp}!setclasses@{setclasses}}
+\index{setclasses@{setclasses}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{setclasses}]{\setlength{\rightskip}{0pt plus 5cm}def mlp::mlp::setclasses (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{classes}
+\end{DoxyParamCaption}
+)}}
+\label{classmlp_1_1mlp_a8411b7d198a35a86ef134f6f7ed7045f}
+
+
+Set vector of classes. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em classes} & String vector of classes to train on \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 136 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_a9e27c383a6bb840545bad2b0b6c18cfd}{
+\index{mlp::mlp@{mlp::mlp}!setnormvalues@{setnormvalues}}
+\index{setnormvalues@{setnormvalues}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{setnormvalues}]{\setlength{\rightskip}{0pt plus 5cm}def mlp::mlp::setnormvalues (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{subtract, }
+\item[{}]{devide}
+\end{DoxyParamCaption}
+)}}
+\label{classmlp_1_1mlp_a9e27c383a6bb840545bad2b0b6c18cfd}
+
+
+Set normalization vectors for input values: normalizedvalue = (value -\/ subtract) / devide Usually subtract is the mean value, devide the standard deviation. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em subtract} & Vector of values to subtract from each input column \\
+\hline
+{\em devide} & Vector of values to devide difference by \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 113 of file mlp.py.
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{classmlp_1_1mlp_aab9e6c1e9b3661fa3f276d09baf27144}{
+\index{mlp::mlp@{mlp::mlp}!allpercent@{allpercent}}
+\index{allpercent@{allpercent}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{allpercent}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::allpercent}}}
+\label{classmlp_1_1mlp_aab9e6c1e9b3661fa3f276d09baf27144}
+
+
+Definition at line 61 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_a2f75a4b3429e0307568fc45d7e6950da}{
+\index{mlp::mlp@{mlp::mlp}!beta@{beta}}
+\index{beta@{beta}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{beta}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::beta}}}
+\label{classmlp_1_1mlp_a2f75a4b3429e0307568fc45d7e6950da}
+
+
+Definition at line 61 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_ae97e72b20c044203c2a86adc234eb9c5}{
+\index{mlp::mlp@{mlp::mlp}!classes@{classes}}
+\index{classes@{classes}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{classes}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::classes}}}
+\label{classmlp_1_1mlp_ae97e72b20c044203c2a86adc234eb9c5}
+
+
+Definition at line 61 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_a0573cbd708236e8af5fb46edc9c36660}{
+\index{mlp::mlp@{mlp::mlp}!cm@{cm}}
+\index{cm@{cm}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{cm}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::cm}}}
+\label{classmlp_1_1mlp_a0573cbd708236e8af5fb46edc9c36660}
+
+
+Definition at line 61 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_a21e9d80982176c49feb06586010fa686}{
+\index{mlp::mlp@{mlp::mlp}!debug@{debug}}
+\index{debug@{debug}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{debug}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::debug}}}
+\label{classmlp_1_1mlp_a21e9d80982176c49feb06586010fa686}
+
+
+Definition at line 61 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_a1b81b434ce0227f55d266dbb4c1e03a1}{
+\index{mlp::mlp@{mlp::mlp}!eta@{eta}}
+\index{eta@{eta}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{eta}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::eta}}}
+\label{classmlp_1_1mlp_a1b81b434ce0227f55d266dbb4c1e03a1}
+
+
+Definition at line 61 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_a4988ae34b275886fce8a1d4c6a167529}{
+\index{mlp::mlp@{mlp::mlp}!hidden@{hidden}}
+\index{hidden@{hidden}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{hidden}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::hidden}}}
+\label{classmlp_1_1mlp_a4988ae34b275886fce8a1d4c6a167529}
+
+
+Definition at line 282 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_a6a417dee0a55db5f56349db1249a3ec9}{
+\index{mlp::mlp@{mlp::mlp}!mdelta@{mdelta}}
+\index{mdelta@{mdelta}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{mdelta}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::mdelta}}}
+\label{classmlp_1_1mlp_a6a417dee0a55db5f56349db1249a3ec9}
+
+
+Definition at line 61 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_a3a4586ea27492667965ae101786a1fc8}{
+\index{mlp::mlp@{mlp::mlp}!momentum@{momentum}}
+\index{momentum@{momentum}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{momentum}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::momentum}}}
+\label{classmlp_1_1mlp_a3a4586ea27492667965ae101786a1fc8}
+
+
+Definition at line 61 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_aa43f6dfd1707a355a974181d013e8f00}{
+\index{mlp::mlp@{mlp::mlp}!multires@{multires}}
+\index{multires@{multires}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{multires}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::multires}}}
+\label{classmlp_1_1mlp_aa43f6dfd1707a355a974181d013e8f00}
+
+
+Definition at line 61 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_a463f6e1b39fb817f6a302e522e591516}{
+\index{mlp::mlp@{mlp::mlp}!ndata@{ndata}}
+\index{ndata@{ndata}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{ndata}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::ndata}}}
+\label{classmlp_1_1mlp_a463f6e1b39fb817f6a302e522e591516}
+
+
+Definition at line 61 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_aa34217744fa9bc0bf1e8a3b358ed0c96}{
+\index{mlp::mlp@{mlp::mlp}!nhidden@{nhidden}}
+\index{nhidden@{nhidden}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{nhidden}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::nhidden}}}
+\label{classmlp_1_1mlp_aa34217744fa9bc0bf1e8a3b358ed0c96}
+
+
+Definition at line 61 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_a2769bdf0e5833e3999418868122feb28}{
+\index{mlp::mlp@{mlp::mlp}!nin@{nin}}
+\index{nin@{nin}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{nin}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::nin}}}
+\label{classmlp_1_1mlp_a2769bdf0e5833e3999418868122feb28}
+
+
+Definition at line 61 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_a79bb54ad6f2b84903e62c0b5f5eb7344}{
+\index{mlp::mlp@{mlp::mlp}!niterations@{niterations}}
+\index{niterations@{niterations}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{niterations}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::niterations}}}
+\label{classmlp_1_1mlp_a79bb54ad6f2b84903e62c0b5f5eb7344}
+
+
+Definition at line 61 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_a667ab65d926bd62ef896add5f059ce06}{
+\index{mlp::mlp@{mlp::mlp}!normdevide@{normdevide}}
+\index{normdevide@{normdevide}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{normdevide}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::normdevide}}}
+\label{classmlp_1_1mlp_a667ab65d926bd62ef896add5f059ce06}
+
+
+Definition at line 61 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_a9f1194a28bf6345709b62f34ef41a8f5}{
+\index{mlp::mlp@{mlp::mlp}!normsubtract@{normsubtract}}
+\index{normsubtract@{normsubtract}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{normsubtract}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::normsubtract}}}
+\label{classmlp_1_1mlp_a9f1194a28bf6345709b62f34ef41a8f5}
+
+
+Definition at line 61 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_a063008228bc8423626c2fa6e9a2664e9}{
+\index{mlp::mlp@{mlp::mlp}!nout@{nout}}
+\index{nout@{nout}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{nout}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::nout}}}
+\label{classmlp_1_1mlp_a063008228bc8423626c2fa6e9a2664e9}
+
+
+Definition at line 61 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_ad6d42a5405728d749f144b938b323ce1}{
+\index{mlp::mlp@{mlp::mlp}!outputs@{outputs}}
+\index{outputs@{outputs}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{outputs}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::outputs}}}
+\label{classmlp_1_1mlp_ad6d42a5405728d749f144b938b323ce1}
+
+
+Definition at line 224 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_ad85e6054d661877c130574e54434ce16}{
+\index{mlp::mlp@{mlp::mlp}!outtype@{outtype}}
+\index{outtype@{outtype}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{outtype}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::outtype}}}
+\label{classmlp_1_1mlp_ad85e6054d661877c130574e54434ce16}
+
+
+Definition at line 61 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_aa9d78571a75937654b1dbb2c78960aa1}{
+\index{mlp::mlp@{mlp::mlp}!stopcount@{stopcount}}
+\index{stopcount@{stopcount}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{stopcount}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::stopcount}}}
+\label{classmlp_1_1mlp_aa9d78571a75937654b1dbb2c78960aa1}
+
+
+Definition at line 61 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_ad29044bad5109b92f57149d8bec68e14}{
+\index{mlp::mlp@{mlp::mlp}!subdir@{subdir}}
+\index{subdir@{subdir}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{subdir}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::subdir}}}
+\label{classmlp_1_1mlp_ad29044bad5109b92f57149d8bec68e14}
+
+
+Definition at line 61 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_a60e5b36a360073418d45d221ff5c47f2}{
+\index{mlp::mlp@{mlp::mlp}!teststats@{teststats}}
+\index{teststats@{teststats}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{teststats}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::teststats}}}
+\label{classmlp_1_1mlp_a60e5b36a360073418d45d221ff5c47f2}
+
+
+Definition at line 61 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_a4e81b494e111fb2c72000efbaa647963}{
+\index{mlp::mlp@{mlp::mlp}!trainerror@{trainerror}}
+\index{trainerror@{trainerror}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{trainerror}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::trainerror}}}
+\label{classmlp_1_1mlp_a4e81b494e111fb2c72000efbaa647963}
+
+
+Definition at line 61 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_adf2a63cd452121ea5e135c191dc5723d}{
+\index{mlp::mlp@{mlp::mlp}!trainstats@{trainstats}}
+\index{trainstats@{trainstats}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{trainstats}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::trainstats}}}
+\label{classmlp_1_1mlp_adf2a63cd452121ea5e135c191dc5723d}
+
+
+Definition at line 164 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_a93598c8f15a234b94c33a853527bec31}{
+\index{mlp::mlp@{mlp::mlp}!traintstats@{traintstats}}
+\index{traintstats@{traintstats}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{traintstats}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::traintstats}}}
+\label{classmlp_1_1mlp_a93598c8f15a234b94c33a853527bec31}
+
+
+Definition at line 61 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_a778e5d4e1b507b330dcb6804455ac416}{
+\index{mlp::mlp@{mlp::mlp}!validerror@{validerror}}
+\index{validerror@{validerror}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{validerror}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::validerror}}}
+\label{classmlp_1_1mlp_a778e5d4e1b507b330dcb6804455ac416}
+
+
+Definition at line 61 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_a6ede6eef42e61e87fd2e79cf61529688}{
+\index{mlp::mlp@{mlp::mlp}!validstats@{validstats}}
+\index{validstats@{validstats}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{validstats}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::validstats}}}
+\label{classmlp_1_1mlp_a6ede6eef42e61e87fd2e79cf61529688}
+
+
+Definition at line 61 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_af03c95450f5cae7754975376c0b80a66}{
+\index{mlp::mlp@{mlp::mlp}!weights1@{weights1}}
+\index{weights1@{weights1}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{weights1}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::weights1}}}
+\label{classmlp_1_1mlp_af03c95450f5cae7754975376c0b80a66}
+
+
+Definition at line 61 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_aab855561bd19a52513ee8b2c84facaba}{
+\index{mlp::mlp@{mlp::mlp}!weights2@{weights2}}
+\index{weights2@{weights2}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{weights2}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::weights2}}}
+\label{classmlp_1_1mlp_aab855561bd19a52513ee8b2c84facaba}
+
+
+Definition at line 61 of file mlp.py.
+
+\hypertarget{classmlp_1_1mlp_a07b85e2f033556b9ef42dbc9b05011c6}{
+\index{mlp::mlp@{mlp::mlp}!writeweights@{writeweights}}
+\index{writeweights@{writeweights}!mlp::mlp@{mlp::mlp}}
+\subsubsection[{writeweights}]{\setlength{\rightskip}{0pt plus 5cm}{\bf mlp::mlp::writeweights}}}
+\label{classmlp_1_1mlp_a07b85e2f033556b9ef42dbc9b05011c6}
+
+
+Definition at line 61 of file mlp.py.
+
+
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+src/\hyperlink{mlp_8py}{mlp.py}\end{DoxyCompactItemize}

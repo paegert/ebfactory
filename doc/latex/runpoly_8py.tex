@@ -1,0 +1,63 @@
+\hypertarget{runpoly_8py}{
+\section{src/runpoly.py File Reference}
+\label{runpoly_8py}\index{src/runpoly.py@{src/runpoly.py}}
+}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \hyperlink{namespacerunpoly}{runpoly}
+
+
+\begin{DoxyCompactList}\small\item\em Created on Jul 2, 2012. \item\end{DoxyCompactList}
+
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{namespacerunpoly_aa4866b028ef0d94a7b9f237490073b28}{runpoly::getfit}
+\item 
+def \hyperlink{namespacerunpoly_a19c006c67315b888598650bbd005e703}{runpoly::fitlc}
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+string \hyperlink{namespacerunpoly_aac16bfb405f5f32d626a3c0bd057a781}{runpoly::usage} = '\%prog \mbox{[}options\mbox{]} \mbox{[}fitname\mbox{]}'
+\item 
+tuple \hyperlink{namespacerunpoly_a366967b50d48b6d7ab51bb4bd156ff40}{runpoly::parser} = OptionParser(usage=usage)
+\item 
+string \hyperlink{namespacerunpoly_afb3be1048713b880f7ac5b701514765d}{runpoly::default} = 'asasblc.sqlite'
+\item 
+string \hyperlink{namespacerunpoly_a7258195372f4a253f10006e02792d22b}{runpoly::help} = 'database file with binned light curves'
+\item 
+tuple \hyperlink{namespacerunpoly_ae53c9938e3373cc687af5896e211fcc4}{runpoly::cls} = getattr(dbconfig, 'Asas')
+\item 
+tuple \hyperlink{namespacerunpoly_a23238d44f53fedb2335ddfd9e0ba563a}{runpoly::dbconfig} = cls()
+\item 
+tuple \hyperlink{namespacerunpoly_ac9f61a81e4f1d37afe226eb29a552c68}{runpoly::tmpwriter}
+\item 
+tuple \hyperlink{namespacerunpoly_ac573a8d4d7a1ebbf405bd0b69fa9361b}{runpoly::watch} = Stopwatch()
+\item 
+tuple \hyperlink{namespacerunpoly_a41be213241b93ac1aaaf0a0dcd1818f2}{runpoly::dictreader} = dbr.DbReader(options.rootdir + options.dictname)
+\item 
+tuple \hyperlink{namespacerunpoly_afb96306fccc8888ba0c85e13ab7a5598}{runpoly::plcreader} = dbr.DbReader(options.rootdir + options.plcname)
+\item 
+tuple \hyperlink{namespacerunpoly_ac06d4b8419f2f541233264830433e74d}{runpoly::blcreader} = dbr.DbReader(options.rootdir + options.blcname)
+\item 
+tuple \hyperlink{namespacerunpoly_a09493fdc135109309376e8ac388a3fde}{runpoly::dictwriter}
+\item 
+tuple \hyperlink{namespacerunpoly_a19b081e3078cf18f986b0d40995ddd86}{runpoly::cffwriter}
+\item 
+tuple \hyperlink{namespacerunpoly_a270c35c20bdd6aa659cab1358e8f9475}{runpoly::fitwriter}
+\item 
+tuple \hyperlink{namespacerunpoly_a66f644ff5f02e8d9724a514873ac1be4}{runpoly::generator} = dictreader.traverse(options.select, None, 1000)
+\item 
+int \hyperlink{namespacerunpoly_aa86a45877f78f52e3357c19a9221feed}{runpoly::nrstars} = 0
+\item 
+int \hyperlink{namespacerunpoly_a77eea5c10faa8e40af7173ac7eda3478}{runpoly::failed} = 0
+\item 
+\hyperlink{namespacerunpoly_a429eb81cafed3ca14e2465cbd91d3224}{runpoly::olddir} = options.rootdir
+\item 
+tuple \hyperlink{namespacerunpoly_a079d0116a1dcdb50fd810307fa37f4b4}{runpoly::plc} = plcreader.getlc(star\mbox{[}'uid'\mbox{]}, 'stars', 'phase')
+\item 
+tuple \hyperlink{namespacerunpoly_ae215f3ab3bd79ffc8502386a8e0ca6c6}{runpoly::blc} = blcreader.getlc(star\mbox{[}'uid'\mbox{]}, 'stars', 'phase')
+\end{DoxyCompactItemize}
