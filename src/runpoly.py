@@ -3,14 +3,18 @@ Created on Jul 2, 2012
 
 @package  runpoly
 @author   map
-@version  \$Revision: 1.1 $
-@date     \$Date: 2012/07/06 20:34:19 $
+@version  \$Revision: 1.2 $
+@date     \$Date: 2012/07/30 19:28:27 $
 
 $Log: runpoly.py,v $
+Revision 1.2  2012/07/30 19:28:27  paegerm
+*** empty log message ***
+
+correcting index-error in fitlc, creation of fitphases and fitvalues
+
 Revision 1.1  2012/07/06 20:34:19  paegerm
 Initial revision
 
-Initial revision
 '''
 
 
@@ -133,8 +137,8 @@ def fitlc(star, plc, blc):
         chi2   = newchi2
         coeffs = newcoeffs
         fit    = newfit
-    fitphases = [x[0] for x in fit]
-    fitvalues = [x[1] for x in fit]
+    fitphases = [x[1] for x in fit]
+    fitvalues = [x[2] for x in fit]
 
     plotname = 'plots/' + star['id'] + '.png'
     pl.plot(plcphases, plcmags, 'k.', 
@@ -145,7 +149,7 @@ def fitlc(star, plc, blc):
     pl.ylabel('normalized mag')
     pl.title(star['id'] + '  ' + star['varcls'])
     pl.savefig(plotname)
-    # pl.show()
+    #pl.show()
     pl.clf()
     
     return (True, chi2, coeffs, fit)
