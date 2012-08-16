@@ -3,13 +3,16 @@ Created on Jul 2, 2012
 
 @package  runpoly
 @author   map
-@version  \$Revision: 1.2 $
-@date     \$Date: 2012/07/30 19:28:27 $
+@version  \$Revision: 1.3 $
+@date     \$Date: 2012/08/16 22:26:51 $
 
 $Log: runpoly.py,v $
-Revision 1.2  2012/07/30 19:28:27  paegerm
+Revision 1.3  2012/08/16 22:26:51  paegerm
 *** empty log message ***
 
+adding get_polyopts, adding debug variable
+
+Revision 1.2  2012/07/30 19:28:27  paegerm
 correcting index-error in fitlc, creation of fitphases and fitvalues
 
 Revision 1.1  2012/07/06 20:34:19  paegerm
@@ -58,12 +61,13 @@ def getfit(outstring, staruid):
 
 
 
-def fitlc(star, plc, blc):
+def fitlc(star, plc, blc, debug = 0):
     polyinname = star['id'] + '.tmp'
     polyfile = open(polyinname, 'w')
     for entry in blc:
-        polyfile.write(str(entry['phase']) + ' ' + str(entry['normmag']) + 
-                       ' ' + str(entry['errnormmag']) + '\n')
+        polyfile.write(str(round(entry['phase'], 2)) + ' ' + 
+                       str(round(entry['normmag'], 5)) + ' ' + 
+                       str(round(entry['errnormmag'], 5)) + '\n')
     polyfile.close()
     
     oldargs = ('asaspolyfit', '--find-knots', '--find-step', polyinname)
@@ -87,12 +91,16 @@ def fitlc(star, plc, blc):
     resold = p.returncode
     if (resold == 0):
         (oldchi2, oldcoeffs, oldfit) = getfit(outstring, star['uid'])
+    if (debug > 0):
+        print 'resold = ', resold, ' old chi2 = ', oldchi2
 
     p = subprocess.Popen(newargs, stdout=subprocess.PIPE)
     (outstring, errstring) = p.communicate()
     resnew = p.returncode
     if (resnew == 0):
         (newchi2, newcoeffs, newfit) = getfit(outstring, star['uid'])
+    if (debug > 0):
+        print 'resnew = ', resnew, ' new chi2 = ', newchi2
 
     if (resold == 0):
         if (resnew == 0):
@@ -154,9 +162,9 @@ def fitlc(star, plc, blc):
     
     return (True, chi2, coeffs, fit)
     
-
-
-if __name__ == '__main__':
+    
+    
+def get_polyopts():
     usage = '%prog [options] [fitname]'
     parser = OptionParser(usage=usage)
     parser.add_option('--blc', dest='blcname', type='string', 
@@ -180,7 +188,10 @@ if __name__ == '__main__':
                       default='select * from stars order by sdir, uid;',
                       help='select statement for dictionary ' +
                            '(Default: select * from stars order by sdir, uid;)')
-    
+    parser.add_option('--selfile', dest='selfile', type='string', 
+                      default=None,
+                      help='file containing select statement (default: None)')
+   
     (options, args) = parser.parse_args()
     
     if (options.rootdir[-1] != '/'):
@@ -188,7 +199,21 @@ if __name__ == '__main__':
 
     if (len(args) == 1):
         options.fitname = args[0]
+    
+    if options.selfile != None:
+        fsel = open(options.rootdir + options.selfile)
+        options.select = fsel.read()
+        fsel.close()
+        options.select = options.select.replace("\n", "")
 
+    return options
+
+
+
+if __name__ == '__main__':
+
+    options = get_polyopts()
+    
     cls = getattr(dbconfig, 'Asas')
     dbconfig = cls()
     
@@ -234,7 +259,7 @@ if __name__ == '__main__':
                 os.mkdir('plots')
             if not os.path.exists('failed'):
                 os.mkdir('failed')
-        (ok, chi2, coeffs, fit) = fitlc(star, plc, blc)
+        (ok, chi2, coeffs, fit) = fitlc(star, plc, blc, options.debug)
         dictwriter.update('update stars set chi2 = ? where uid = ?;', 
                           [(chi2, star['uid'])])
         if ok == False:
