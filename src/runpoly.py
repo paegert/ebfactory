@@ -3,10 +3,13 @@ Created on Jul 2, 2012
 
 @package  runpoly
 @author   map
-@version  \$Revision: 1.3 $
-@date     \$Date: 2012/08/16 22:26:51 $
+@version  \$Revision: 1.4 $
+@date     \$Date: 2012/08/22 15:47:37 $
 
 $Log: runpoly.py,v $
+Revision 1.4  2012/08/22 15:47:37  paegerm
+Changing font size of plots for successful fits
+
 Revision 1.3  2012/08/16 22:26:51  paegerm
 *** empty log message ***
 
@@ -148,16 +151,23 @@ def fitlc(star, plc, blc, debug = 0):
     fitphases = [x[1] for x in fit]
     fitvalues = [x[2] for x in fit]
 
+    fsize = 18
     plotname = 'plots/' + star['id'] + '.png'
+#    fig = pl.figure()
+#    ax  = fig.add_subplot(111)
+#    for tick in ax.xaxis.get_major_ticks():
+#        tick.label.fontsize = 20
     pl.plot(plcphases, plcmags, 'k.', 
             blcphases, blcmags, 'r.', 
             fitphases, fitvalues, 'b-')
+    pl.xticks(fontsize = fsize)
+    pl.yticks(fontsize = fsize)
     pl.xlim(-0.5, 0.5)
-    pl.xlabel('Phase')
-    pl.ylabel('normalized mag')
-    pl.title(star['id'] + '  ' + star['varcls'])
+    pl.xlabel('Phase', fontsize=fsize)
+    pl.ylabel('normalized mag', fontsize=fsize)
+    pl.title(star['id'] + '  ' + star['varcls'], fontsize=fsize)
     pl.savefig(plotname)
-    #pl.show()
+    pl.show()
     pl.clf()
     
     return (True, chi2, coeffs, fit)
