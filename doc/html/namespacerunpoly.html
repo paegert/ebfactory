@@ -117,12 +117,10 @@ function toggleVisibility(linkObj) {
 Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#aa4866b028ef0d94a7b9f237490073b28">getfit</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#a19c006c67315b888598650bbd005e703">fitlc</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#a8161150c40176f66e19794b6e897b284">get_polyopts</a></td></tr>
 <tr><td colspan="2"><h2><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#aac16bfb405f5f32d626a3c0bd057a781">usage</a> = '%prog [options] [fitname]'</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#a366967b50d48b6d7ab51bb4bd156ff40">parser</a> = OptionParser(<a class="el" href="namespacerunpoly.html#aac16bfb405f5f32d626a3c0bd057a781">usage</a>=<a class="el" href="namespacerunpoly.html#aac16bfb405f5f32d626a3c0bd057a781">usage</a>)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#afb3be1048713b880f7ac5b701514765d">default</a> = 'asasblc.sqlite'</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#a7258195372f4a253f10006e02792d22b">help</a> = 'database file with binned light curves'</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#acec78b48a294e8aafeff4c1745e761b4">options</a> = get_polyopts()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#ae53c9938e3373cc687af5896e211fcc4">cls</a> = getattr(<a class="el" href="namespacerunpoly.html#a23238d44f53fedb2335ddfd9e0ba563a">dbconfig</a>, 'Asas')</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#a23238d44f53fedb2335ddfd9e0ba563a">dbconfig</a> = <a class="el" href="namespacerunpoly.html#ae53c9938e3373cc687af5896e211fcc4">cls</a>()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#ac9f61a81e4f1d37afe226eb29a552c68">tmpwriter</a></td></tr>
@@ -143,11 +141,13 @@ Variables</h2></td></tr>
 <hr/><a name="_details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>Created on Jul 2, 2012. </p>
 <dl class="author"><dt><b>Author:</b></dt><dd>map </dd></dl>
-<dl class="version"><dt><b>Version:</b></dt><dd>$Revision: 1.1 $ </dd></dl>
-<dl class="date"><dt><b>Date:</b></dt><dd>$Date: 2012/07/20 20:20:12 $</dd></dl>
+<dl class="version"><dt><b>Version:</b></dt><dd>$Revision: 1.2 $ </dd></dl>
+<dl class="date"><dt><b>Date:</b></dt><dd>$Date: 2012/08/22 15:40:57 $</dd></dl>
 <dl class="rcs"><dt><b>Log:</b></dt><dd><a class="el" href="runpoly_8py.html">runpoly.py</a>,v </dd></dl>
-<p>Revision 1.1 2012/07/06 20:34:19 paegerm Initial revision</p>
-<p>Initial revision </p>
+<p>Revision 1.3 2012/08/16 22:26:51 paegerm *** empty log message ***</p>
+<p>adding get_polyopts, adding debug variable</p>
+<p>Revision 1.2 2012/07/30 19:28:27 paegerm correcting index-error in fitlc, creation of fitphases and fitvalues</p>
+<p>Revision 1.1 2012/07/06 20:34:19 paegerm Initial revision </p>
 </div><hr/><h2>Function Documentation</h2>
 <a class="anchor" id="a19c006c67315b888598650bbd005e703"></a><!-- doxytag: member="runpoly::fitlc" ref="a19c006c67315b888598650bbd005e703" args="" -->
 <div class="memitem">
@@ -169,7 +169,13 @@ Variables</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>blc</em>&#160;</td>
+          <td class="paramname"><em>blc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>debug</em> = <code>0</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -180,7 +186,25 @@ Variables</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00058">58</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
+<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00065">65</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a8161150c40176f66e19794b6e897b284"></a><!-- doxytag: member="runpoly::get_polyopts" ref="a8161150c40176f66e19794b6e897b284" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def runpoly::get_polyopts </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00175">175</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
 
 </div>
 </div>
@@ -209,7 +233,7 @@ Variables</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00032">32</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
+<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00039">39</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
 
 </div>
 </div>
@@ -225,7 +249,7 @@ Variables</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00223">223</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
+<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00259">259</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
 
 </div>
 </div>
@@ -240,7 +264,7 @@ Variables</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00207">207</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
+<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00243">243</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
 
 </div>
 </div>
@@ -257,7 +281,7 @@ Variables</h2></td></tr>
 <b>Initial value:</b><div class="fragment"><pre class="fragment"><a name="l00001"></a><a class="code" href="namespacerunpoly.html">00001</a> dbw.DbWriter(options.rootdir + options.fitname, 
 <a name="l00002"></a>00002                               dbconfig.cffcols, dbconfig.cfftname)
 </pre></div>
-<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00211">211</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
+<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00247">247</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
 
 </div>
 </div>
@@ -272,7 +296,7 @@ Variables</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00189">189</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
+<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00225">225</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
 
 </div>
 </div>
@@ -287,22 +311,7 @@ Variables</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00190">190</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="afb3be1048713b880f7ac5b701514765d"></a><!-- doxytag: member="runpoly::default" ref="afb3be1048713b880f7ac5b701514765d" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">string <a class="el" href="namespacerunpoly.html#afb3be1048713b880f7ac5b701514765d">runpoly::default</a> = 'asasblc.sqlite'</td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00160">160</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
+<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00226">226</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
 
 </div>
 </div>
@@ -317,7 +326,7 @@ Variables</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00205">205</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
+<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00241">241</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
 
 </div>
 </div>
@@ -334,7 +343,7 @@ Variables</h2></td></tr>
 <b>Initial value:</b><div class="fragment"><pre class="fragment"><a name="l00001"></a><a class="code" href="namespacerunpoly.html">00001</a> dbw.DbWriter(options.rootdir + options.dictname, 
 <a name="l00002"></a>00002                               dbconfig.dictcols)
 </pre></div>
-<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00209">209</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
+<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00245">245</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
 
 </div>
 </div>
@@ -349,7 +358,7 @@ Variables</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00218">218</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
+<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00254">254</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
 
 </div>
 </div>
@@ -366,7 +375,7 @@ Variables</h2></td></tr>
 <b>Initial value:</b><div class="fragment"><pre class="fragment"><a name="l00001"></a><a class="code" href="namespacerunpoly.html">00001</a> dbw.DbWriter(options.rootdir + options.fitname, 
 <a name="l00002"></a>00002                               dbconfig.fitcols, dbconfig.fittname)
 </pre></div>
-<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00213">213</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
+<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00249">249</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
 
 </div>
 </div>
@@ -381,22 +390,7 @@ Variables</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00216">216</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a7258195372f4a253f10006e02792d22b"></a><!-- doxytag: member="runpoly::help" ref="a7258195372f4a253f10006e02792d22b" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">string <a class="el" href="namespacerunpoly.html#a7258195372f4a253f10006e02792d22b">runpoly::help</a> = 'database file with binned light curves'</td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00161">161</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
+<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00252">252</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
 
 </div>
 </div>
@@ -411,7 +405,7 @@ Variables</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00217">217</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
+<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00253">253</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
 
 </div>
 </div>
@@ -426,22 +420,22 @@ Variables</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00219">219</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
+<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00255">255</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a366967b50d48b6d7ab51bb4bd156ff40"></a><!-- doxytag: member="runpoly::parser" ref="a366967b50d48b6d7ab51bb4bd156ff40" args="" -->
+<a class="anchor" id="acec78b48a294e8aafeff4c1745e761b4"></a><!-- doxytag: member="runpoly::options" ref="acec78b48a294e8aafeff4c1745e761b4" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">tuple <a class="el" href="namespacerunpoly.html#a366967b50d48b6d7ab51bb4bd156ff40">runpoly::parser</a> = OptionParser(<a class="el" href="namespacerunpoly.html#aac16bfb405f5f32d626a3c0bd057a781">usage</a>=<a class="el" href="namespacerunpoly.html#aac16bfb405f5f32d626a3c0bd057a781">usage</a>)</td>
+          <td class="memname">tuple <a class="el" href="namespacerunpoly.html#acec78b48a294e8aafeff4c1745e761b4">runpoly::options</a> = get_polyopts()</td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00158">158</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
+<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00223">223</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
 
 </div>
 </div>
@@ -456,7 +450,7 @@ Variables</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00222">222</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
+<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00258">258</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
 
 </div>
 </div>
@@ -471,7 +465,7 @@ Variables</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00206">206</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
+<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00242">242</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
 
 </div>
 </div>
@@ -489,22 +483,7 @@ Variables</h2></td></tr>
 <a name="l00002"></a>00002                              dbconfig.cffcols, dbconfig.cfftname, 
 <a name="l00003"></a>00003                              dbconfig.cfftypes, dbconfig.cffnulls)
 </pre></div>
-<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00193">193</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="aac16bfb405f5f32d626a3c0bd057a781"></a><!-- doxytag: member="runpoly::usage" ref="aac16bfb405f5f32d626a3c0bd057a781" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">string <a class="el" href="namespacerunpoly.html#aac16bfb405f5f32d626a3c0bd057a781">runpoly::usage</a> = '%prog [options] [fitname]'</td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00157">157</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
+<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00229">229</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
 
 </div>
 </div>
@@ -519,7 +498,7 @@ Variables</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00202">202</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
+<p>Definition at line <a class="el" href="runpoly_8py_source.html#l00238">238</a> of file <a class="el" href="runpoly_8py_source.html">runpoly.py</a>.</p>
 
 </div>
 </div>

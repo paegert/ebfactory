@@ -13,17 +13,13 @@ Created on Jul 2, 2012.
 def \hyperlink{namespacerunpoly_aa4866b028ef0d94a7b9f237490073b28}{getfit}
 \item 
 def \hyperlink{namespacerunpoly_a19c006c67315b888598650bbd005e703}{fitlc}
+\item 
+def \hyperlink{namespacerunpoly_a8161150c40176f66e19794b6e897b284}{get\_\-polyopts}
 \end{DoxyCompactItemize}
 \subsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
-string \hyperlink{namespacerunpoly_aac16bfb405f5f32d626a3c0bd057a781}{usage} = '\%prog \mbox{[}options\mbox{]} \mbox{[}fitname\mbox{]}'
-\item 
-tuple \hyperlink{namespacerunpoly_a366967b50d48b6d7ab51bb4bd156ff40}{parser} = OptionParser(\hyperlink{namespacerunpoly_aac16bfb405f5f32d626a3c0bd057a781}{usage}=\hyperlink{namespacerunpoly_aac16bfb405f5f32d626a3c0bd057a781}{usage})
-\item 
-string \hyperlink{namespacerunpoly_afb3be1048713b880f7ac5b701514765d}{default} = 'asasblc.sqlite'
-\item 
-string \hyperlink{namespacerunpoly_a7258195372f4a253f10006e02792d22b}{help} = 'database file with binned light curves'
+tuple \hyperlink{namespacerunpoly_acec78b48a294e8aafeff4c1745e761b4}{options} = get\_\-polyopts()
 \item 
 tuple \hyperlink{namespacerunpoly_ae53c9938e3373cc687af5896e211fcc4}{cls} = getattr(\hyperlink{namespacerunpoly_a23238d44f53fedb2335ddfd9e0ba563a}{dbconfig}, 'Asas')
 \item 
@@ -64,17 +60,21 @@ Created on Jul 2, 2012. \begin{DoxyAuthor}{Author}
 map 
 \end{DoxyAuthor}
 \begin{DoxyVersion}{Version}
-\$Revision: 1.1 $ 
+\$Revision: 1.2 $ 
 \end{DoxyVersion}
 \begin{DoxyDate}{Date}
-\$Date: 2012/07/20 20:20:46 $
+\$Date: 2012/08/22 15:45:53 $
 \end{DoxyDate}
 \begin{DoxyParagraph}{Log:}
 \hyperlink{runpoly_8py}{runpoly.py},v 
 \end{DoxyParagraph}
-Revision 1.1 2012/07/06 20:34:19 paegerm Initial revision
+Revision 1.3 2012/08/16 22:26:51 paegerm $\ast$$\ast$$\ast$ empty log message $\ast$$\ast$$\ast$
 
-Initial revision 
+adding get\_\-polyopts, adding debug variable
+
+Revision 1.2 2012/07/30 19:28:27 paegerm correcting index-\/error in fitlc, creation of fitphases and fitvalues
+
+Revision 1.1 2012/07/06 20:34:19 paegerm Initial revision 
 
 \subsection{Function Documentation}
 \hypertarget{namespacerunpoly_a19c006c67315b888598650bbd005e703}{
@@ -84,13 +84,27 @@ Initial revision
 \begin{DoxyParamCaption}
 \item[{}]{star, }
 \item[{}]{plc, }
-\item[{}]{blc}
+\item[{}]{blc, }
+\item[{}]{debug = {\ttfamily 0}}
 \end{DoxyParamCaption}
 )}}
 \label{namespacerunpoly_a19c006c67315b888598650bbd005e703}
 
 
-Definition at line 58 of file runpoly.py.
+Definition at line 65 of file runpoly.py.
+
+\hypertarget{namespacerunpoly_a8161150c40176f66e19794b6e897b284}{
+\index{runpoly@{runpoly}!get\_\-polyopts@{get\_\-polyopts}}
+\index{get\_\-polyopts@{get\_\-polyopts}!runpoly@{runpoly}}
+\subsubsection[{get\_\-polyopts}]{\setlength{\rightskip}{0pt plus 5cm}def runpoly::get\_\-polyopts (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{namespacerunpoly_a8161150c40176f66e19794b6e897b284}
+
+
+Definition at line 175 of file runpoly.py.
 
 \hypertarget{namespacerunpoly_aa4866b028ef0d94a7b9f237490073b28}{
 \index{runpoly@{runpoly}!getfit@{getfit}}
@@ -104,7 +118,7 @@ Definition at line 58 of file runpoly.py.
 \label{namespacerunpoly_aa4866b028ef0d94a7b9f237490073b28}
 
 
-Definition at line 32 of file runpoly.py.
+Definition at line 39 of file runpoly.py.
 
 
 
@@ -116,7 +130,7 @@ Definition at line 32 of file runpoly.py.
 \label{namespacerunpoly_ae215f3ab3bd79ffc8502386a8e0ca6c6}
 
 
-Definition at line 223 of file runpoly.py.
+Definition at line 259 of file runpoly.py.
 
 \hypertarget{namespacerunpoly_ac06d4b8419f2f541233264830433e74d}{
 \index{runpoly@{runpoly}!blcreader@{blcreader}}
@@ -125,7 +139,7 @@ Definition at line 223 of file runpoly.py.
 \label{namespacerunpoly_ac06d4b8419f2f541233264830433e74d}
 
 
-Definition at line 207 of file runpoly.py.
+Definition at line 243 of file runpoly.py.
 
 \hypertarget{namespacerunpoly_a19b081e3078cf18f986b0d40995ddd86}{
 \index{runpoly@{runpoly}!cffwriter@{cffwriter}}
@@ -139,7 +153,7 @@ Definition at line 207 of file runpoly.py.
 \end{DoxyCode}
 
 
-Definition at line 211 of file runpoly.py.
+Definition at line 247 of file runpoly.py.
 
 \hypertarget{namespacerunpoly_ae53c9938e3373cc687af5896e211fcc4}{
 \index{runpoly@{runpoly}!cls@{cls}}
@@ -148,7 +162,7 @@ Definition at line 211 of file runpoly.py.
 \label{namespacerunpoly_ae53c9938e3373cc687af5896e211fcc4}
 
 
-Definition at line 189 of file runpoly.py.
+Definition at line 225 of file runpoly.py.
 
 \hypertarget{namespacerunpoly_a23238d44f53fedb2335ddfd9e0ba563a}{
 \index{runpoly@{runpoly}!dbconfig@{dbconfig}}
@@ -157,16 +171,7 @@ Definition at line 189 of file runpoly.py.
 \label{namespacerunpoly_a23238d44f53fedb2335ddfd9e0ba563a}
 
 
-Definition at line 190 of file runpoly.py.
-
-\hypertarget{namespacerunpoly_afb3be1048713b880f7ac5b701514765d}{
-\index{runpoly@{runpoly}!default@{default}}
-\index{default@{default}!runpoly@{runpoly}}
-\subsubsection[{default}]{\setlength{\rightskip}{0pt plus 5cm}string {\bf runpoly::default} = 'asasblc.sqlite'}}
-\label{namespacerunpoly_afb3be1048713b880f7ac5b701514765d}
-
-
-Definition at line 160 of file runpoly.py.
+Definition at line 226 of file runpoly.py.
 
 \hypertarget{namespacerunpoly_a41be213241b93ac1aaaf0a0dcd1818f2}{
 \index{runpoly@{runpoly}!dictreader@{dictreader}}
@@ -175,7 +180,7 @@ Definition at line 160 of file runpoly.py.
 \label{namespacerunpoly_a41be213241b93ac1aaaf0a0dcd1818f2}
 
 
-Definition at line 205 of file runpoly.py.
+Definition at line 241 of file runpoly.py.
 
 \hypertarget{namespacerunpoly_a09493fdc135109309376e8ac388a3fde}{
 \index{runpoly@{runpoly}!dictwriter@{dictwriter}}
@@ -189,7 +194,7 @@ Definition at line 205 of file runpoly.py.
 \end{DoxyCode}
 
 
-Definition at line 209 of file runpoly.py.
+Definition at line 245 of file runpoly.py.
 
 \hypertarget{namespacerunpoly_a77eea5c10faa8e40af7173ac7eda3478}{
 \index{runpoly@{runpoly}!failed@{failed}}
@@ -198,7 +203,7 @@ Definition at line 209 of file runpoly.py.
 \label{namespacerunpoly_a77eea5c10faa8e40af7173ac7eda3478}
 
 
-Definition at line 218 of file runpoly.py.
+Definition at line 254 of file runpoly.py.
 
 \hypertarget{namespacerunpoly_a270c35c20bdd6aa659cab1358e8f9475}{
 \index{runpoly@{runpoly}!fitwriter@{fitwriter}}
@@ -212,7 +217,7 @@ Definition at line 218 of file runpoly.py.
 \end{DoxyCode}
 
 
-Definition at line 213 of file runpoly.py.
+Definition at line 249 of file runpoly.py.
 
 \hypertarget{namespacerunpoly_a66f644ff5f02e8d9724a514873ac1be4}{
 \index{runpoly@{runpoly}!generator@{generator}}
@@ -221,16 +226,7 @@ Definition at line 213 of file runpoly.py.
 \label{namespacerunpoly_a66f644ff5f02e8d9724a514873ac1be4}
 
 
-Definition at line 216 of file runpoly.py.
-
-\hypertarget{namespacerunpoly_a7258195372f4a253f10006e02792d22b}{
-\index{runpoly@{runpoly}!help@{help}}
-\index{help@{help}!runpoly@{runpoly}}
-\subsubsection[{help}]{\setlength{\rightskip}{0pt plus 5cm}string {\bf runpoly::help} = 'database file with binned light curves'}}
-\label{namespacerunpoly_a7258195372f4a253f10006e02792d22b}
-
-
-Definition at line 161 of file runpoly.py.
+Definition at line 252 of file runpoly.py.
 
 \hypertarget{namespacerunpoly_aa86a45877f78f52e3357c19a9221feed}{
 \index{runpoly@{runpoly}!nrstars@{nrstars}}
@@ -239,7 +235,7 @@ Definition at line 161 of file runpoly.py.
 \label{namespacerunpoly_aa86a45877f78f52e3357c19a9221feed}
 
 
-Definition at line 217 of file runpoly.py.
+Definition at line 253 of file runpoly.py.
 
 \hypertarget{namespacerunpoly_a429eb81cafed3ca14e2465cbd91d3224}{
 \index{runpoly@{runpoly}!olddir@{olddir}}
@@ -248,16 +244,16 @@ Definition at line 217 of file runpoly.py.
 \label{namespacerunpoly_a429eb81cafed3ca14e2465cbd91d3224}
 
 
-Definition at line 219 of file runpoly.py.
+Definition at line 255 of file runpoly.py.
 
-\hypertarget{namespacerunpoly_a366967b50d48b6d7ab51bb4bd156ff40}{
-\index{runpoly@{runpoly}!parser@{parser}}
-\index{parser@{parser}!runpoly@{runpoly}}
-\subsubsection[{parser}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runpoly::parser} = OptionParser({\bf usage}={\bf usage})}}
-\label{namespacerunpoly_a366967b50d48b6d7ab51bb4bd156ff40}
+\hypertarget{namespacerunpoly_acec78b48a294e8aafeff4c1745e761b4}{
+\index{runpoly@{runpoly}!options@{options}}
+\index{options@{options}!runpoly@{runpoly}}
+\subsubsection[{options}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf runpoly::options} = get\_\-polyopts()}}
+\label{namespacerunpoly_acec78b48a294e8aafeff4c1745e761b4}
 
 
-Definition at line 158 of file runpoly.py.
+Definition at line 223 of file runpoly.py.
 
 \hypertarget{namespacerunpoly_a079d0116a1dcdb50fd810307fa37f4b4}{
 \index{runpoly@{runpoly}!plc@{plc}}
@@ -266,7 +262,7 @@ Definition at line 158 of file runpoly.py.
 \label{namespacerunpoly_a079d0116a1dcdb50fd810307fa37f4b4}
 
 
-Definition at line 222 of file runpoly.py.
+Definition at line 258 of file runpoly.py.
 
 \hypertarget{namespacerunpoly_afb96306fccc8888ba0c85e13ab7a5598}{
 \index{runpoly@{runpoly}!plcreader@{plcreader}}
@@ -275,7 +271,7 @@ Definition at line 222 of file runpoly.py.
 \label{namespacerunpoly_afb96306fccc8888ba0c85e13ab7a5598}
 
 
-Definition at line 206 of file runpoly.py.
+Definition at line 242 of file runpoly.py.
 
 \hypertarget{namespacerunpoly_ac9f61a81e4f1d37afe226eb29a552c68}{
 \index{runpoly@{runpoly}!tmpwriter@{tmpwriter}}
@@ -290,16 +286,7 @@ Definition at line 206 of file runpoly.py.
 \end{DoxyCode}
 
 
-Definition at line 193 of file runpoly.py.
-
-\hypertarget{namespacerunpoly_aac16bfb405f5f32d626a3c0bd057a781}{
-\index{runpoly@{runpoly}!usage@{usage}}
-\index{usage@{usage}!runpoly@{runpoly}}
-\subsubsection[{usage}]{\setlength{\rightskip}{0pt plus 5cm}string {\bf runpoly::usage} = '\%prog \mbox{[}options\mbox{]} \mbox{[}fitname\mbox{]}'}}
-\label{namespacerunpoly_aac16bfb405f5f32d626a3c0bd057a781}
-
-
-Definition at line 157 of file runpoly.py.
+Definition at line 229 of file runpoly.py.
 
 \hypertarget{namespacerunpoly_ac573a8d4d7a1ebbf405bd0b69fa9361b}{
 \index{runpoly@{runpoly}!watch@{watch}}
@@ -308,5 +295,5 @@ Definition at line 157 of file runpoly.py.
 \label{namespacerunpoly_ac573a8d4d7a1ebbf405bd0b69fa9361b}
 
 
-Definition at line 202 of file runpoly.py.
+Definition at line 238 of file runpoly.py.
 

@@ -144,10 +144,11 @@ Variables</h2></td></tr>
 <hr/><a name="_details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>Created on Jul 5, 2012. </p>
 <dl class="author"><dt><b>Author:</b></dt><dd>map </dd></dl>
-<dl class="version"><dt><b>Version:</b></dt><dd>$Revision: 1.1 $ </dd></dl>
-<dl class="date"><dt><b>Date:</b></dt><dd>$Date: 2012/07/20 20:20:13 $</dd></dl>
+<dl class="version"><dt><b>Version:</b></dt><dd>$Revision: 1.2 $ </dd></dl>
+<dl class="date"><dt><b>Date:</b></dt><dd>$Date: 2012/08/22 15:40:57 $</dd></dl>
 <p>Routines for retrieving, preparing and handing data over to a neural network for training. Note: the main part is just for testing purposes, use trainnetmp for all real training</p>
 <dl class="rcs"><dt><b>Log:</b></dt><dd><a class="el" href="trainnet_8py.html">trainnet.py</a>,v </dd></dl>
+<p>Revision 1.2 2012/07/20 20:24:34 paegerm *** empty log message ***</p>
 <p>adding <a class="el" href="namespacetrainnet.html#a6b2a6c6ee5f126bec6cf862ebcee3d7c" title="read data from database">readdata()</a>, resuffle(), <a class="el" href="namespacetrainnet.html#a38102ec29b7d6d2fbf74196151247213" title="Parse command line options.">parseoptions()</a> and options for the network</p>
 <p>Revision 1.1 2012/07/06 20:34:19 paegerm Initial revision </p>
 </div><hr/><h2>Function Documentation</h2>
@@ -184,7 +185,7 @@ Variables</h2></td></tr>
 
 <p>Set the target vector for a single object. </p>
 
-<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00043">43</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
+<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00046">46</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
 
 </div>
 </div>
@@ -205,7 +206,7 @@ Variables</h2></td></tr>
 <p>Parse command line options. </p>
 <p>Note: trainnet and trainnetmp use the same options although not all of them make sense for trainnet. For example only minhidden is used in trainnet </p>
 
-<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00196">196</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
+<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00199">199</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
 
 </div>
 </div>
@@ -262,7 +263,7 @@ Variables</h2></td></tr>
 <p>Note: the polyfit coefficients and normalized row-wise, NOT column-wise as usual. Within a row each block of 3 coefficients is normalized individually</p>
 <p>Used: 4 blocks of node cff1, cff2, cff3 (second order fit) Vmag Max - Min for normalized magnitutes chi2 from polyfit </p>
 
-<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00068">68</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
+<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00071">71</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
 
 </div>
 </div>
@@ -293,7 +294,7 @@ Variables</h2></td></tr>
 
 <p>read data from database </p>
 
-<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00138">138</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
+<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00141">141</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
 
 </div>
 </div>
@@ -330,7 +331,7 @@ Variables</h2></td></tr>
 
 <p>re-shuffling the data </p>
 
-<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00176">176</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
+<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00179">179</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
 
 </div>
 </div>
@@ -379,7 +380,7 @@ Variables</h2></td></tr>
 
 <p>Split data into training, validation and testing set according to given fractions. </p>
 
-<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00301">301</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
+<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00304">304</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
 
 </div>
 </div>
@@ -395,7 +396,7 @@ Variables</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00328">328</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
+<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00331">331</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
 
 </div>
 </div>
@@ -410,7 +411,7 @@ Variables</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00370">370</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
+<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00373">373</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
 
 </div>
 </div>
@@ -425,7 +426,7 @@ Variables</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00329">329</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
+<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00332">332</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
 
 </div>
 </div>
@@ -440,7 +441,7 @@ Variables</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00364">364</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
+<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00367">367</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
 
 </div>
 </div>
@@ -459,7 +460,7 @@ Variables</h2></td></tr>
 <a name="l00003"></a>00003                   outtype = options.outtype, 
 <a name="l00004"></a>00004                   multires = options.multi, mdelta = options.mdelta)
 </pre></div>
-<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00353">353</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
+<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00356">356</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
 
 </div>
 </div>
@@ -474,7 +475,7 @@ Variables</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00365">365</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
+<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00368">368</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
 
 </div>
 </div>
@@ -489,7 +490,7 @@ Variables</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00372">372</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
+<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00375">375</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
 
 </div>
 </div>
@@ -504,7 +505,7 @@ Variables</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00374">374</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
+<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00377">377</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
 
 </div>
 </div>
@@ -519,7 +520,7 @@ Variables</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00366">366</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
+<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00369">369</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
 
 </div>
 </div>
@@ -534,7 +535,7 @@ Variables</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00331">331</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
+<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00334">334</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
 
 </div>
 </div>
@@ -549,7 +550,7 @@ Variables</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00333">333</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
+<p>Definition at line <a class="el" href="trainnet_8py_source.html#l00336">336</a> of file <a class="el" href="trainnet_8py_source.html">trainnet.py</a>.</p>
 
 </div>
 </div>

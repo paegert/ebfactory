@@ -1,0 +1,203 @@
+\hypertarget{namespaceplotlc}{
+\section{plotlc Namespace Reference}
+\label{namespaceplotlc}\index{plotlc@{plotlc}}
+}
+
+
+Created on Aug 15, 2012.  
+
+
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+string \hyperlink{namespaceplotlc_ae4114e18ea1de203a5df329cabaf76e5}{usage} = '\%prog \mbox{[}options\mbox{]} \hyperlink{namespaceplotlc_a0f4044b7c539ef06d771594b766ca44b}{staruid}'
+\item 
+tuple \hyperlink{namespaceplotlc_abb846dd0f2e1e6a77c518417f0504a52}{parser} = OptionParser(\hyperlink{namespaceplotlc_ae4114e18ea1de203a5df329cabaf76e5}{usage}=\hyperlink{namespaceplotlc_ae4114e18ea1de203a5df329cabaf76e5}{usage})
+\item 
+string \hyperlink{namespaceplotlc_a19d5157c64a1c0f983eb1b6ac77d28ad}{help} = 'debug setting (default: 1)'
+\item 
+string \hyperlink{namespaceplotlc_a78b903191c52c9ae7de23c57e216c537}{default} = '.'
+\item 
+tuple \hyperlink{namespaceplotlc_aa0d67ca52f94cf7df7e8d42908675f95}{cls} = getattr(\hyperlink{namespaceplotlc_ad02f25ea0c738c3d1867127ee20ae0a2}{dbconfig}, 'Asas')
+\item 
+tuple \hyperlink{namespaceplotlc_ad02f25ea0c738c3d1867127ee20ae0a2}{dbconfig} = \hyperlink{namespaceplotlc_aa0d67ca52f94cf7df7e8d42908675f95}{cls}()
+\item 
+tuple \hyperlink{namespaceplotlc_a2a0d074a3711ec9740f0c40e2b5f6739}{lcsreader} = dbr.DbReader(options.dbdir + options.lcsname)
+\item 
+int \hyperlink{namespaceplotlc_a84471a136dabdafed339bdf74af64d6c}{nrstars} = 0
+\item 
+list \hyperlink{namespaceplotlc_a1a420be8a418faa806bb3f235a64b7b4}{col} = \mbox{[}'r', 'y', 'k', 'b', 'g'\mbox{]}
+\item 
+list \hyperlink{namespaceplotlc_a6d96382c484c88c062cee8524f2b3b4a}{hjds} = \mbox{[}$\,$\mbox{]}
+\item 
+list \hyperlink{namespaceplotlc_abdfb5c2d4ea6f8b8a078e7a8098cf810}{mags} = \mbox{[}$\,$\mbox{]}
+\item 
+list \hyperlink{namespaceplotlc_ac4ddf97fd899d00422bd2044f1695339}{ruids} = \mbox{[}$\,$\mbox{]}
+\item 
+tuple \hyperlink{namespaceplotlc_a0f4044b7c539ef06d771594b766ca44b}{staruid} = int(arg)
+\item 
+tuple \hyperlink{namespaceplotlc_abfc0239bb4b4ca08e710d0fc52097ddd}{lc} = lcsreader.getlc(\hyperlink{namespaceplotlc_a0f4044b7c539ef06d771594b766ca44b}{staruid}, dbconfig.plctname)
+\item 
+tuple \hyperlink{namespaceplotlc_a4a20eb1a28e7335a93020398cadede85}{data} = np.ndarray((3, 0))
+\item 
+string \hyperlink{namespaceplotlc_ac18e7742b8c5f7d21a2efe570d6e2baa}{plotname} = '.png'
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Created on Aug 15, 2012. \begin{DoxyAuthor}{Author}
+map 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+\$Revision\$ 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+\$Date\$
+\end{DoxyDate}
+\$Log\$ Initial revision 
+
+\subsection{Variable Documentation}
+\hypertarget{namespaceplotlc_aa0d67ca52f94cf7df7e8d42908675f95}{
+\index{plotlc@{plotlc}!cls@{cls}}
+\index{cls@{cls}!plotlc@{plotlc}}
+\subsubsection[{cls}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf plotlc::cls} = getattr({\bf dbconfig}, 'Asas')}}
+\label{namespaceplotlc_aa0d67ca52f94cf7df7e8d42908675f95}
+
+
+Definition at line 49 of file plotlc.py.
+
+\hypertarget{namespaceplotlc_a1a420be8a418faa806bb3f235a64b7b4}{
+\index{plotlc@{plotlc}!col@{col}}
+\index{col@{col}!plotlc@{plotlc}}
+\subsubsection[{col}]{\setlength{\rightskip}{0pt plus 5cm}list {\bf plotlc::col} = \mbox{[}'r', 'y', 'k', 'b', 'g'\mbox{]}}}
+\label{namespaceplotlc_a1a420be8a418faa806bb3f235a64b7b4}
+
+
+Definition at line 54 of file plotlc.py.
+
+\hypertarget{namespaceplotlc_a4a20eb1a28e7335a93020398cadede85}{
+\index{plotlc@{plotlc}!data@{data}}
+\index{data@{data}!plotlc@{plotlc}}
+\subsubsection[{data}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf plotlc::data} = np.ndarray((3, 0))}}
+\label{namespaceplotlc_a4a20eb1a28e7335a93020398cadede85}
+
+
+Definition at line 62 of file plotlc.py.
+
+\hypertarget{namespaceplotlc_ad02f25ea0c738c3d1867127ee20ae0a2}{
+\index{plotlc@{plotlc}!dbconfig@{dbconfig}}
+\index{dbconfig@{dbconfig}!plotlc@{plotlc}}
+\subsubsection[{dbconfig}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf plotlc::dbconfig} = {\bf cls}()}}
+\label{namespaceplotlc_ad02f25ea0c738c3d1867127ee20ae0a2}
+
+
+Definition at line 50 of file plotlc.py.
+
+\hypertarget{namespaceplotlc_a78b903191c52c9ae7de23c57e216c537}{
+\index{plotlc@{plotlc}!default@{default}}
+\index{default@{default}!plotlc@{plotlc}}
+\subsubsection[{default}]{\setlength{\rightskip}{0pt plus 5cm}string {\bf plotlc::default} = '.'}}
+\label{namespaceplotlc_a78b903191c52c9ae7de23c57e216c537}
+
+
+Definition at line 30 of file plotlc.py.
+
+\hypertarget{namespaceplotlc_a19d5157c64a1c0f983eb1b6ac77d28ad}{
+\index{plotlc@{plotlc}!help@{help}}
+\index{help@{help}!plotlc@{plotlc}}
+\subsubsection[{help}]{\setlength{\rightskip}{0pt plus 5cm}string {\bf plotlc::help} = 'debug setting (default: 1)'}}
+\label{namespaceplotlc_a19d5157c64a1c0f983eb1b6ac77d28ad}
+
+
+Definition at line 28 of file plotlc.py.
+
+\hypertarget{namespaceplotlc_a6d96382c484c88c062cee8524f2b3b4a}{
+\index{plotlc@{plotlc}!hjds@{hjds}}
+\index{hjds@{hjds}!plotlc@{plotlc}}
+\subsubsection[{hjds}]{\setlength{\rightskip}{0pt plus 5cm}list {\bf plotlc::hjds} = \mbox{[}$\,$\mbox{]}}}
+\label{namespaceplotlc_a6d96382c484c88c062cee8524f2b3b4a}
+
+
+Definition at line 56 of file plotlc.py.
+
+\hypertarget{namespaceplotlc_abfc0239bb4b4ca08e710d0fc52097ddd}{
+\index{plotlc@{plotlc}!lc@{lc}}
+\index{lc@{lc}!plotlc@{plotlc}}
+\subsubsection[{lc}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf plotlc::lc} = lcsreader.getlc({\bf staruid}, dbconfig.plctname)}}
+\label{namespaceplotlc_abfc0239bb4b4ca08e710d0fc52097ddd}
+
+
+Definition at line 60 of file plotlc.py.
+
+\hypertarget{namespaceplotlc_a2a0d074a3711ec9740f0c40e2b5f6739}{
+\index{plotlc@{plotlc}!lcsreader@{lcsreader}}
+\index{lcsreader@{lcsreader}!plotlc@{plotlc}}
+\subsubsection[{lcsreader}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf plotlc::lcsreader} = dbr.DbReader(options.dbdir + options.lcsname)}}
+\label{namespaceplotlc_a2a0d074a3711ec9740f0c40e2b5f6739}
+
+
+Definition at line 51 of file plotlc.py.
+
+\hypertarget{namespaceplotlc_abdfb5c2d4ea6f8b8a078e7a8098cf810}{
+\index{plotlc@{plotlc}!mags@{mags}}
+\index{mags@{mags}!plotlc@{plotlc}}
+\subsubsection[{mags}]{\setlength{\rightskip}{0pt plus 5cm}list {\bf plotlc::mags} = \mbox{[}$\,$\mbox{]}}}
+\label{namespaceplotlc_abdfb5c2d4ea6f8b8a078e7a8098cf810}
+
+
+Definition at line 57 of file plotlc.py.
+
+\hypertarget{namespaceplotlc_a84471a136dabdafed339bdf74af64d6c}{
+\index{plotlc@{plotlc}!nrstars@{nrstars}}
+\index{nrstars@{nrstars}!plotlc@{plotlc}}
+\subsubsection[{nrstars}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf plotlc::nrstars} = 0}}
+\label{namespaceplotlc_a84471a136dabdafed339bdf74af64d6c}
+
+
+Definition at line 53 of file plotlc.py.
+
+\hypertarget{namespaceplotlc_abb846dd0f2e1e6a77c518417f0504a52}{
+\index{plotlc@{plotlc}!parser@{parser}}
+\index{parser@{parser}!plotlc@{plotlc}}
+\subsubsection[{parser}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf plotlc::parser} = OptionParser({\bf usage}={\bf usage})}}
+\label{namespaceplotlc_abb846dd0f2e1e6a77c518417f0504a52}
+
+
+Definition at line 26 of file plotlc.py.
+
+\hypertarget{namespaceplotlc_ac18e7742b8c5f7d21a2efe570d6e2baa}{
+\index{plotlc@{plotlc}!plotname@{plotname}}
+\index{plotname@{plotname}!plotlc@{plotlc}}
+\subsubsection[{plotname}]{\setlength{\rightskip}{0pt plus 5cm}string {\bf plotlc::plotname} = '.png'}}
+\label{namespaceplotlc_ac18e7742b8c5f7d21a2efe570d6e2baa}
+
+
+Definition at line 67 of file plotlc.py.
+
+\hypertarget{namespaceplotlc_ac4ddf97fd899d00422bd2044f1695339}{
+\index{plotlc@{plotlc}!ruids@{ruids}}
+\index{ruids@{ruids}!plotlc@{plotlc}}
+\subsubsection[{ruids}]{\setlength{\rightskip}{0pt plus 5cm}list {\bf plotlc::ruids} = \mbox{[}$\,$\mbox{]}}}
+\label{namespaceplotlc_ac4ddf97fd899d00422bd2044f1695339}
+
+
+Definition at line 58 of file plotlc.py.
+
+\hypertarget{namespaceplotlc_a0f4044b7c539ef06d771594b766ca44b}{
+\index{plotlc@{plotlc}!staruid@{staruid}}
+\index{staruid@{staruid}!plotlc@{plotlc}}
+\subsubsection[{staruid}]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf plotlc::staruid} = int(arg)}}
+\label{namespaceplotlc_a0f4044b7c539ef06d771594b766ca44b}
+
+
+Definition at line 59 of file plotlc.py.
+
+\hypertarget{namespaceplotlc_ae4114e18ea1de203a5df329cabaf76e5}{
+\index{plotlc@{plotlc}!usage@{usage}}
+\index{usage@{usage}!plotlc@{plotlc}}
+\subsubsection[{usage}]{\setlength{\rightskip}{0pt plus 5cm}string {\bf plotlc::usage} = '\%prog \mbox{[}options\mbox{]} {\bf staruid}'}}
+\label{namespaceplotlc_ae4114e18ea1de203a5df329cabaf76e5}
+
+
+Definition at line 25 of file plotlc.py.
+

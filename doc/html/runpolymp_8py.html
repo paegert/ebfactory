@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<title>ebf: src/runpoly.py File Reference</title>
+<title>ebf: src/runpolymp.py File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/search.js"></script>
@@ -111,43 +111,40 @@ function toggleVisibility(linkObj) {
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
-<h1>runpoly.py File Reference</h1>  </div>
+<h1>runpolymp.py File Reference</h1>  </div>
 </div>
 <div class="contents">
 
-<p><a href="runpoly_8py_source.html">Go to the source code of this file.</a></p>
+<p><a href="runpolymp_8py_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr><td colspan="2"><h2><a name="namespaces"></a>
 Namespaces</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html">runpoly</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpolymp.html">runpolymp</a></td></tr>
 
 <p><tr><td class="mdescLeft">&#160;</td><td class="mdescRight"><p>Created on Jul 2, 2012. </p>
 <br/></td></tr>
 </p>
 <tr><td colspan="2"><h2><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#aa4866b028ef0d94a7b9f237490073b28">runpoly::getfit</a></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#a19c006c67315b888598650bbd005e703">runpoly::fitlc</a></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#a8161150c40176f66e19794b6e897b284">runpoly::get_polyopts</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpolymp.html#a387348680cd8eda0fa0653674010f752">runpolymp::runpolyproc</a></td></tr>
 <tr><td colspan="2"><h2><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#acec78b48a294e8aafeff4c1745e761b4">runpoly::options</a> = get_polyopts()</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#ae53c9938e3373cc687af5896e211fcc4">runpoly::cls</a> = getattr(dbconfig, 'Asas')</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#a23238d44f53fedb2335ddfd9e0ba563a">runpoly::dbconfig</a> = cls()</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#ac9f61a81e4f1d37afe226eb29a552c68">runpoly::tmpwriter</a></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#ac573a8d4d7a1ebbf405bd0b69fa9361b">runpoly::watch</a> = Stopwatch()</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#a41be213241b93ac1aaaf0a0dcd1818f2">runpoly::dictreader</a> = dbr.DbReader(options.rootdir + options.dictname)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#afb96306fccc8888ba0c85e13ab7a5598">runpoly::plcreader</a> = dbr.DbReader(options.rootdir + options.plcname)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#ac06d4b8419f2f541233264830433e74d">runpoly::blcreader</a> = dbr.DbReader(options.rootdir + options.blcname)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#a09493fdc135109309376e8ac388a3fde">runpoly::dictwriter</a></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#a19b081e3078cf18f986b0d40995ddd86">runpoly::cffwriter</a></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#a270c35c20bdd6aa659cab1358e8f9475">runpoly::fitwriter</a></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#a66f644ff5f02e8d9724a514873ac1be4">runpoly::generator</a> = dictreader.traverse(options.select, None, 1000)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#aa86a45877f78f52e3357c19a9221feed">runpoly::nrstars</a> = 0</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#a77eea5c10faa8e40af7173ac7eda3478">runpoly::failed</a> = 0</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#a429eb81cafed3ca14e2465cbd91d3224">runpoly::olddir</a> = options.rootdir</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#a079d0116a1dcdb50fd810307fa37f4b4">runpoly::plc</a> = plcreader.getlc(star['uid'], 'stars', 'phase')</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpoly.html#ae215f3ab3bd79ffc8502386a8e0ca6c6">runpoly::blc</a> = blcreader.getlc(star['uid'], 'stars', 'phase')</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpolymp.html#a1696f14ff027e064a7d29eece7f4b66d">runpolymp::options</a> = get_polyopts()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpolymp.html#aa79092d87180be0a238a99f8f9d7bef4">runpolymp::chunksize</a> = 100</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpolymp.html#a792265f8b2a708d4ce5fdb59becb528a">runpolymp::cls</a> = getattr(dbconfig, 'Asas')</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpolymp.html#af34401144c456e1951c68c99f91d5249">runpolymp::dbconfig</a> = cls()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpolymp.html#aba94d82f438bb9df93a754960d02b06a">runpolymp::tmpwriter</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpolymp.html#add54abd046ac5d9e780e62ea08417fbe">runpolymp::watch</a> = Stopwatch()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpolymp.html#a59d220b1ff9a930fe2889535b8835d13">runpolymp::dictreader</a> = dbr.DbReader(options.rootdir + options.dictname)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpolymp.html#a953b76537f2a9528d9e7ffdaab48614d">runpolymp::stars</a> = dictreader.fetchall(options.select)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpolymp.html#af5937209128980a2d0e0c0b9bb157b85">runpolymp::tmax</a> = 1</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">list&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpolymp.html#af260c9116ecebd8a092ec6a918e3742a">runpolymp::results</a> = []</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpolymp.html#a61267842b66dc6998ce42d9c4446992b">runpolymp::nrprocess</a> = int(os.environ['OMP_NUM_THREADS'])</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpolymp.html#ab3ab11d6f45802c04f361e52f3695bf3">runpolymp::pool</a> = Pool(processes = nrprocess)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpolymp.html#a4618edf2a059e4987f52db767ffb6d4d">runpolymp::min</a> = i*chunksize</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpolymp.html#ae92e281387570c7fc239c7c639ac57d6">runpolymp::max</a> = (i + 1)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpolymp.html#a9bed810afed37bd8bc94fb240f3a836c">runpolymp::nrstars</a> = 0</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerunpolymp.html#a0c32d94825e8d3aa839ff639347ef697">runpolymp::failed</a> = 0</td></tr>
 </table>
 </div>
 <!--- window showing the filter options -->
