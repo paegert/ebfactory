@@ -3,16 +3,19 @@ Created on Jul 2, 2012
 
 @package  runpoly
 @author   map
-@version  \$Revision: 1.4 $
-@date     \$Date: 2012/08/22 15:47:37 $
+@version  \$Revision: 1.5 $
+@date     \$Date: 2012/08/23 16:36:54 $
 
 $Log: runpoly.py,v $
+Revision 1.5  2012/08/23 16:36:54  paegerm
+make fitlc silent for debug = 0
+
+make fitlc silent for debug = 0
+
 Revision 1.4  2012/08/22 15:47:37  paegerm
 Changing font size of plots for successful fits
 
 Revision 1.3  2012/08/16 22:26:51  paegerm
-*** empty log message ***
-
 adding get_polyopts, adding debug variable
 
 Revision 1.2  2012/07/30 19:28:27  paegerm
@@ -65,6 +68,8 @@ def getfit(outstring, staruid):
 
 
 def fitlc(star, plc, blc, debug = 0):
+    if debug > 0:
+        print 'processing', star['id']
     polyinname = star['id'] + '.tmp'
     polyfile = open(polyinname, 'w')
     for entry in blc:
@@ -167,7 +172,7 @@ def fitlc(star, plc, blc, debug = 0):
     pl.ylabel('normalized mag', fontsize=fsize)
     pl.title(star['id'] + '  ' + star['varcls'], fontsize=fsize)
     pl.savefig(plotname)
-    pl.show()
+    # pl.show()
     pl.clf()
     
     return (True, chi2, coeffs, fit)
