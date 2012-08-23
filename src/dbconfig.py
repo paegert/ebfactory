@@ -3,14 +3,18 @@ Created on Jun 19, 2012
 
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.1 $
-@date     \$Date: 2012/07/06 20:34:19 $
+@version  \$Revision: 1.2 $
+@date     \$Date: 2012/08/23 20:30:53 $
 
 $Log: dbconfig.py,v $
+Revision 1.2  2012/08/23 20:30:53  paegerm
+raw kight curve and comments added
+
+raw light curve and comments added
+
 Revision 1.1  2012/07/06 20:34:19  paegerm
 Initial revision
 
-Initial revision
 '''
 
 class Asas(object):
@@ -23,6 +27,8 @@ class Asas(object):
         '''
         Constructor
         '''
+        
+        # dictionary
         self.dicttname = 'stars'
         self.dictcols  = ['ID', 'Ra', 'Dec', 'Period', 'T0', 'Vmag', 'Vamp', 
                           'varcls', 'GCVS_ID', 'GCVS_type', 'fmin', 'fmax', 
@@ -48,17 +54,25 @@ class Asas(object):
                            ('jmag', 'f4'), ('hmag', 'f4'), ('kmag', 'f4'), 
                            ('tmassname', 'a20')]
 
+        # raw light curve
+        self.rlctname = 'stars'
+        self.rlccols  = ['staruid', 'hjd', 'vmag', 'vmag_err', 'quality']
+        self.rlctypes = ['INTEGER', 'REAL', 'REAL', 'REAL', 'TEXT']
+        self.rlcnulls = [' NOT NULL', ' NOT NULL', '', '', '']
         
+        # phased light curve
         self.plctname = 'stars'
         self.plccols  = ['staruid', 'phase', 'normmag', 'errnormmag']
         self.plctypes = ['INTEGER', 'REAL', 'REAL', 'REAL']
         self.plcnulls = [' NOT NULL', '', '', '']
         
+        # binned light curve
         self.blctname = 'stars'
         self.blccols  = ['staruid', 'phase', 'normmag', 'errnormmag']
         self.blctypes = ['INTEGER', 'REAL', 'REAL', 'REAL']
         self.blcnulls = [' NOT NULL', '', '', '']
 
+        # knots and coefficients from polyfit
         self.cfftname = 'coeffs'
         self.cffcols  = ['staruid', 'knot1', 'c11', 'c12', 'c13', 
                          'knot2', 'c21', 'c22', 'c23',
@@ -82,7 +96,7 @@ class Asas(object):
                             ('knot4', 'f4'), ('c41', 'f4'), ('c42', 'f4'), 
                             ('c43', 'f4')]
 
-        
+        # fitted light curve from polyfit        
         self.fittname = 'fit'
         self.fitcols  = ['staruid', 'phase', 'value']
         self.fittypes = ['INTEGER', 'REAL', 'REAL']
