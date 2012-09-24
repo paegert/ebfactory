@@ -3,13 +3,16 @@ Created on Jun 18, 2012
 
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.1 $
-@date     \$Date: 2012/07/06 20:34:19 $
+@version  \$Revision: 1.2 $
+@date     \$Date: 2012/09/24 21:26:30 $
 
 $Log: functions.py,v $
-Revision 1.1  2012/07/06 20:34:19  paegerm
-Initial revision
+Revision 1.2  2012/09/24 21:26:30  paegerm
+adding uid of raw light curve entry to phased light curve, adding phase shift
 
+adding uid of raw light curve entry to phased light curve, adding phase shift
+
+Revision 1.1  2012/07/06 20:34:19  paegerm
 Initial revision
 '''
 
@@ -17,10 +20,11 @@ import numpy as np
 
      
 
-def makephasedlc(lc, t0, dictvmag, period):
+def makephasedlc(lc, t0, dictvmag, period, shift = 0.0):
     plc = []
     for entry in lc:
         obstime = entry['hjd']
+        rlcuid  = entry['uid']
         diff = obstime - t0
         nmag  = 2.0 - entry['vmag'] / dictvmag
         err   = entry['vmag_err'] / dictvmag
@@ -29,10 +33,20 @@ def makephasedlc(lc, t0, dictvmag, period):
         if (phase < 0):
             phase += 1.0
         phase -= 0.5
-        plc.append((entry['staruid'], round(phase, 5), 
-                    round(nmag, 5), round(err, 5)))
+        phase -= shift
+        if phase < -0.5:
+            phase += 1.0
+        elif phase > 0.5:
+            phase -= 1.0
+        plc.append([entry['staruid'], rlcuid, round(phase, 5), 
+                    round(nmag, 5), round(err, 5)])
         
-    return plc
+    plc = sorted(plc, key = lambda plc: plc[2])
+    maxgap = 1.0 + plc[0][2] - plc[-1][2] 
+    for i in xrange(1, len(plc)):
+        if plc[i][2] - plc[i - 1][2] > maxgap:
+            maxgap = plc[i][2] - plc[i - 1][2]
+    return (plc, maxgap)
 
 
 
