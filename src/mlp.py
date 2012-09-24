@@ -1,17 +1,20 @@
 '''
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.2 $
-@date     \$Date: 2012/07/20 20:22:22 $
+@version  \$Revision: 1.3 $
+@date     \$Date: 2012/09/24 21:38:31 $
 
 A simple muulti-layer perceptron, currently restricted to one hidden layer
 
 @requires: numpy
 
 $Log: mlp.py,v $
-Revision 1.2  2012/07/20 20:22:22  paegerm
-*** empty log message ***
+Revision 1.3  2012/09/24 21:38:31  paegerm
+adding comment, correcting spelling errors, class mlp --> Mlp
 
+adding comment, correcting spelling errors, class mlp --> Mlp
+
+Revision 1.2  2012/07/20 20:22:22  paegerm
 Adding documentation, adding normalize option to evaluate(), adding stopval to
 earlystopping()
 Adding MlpError class
@@ -42,7 +45,7 @@ class MlpError(Exception):
 	
 	
 
-class mlp(object):
+class Mlp(object):
 	""" A Multi-Layer Perceptron"""
 
 	def __init__(self, inputs, targets, nhidden, 
@@ -76,7 +79,7 @@ class mlp(object):
 		self.mdelta   = mdelta       # allowed difference for multiple results
 
 		self.cm = None
-		self.traintstats = None
+		self.trainstats  = None
 		self.validstats  = None
 		self.teststats   = None
 		self.trainerror = -1.0
@@ -88,8 +91,9 @@ class mlp(object):
 		self.writeweights = False
 		
 		self.normsubtract = None
-		self.normdevide   = None
+		self.normdivide   = None
 		self.classes      = None
+		self.comment      = ''
 
 		# Initialise network
 		self.weights1 = ((random.rand(self.nin + 1, self.nhidden) - 0.5) * 2 / 
@@ -99,17 +103,17 @@ class mlp(object):
 
 
 
-	def setnormvalues(self, subtract, devide):
+	def setnormvalues(self, subtract, divide):
 		'''
 		Set normalization vectors for input values:
-		    normalizedvalue = (value - subtract) / devide
-		Usually subtract is the mean value, devide the standard deviation
+		    normalizedvalue = (value - subtract) / divide
+		Usually subtract is the mean value, divide the standard deviation
 		
 		@param  subtract    Vector of values to subtract from each input column
-		@param  devide      Vector of values to devide difference by
+		@param  divide      Vector of values to divide difference by
 		'''
 		self.normsubtract = subtract
-		self.normdevide   = devide
+		self.normdivide   = divide
 	
 	
 	
@@ -117,9 +121,9 @@ class mlp(object):
 		'''
 		Return normalization vectors
 		
-		@return (normsubtract, normdevide)
+		@return (normsubtract, normdivide)
 		'''
-		return (self.normsubtract, self.normdevide)
+		return (self.normsubtract, self.normdivide)
 
 
 
@@ -317,8 +321,8 @@ class mlp(object):
 		
 		# normalize inputs
 		if ((normalize == True) and 
-			(self.normsubtract != None) and (self.normdevide != None)):
-			inputs = (inputs - self.normsubtract) / self.normdevide
+			(self.normsubtract != None) and (self.normdivide != None)):
+			inputs = (inputs - self.normsubtract) / self.normdivide
 			
 		# add the bias nodes
 		bias = -ones((shape(inputs)[0], 1))
@@ -395,6 +399,8 @@ class mlp(object):
 		olines = []
 		# nrclasses = len(classes)
 		
+		olines.append(self.comment)
+		olines.append('')
 		olines.append('Input  nodes = %d' % self.nin)
 		olines.append('Hidden nodes = %d' % self.nhidden)
 		olines.append('Output nodes = %d, type = %s' % (self.nout, self.outtype))
