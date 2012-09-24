@@ -3,13 +3,16 @@ Created on Jul 2, 2012
 
 @package  runpoly
 @author   map
-@version  \$Revision: 1.5 $
-@date     \$Date: 2012/08/23 16:36:54 $
+@version  \$Revision: 1.6 $
+@date     \$Date: 2012/09/24 21:42:58 $
 
 $Log: runpoly.py,v $
-Revision 1.5  2012/08/23 16:36:54  paegerm
-make fitlc silent for debug = 0
+Revision 1.6  2012/09/24 21:42:58  paegerm
+adding dbconfig option, adding fontsize
 
+adding dbconfig option, adding fontsize
+
+Revision 1.5  2012/08/23 16:36:54  paegerm
 make fitlc silent for debug = 0
 
 Revision 1.4  2012/08/22 15:47:37  paegerm
@@ -67,7 +70,7 @@ def getfit(outstring, staruid):
 
 
 
-def fitlc(star, plc, blc, debug = 0):
+def fitlc(star, plc, blc, debug = 0, fsize = 18):
     if debug > 0:
         print 'processing', star['id']
     polyinname = star['id'] + '.tmp'
@@ -81,8 +84,8 @@ def fitlc(star, plc, blc, debug = 0):
     oldargs = ('asaspolyfit', '--find-knots', '--find-step', polyinname)
     newargs = ('asaspolyfit_new', '--find-knots', '--find-step', polyinname)
 
-    plcphases = [x[2] for x in plc]
-    plcmags   = [x[3] for x in plc]
+    plcphases = [x[3] for x in plc]
+    plcmags   = [x[4] for x in plc]
     blcphases = [x[2] for x in blc]
     blcmags   = [x[3] for x in blc]
     
@@ -134,6 +137,9 @@ def fitlc(star, plc, blc, debug = 0):
     chi2   = None
     coeffs = None
     fit    = None
+    varcls = star['varcls']
+    if varcls == None:
+        varcls = 'not classified'
     if (usefit == None):
         plotname = 'failed/' + star['id'] + '.png'
         pl.plot(plcphases, plcmags, 'k.',
@@ -141,7 +147,7 @@ def fitlc(star, plc, blc, debug = 0):
         pl.xlim(-0.5, 0.5)
         pl.xlabel('Phase')
         pl.ylabel('Flux')
-        pl.title(star['id'] + '  ' + star['varcls'])
+        pl.title(star['id'] + '  ' + varcls)
         pl.savefig(plotname)
         pl.clf()
         return (False, chi2, coeffs, fit)
@@ -156,7 +162,7 @@ def fitlc(star, plc, blc, debug = 0):
     fitphases = [x[1] for x in fit]
     fitvalues = [x[2] for x in fit]
 
-    fsize = 18
+    #fsize = 18
     plotname = 'plots/' + star['id'] + '.png'
 #    fig = pl.figure()
 #    ax  = fig.add_subplot(111)
@@ -170,7 +176,7 @@ def fitlc(star, plc, blc, debug = 0):
     pl.xlim(-0.5, 0.5)
     pl.xlabel('Phase', fontsize=fsize)
     pl.ylabel('normalized mag', fontsize=fsize)
-    pl.title(star['id'] + '  ' + star['varcls'], fontsize=fsize)
+    pl.title(star['id'] + '  ' + varcls, fontsize=fsize)
     pl.savefig(plotname)
     # pl.show()
     pl.clf()
@@ -187,12 +193,18 @@ def get_polyopts():
                       help='database file with binned light curves')
     parser.add_option('-d', dest='debug', type='int', default=1,
                       help='debug setting (default: 1)')
+    parser.add_option('--dbconfig', dest='dbconfig', type = 'string', 
+                      default='Asas',
+                      help='name of database configuration (default = Asas')
     parser.add_option('--dict', dest='dictname', type='string', 
                       default='asasdict.sqlite',
                       help='dictionary database file')
     parser.add_option('--fit', dest='fitname', type='string', 
                       default='asasfit.sqlite',
                       help='database file with fitted light curves')
+    parser.add_option('--fsize', dest='fsize', type='int', 
+                      default=18,
+                      help='font size for plots (default: 18')
     parser.add_option('--plc', dest='plcname', type='string', 
                       default='asasplc.sqlite',
                       help='database file with phased light curves')
@@ -229,17 +241,17 @@ if __name__ == '__main__':
 
     options = get_polyopts()
     
-    cls = getattr(dbconfig, 'Asas')
-    dbconfig = cls()
+    cls = getattr(dbconfig, options.dbconfig)
+    dbc = cls()
     
     # enforce creation if database or table does not exist
     tmpwriter = dbw.DbWriter(options.rootdir + options.fitname, 
-                             dbconfig.cffcols, dbconfig.cfftname, 
-                             dbconfig.cfftypes, dbconfig.cffnulls)
+                             dbc.cffcols, dbc.cfftname, 
+                             dbc.cfftypes, dbc.cffnulls)
     tmpwriter.close()
     tmpwriter = dbw.DbWriter(options.rootdir + options.fitname, 
-                             dbconfig.fitcols, dbconfig.fittname, 
-                             dbconfig.fittypes, dbconfig.fitnulls)
+                             dbc.fitcols, dbc.fittname, 
+                             dbc.fittypes, dbc.fitnulls)
     tmpwriter.close()
 
     watch = Stopwatch()
@@ -250,11 +262,11 @@ if __name__ == '__main__':
     blcreader  = dbr.DbReader(options.rootdir + options.blcname)
     
     dictwriter = dbw.DbWriter(options.rootdir + options.dictname, 
-                              dbconfig.dictcols)
+                              dbc.dictcols)
     cffwriter  = dbw.DbWriter(options.rootdir + options.fitname, 
-                              dbconfig.cffcols, dbconfig.cfftname)
+                              dbc.cffcols, dbc.cfftname)
     fitwriter  = dbw.DbWriter(options.rootdir + options.fitname, 
-                              dbconfig.fitcols, dbconfig.fittname)
+                              dbc.fitcols, dbc.fittname)
     
     generator = dictreader.traverse(options.select, None, 1000)
     nrstars   = 0
@@ -264,7 +276,6 @@ if __name__ == '__main__':
         nrstars += 1
         plc = plcreader.getlc(star['uid'], 'stars', 'phase')
         blc = blcreader.getlc(star['uid'], 'stars', 'phase')
-        print 'processing ', star['id']
         cffwriter.deletebystaruid(star['uid'])
         fitwriter.deletebystaruid(star['uid'])
         if (options.rootdir + star['sdir'] != olddir):
@@ -274,7 +285,8 @@ if __name__ == '__main__':
                 os.mkdir('plots')
             if not os.path.exists('failed'):
                 os.mkdir('failed')
-        (ok, chi2, coeffs, fit) = fitlc(star, plc, blc, options.debug)
+        (ok, chi2, coeffs, fit) = fitlc(star, plc, blc, 
+                                        options.debug, options.fsize)
         dictwriter.update('update stars set chi2 = ? where uid = ?;', 
                           [(chi2, star['uid'])])
         if ok == False:
