@@ -3,17 +3,22 @@ Created on Jul 2, 2012
 
 @package  runpolymp
 @author   map
-@version  \$Revision: 1.1 $
-@date     \$Date: 2012/08/23 16:36:28 $
+@version  \$Revision: 1.2 $
+@date     \$Date: 2012/09/24 21:43:43 $
 
 Multi-process version of runpoly. Set $OMP_NUM_THREADS to desired number of 
 threads
 
 $Log: runpolymp.py,v $
+Revision 1.2  2012/09/24 21:43:43  paegerm
+passing font size to fitlc, setting title to 'not classified' if varcls is
+missing, catching sqlite database lock
+
+passing font size to fitlc, setting title to 'not classified' if varcls is 
+missing, catching sqlite database lock
+
 Revision 1.1  2012/08/23 16:36:28  paegerm
 initial revision
-
-Initial revision
 
 '''
 
@@ -23,6 +28,7 @@ import os
 import subprocess
 import matplotlib.pyplot as pl
 
+import sqlite3
 import sqlitetools.dbwriter as dbw
 import sqlitetools.dbreader as dbr
 
@@ -43,19 +49,23 @@ def runpolyproc(options, lmax, stars):
     plcreader  = dbr.DbReader(options.rootdir + options.plcname)
     blcreader  = dbr.DbReader(options.rootdir + options.blcname)
     dictwriter = dbw.DbWriter(options.rootdir + options.dictname, 
-                              dbconfig.dictcols)
+                              dbc.dictcols, tout = 30.0)
     cffwriter  = dbw.DbWriter(options.rootdir + options.fitname, 
-                              dbconfig.cffcols, dbconfig.cfftname)
+                              dbc.cffcols, dbc.cfftname, tout = 30.0)
     fitwriter  = dbw.DbWriter(options.rootdir + options.fitname, 
-                              dbconfig.fitcols, dbconfig.fittname)
+                              dbc.fitcols, dbc.fittname, tout = 30.0)
     for star in stars:
         nrstars += 1
         staruid = star[0]    
-        sdir = star[15]
+        sdir = star[dbc.sdirindex]
         plc = plcreader.getlc(staruid, 'stars', 'phase')
         blc = blcreader.getlc(staruid, 'stars', 'phase')
-        cffwriter.deletebystaruid(staruid)
-        fitwriter.deletebystaruid(staruid)
+        try:
+            cffwriter.deletebystaruid(staruid)
+            fitwriter.deletebystaruid(staruid)
+        except sqlite3.OperationalError as err:
+            print max, 'fit database is locked'
+            print err
         if (options.rootdir + sdir != olddir):
             olddir = options.rootdir + sdir
             os.chdir(olddir)
@@ -63,10 +73,16 @@ def runpolyproc(options, lmax, stars):
                 os.mkdir('plots')
             if not os.path.exists('failed'):
                 os.mkdir('failed')
-        dstar = {'uid': staruid, 'id': star[1] , 'varcls' : star[8]}
-        (ok, chi2, coeffs, fit) = fitlc(dstar, plc, blc, options.debug)
-        dictwriter.update('update stars set chi2 = ? where uid = ?;', 
-                          [(chi2, staruid)], True)
+        dstar = {'uid': staruid, 'id': star[1] , 'varcls' : star[dbc.varclsindex]}
+        (ok, chi2, coeffs, fit) = fitlc(dstar, plc, blc, 
+                                        options.debug, options.fsize)
+        try:
+            dictwriter.update('update stars set chi2 = ? where uid = ?;', 
+                              [(chi2, staruid)], True)
+        except sqlite3.OperationalError as err:
+            print max, 'dict database is locked'
+            print err
+
         if ok == False:
             failed += 1
             continue
@@ -75,8 +91,12 @@ def runpolyproc(options, lmax, stars):
             for i in range(0, 8):
                 coeffs.append(0.0)
         coeffs.insert(0, staruid)
-        fitwriter.insert(fit, True)
-        cffwriter.insert((coeffs,), True)
+        try:
+            fitwriter.insert(fit, True)
+            cffwriter.insert((coeffs,), True)
+        except sqlite3.OperationalError as err:
+            print max, 'fit database is locked while inserting'
+            print err
         
     plcreader.close()
     blcreader.close()
@@ -96,17 +116,17 @@ if __name__ == '__main__':
     options = get_polyopts()
     chunksize = 100
     
-    cls = getattr(dbconfig, 'Asas')
-    dbconfig = cls()
+    cls = getattr(dbconfig, options.dbconfig)
+    dbc = cls()
     
     # enforce creation if database or table does not exist
     tmpwriter = dbw.DbWriter(options.rootdir + options.fitname, 
-                             dbconfig.cffcols, dbconfig.cfftname, 
-                             dbconfig.cfftypes, dbconfig.cffnulls)
+                             dbc.cffcols, dbc.cfftname, 
+                             dbc.cfftypes, dbc.cffnulls)
     tmpwriter.close()
     tmpwriter = dbw.DbWriter(options.rootdir + options.fitname, 
-                             dbconfig.fitcols, dbconfig.fittname, 
-                             dbconfig.fittypes, dbconfig.fitnulls)
+                             dbc.fitcols, dbc.fittname, 
+                             dbc.fittypes, dbc.fitnulls)
     tmpwriter.close()
 
     watch = Stopwatch()
