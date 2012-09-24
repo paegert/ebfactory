@@ -3,18 +3,22 @@ Created on Jul 18, 2012
 
 @package  trainnetmp
 @author   map
-@version  \$Revision: 1.1 $
-@date     \$Date: 2012/07/20 20:24:34 $
+@version  \$Revision: 1.2 $
+@date     \$Date: 2012/09/24 21:46:52 $
 
 Multi-processing training of multiple networks at once. Be sue to have the 
 environment variable OMP_NUM_THREADS set to a reasonable value (number of CPUs
 for example). The default is working with just 2 processes.
 
 $Log: trainnetmp.py,v $
-Revision 1.1  2012/07/20 20:24:34  paegerm
-*** empty log message ***
+Revision 1.2  2012/09/24 21:46:52  paegerm
+store select statement as comment in net object, class mlp --> Mlp
 
+store select statement as comment in net object, class mlp --> Mlp
+
+Revision 1.1  2012/07/20 20:24:34  paegerm
 Initial revision
+
 '''
 
 
@@ -58,7 +62,7 @@ if __name__ == '__main__':
     lf = Logfile(lfname, True, True)
     
     cls = getattr(dbconfig, 'Asas')
-    dbconfig = cls()
+    dbc = cls()
     
     watch = Stopwatch()
     watch.start()
@@ -67,11 +71,11 @@ if __name__ == '__main__':
     
     # read from database
     lf.write(options.select)
-    (dictarr, coeffarr, nrstars, noclass) = readdata(options, dbconfig)
+    (dictarr, coeffarr, nrstars, noclass) = readdata(options, dbc)
     
     # prepare the data, target and normalization values
     (alld, allt, allnames, 
-     normsubtract, normdevide) = prepdata(options, dictarr, coeffarr)
+     normsubtract, normdevide) = prepdata(options, dbc, dictarr, coeffarr)
     
     print nrstars, ' selected in '
     print noclass, ' stars skipped'
@@ -101,11 +105,12 @@ if __name__ == '__main__':
                 args = (traind, traint, validd, validt, 
                         options.eta, options.nriter, options.stopval, True)
 
-            net = mlp.mlp(traind, traint, nhidden = i,
+            net = mlp.Mlp(traind, traint, nhidden = i,
                           beta = options.beta, momentum = options.momentum, 
                           outtype = options.outtype, 
                           multires = options.multi, mdelta = options.mdelta)
-            net.subdir = resdir
+            net.subdir  = resdir
+            net.comment = options.select
             if not os.path.exists(net.subdir):
                 os.mkdir(net.subdir)
             net.debug = options.debug
