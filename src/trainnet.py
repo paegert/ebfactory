@@ -3,8 +3,8 @@ Created on Jul 5, 2012
 
 @package  trainnet
 @author   map
-@version  \$Revision: 1.2 $
-@date     \$Date: 2012/07/20 20:24:34 $
+@version  \$Revision: 1.3 $
+@date     \$Date: 2012/09/24 21:46:22 $
 
 Routines for retrieving, preparing and handing data over to a neural network 
 for training. Note: the main part is just for testing purposes, use trainnetmp
@@ -12,9 +12,14 @@ for all real training
 
 
 $Log: trainnet.py,v $
-Revision 1.2  2012/07/20 20:24:34  paegerm
-*** empty log message ***
+Revision 1.3  2012/09/24 21:46:22  paegerm
+store select statement as comment in net object, class mlp --> Mlp,
+add database model to prepdata
 
+store select statement as comment in net object, class mlp --> Mlp,
+add database model to prepdata
+
+Revision 1.2  2012/07/20 20:24:34  paegerm
 adding readdata(), resuffle(), parseoptions() and options for the network
 
 Revision 1.1  2012/07/06 20:34:19  paegerm
@@ -55,7 +60,7 @@ def maketarget(classes, varcls, target):
 
 
 
-def prepdata(options, arr, cff, shuffle = True, 
+def prepdata(options, dbc, arr, cff, shuffle = True, 
              normsubtract = None, normdevide = None):
     '''
     Prepare data for neural network (assemble and normalize). Note: the polyfit
@@ -106,7 +111,7 @@ def prepdata(options, arr, cff, shuffle = True,
         
         # add period, magnitude, difference of normalized magnitudes, chi2
         alld[i, 16]  = np.log10(arr[i]['period'])
-        alld[i, 17]  = arr[i]['vmag']
+        alld[i, 17]  = arr[i][dbc.t['mag']]
         alld[i, 18]  = arr[i]['fmax'] - arr[i]['fmin']
         alld[i, 19]  = arr[i]['chi2']
         
@@ -322,7 +327,7 @@ if __name__ == '__main__':
     (options, args) = parseoptions()
     
     cls = getattr(dbconfig, 'Asas')
-    dbconfig = cls()
+    dbc = cls()
     
     watch = Stopwatch()
     watch.start()
@@ -330,11 +335,11 @@ if __name__ == '__main__':
     watchprep.start()
     
     # read from database
-    (dictarr, coeffarr, nrstars, noclass) = readdata(options, dbconfig)
+    (dictarr, coeffarr, nrstars, noclass) = readdata(options, dbc)
     
     # prepare the data, target and normalization values
     (alld, allt, allnames, 
-     normsubtract, normdevide) = prepdata(options, dictarr, coeffarr)
+     normsubtract, normdevide) = prepdata(options, dbc, dictarr, coeffarr)
     
     print nrstars, ' selected in '
     print noclass, ' stars skipped'
@@ -346,14 +351,15 @@ if __name__ == '__main__':
      testd, testt, testn)    = splitdata(alld, allt, allnames, 0.5, 0.25)
 
     # testcode
-    net = mlp.mlp(traind, traint, nhidden = options.minhidden, 
+    net = mlp.Mlp(traind, traint, nhidden = options.minhidden, 
                   beta = options.beta, momentum = options.momentum, 
                   outtype = options.outtype, 
                   multires = options.multi, mdelta = options.mdelta)
     net.subdir = options.rootdir + options.resdir
     if not os.path.exists(net.subdir):
         os.mkdir(net.subdir)
-    net.debug = options.debug
+    net.debug  = options.debug
+    net.select = options.select
     net.setnormvalues(normsubtract, normdevide)
     try:
         net.earlystopping(traind, traint, validd, validt, 
