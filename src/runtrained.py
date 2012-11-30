@@ -3,15 +3,18 @@ Created on Jul 6, 2012
 
 @package  runtrained
 @author   map
-@version  \$Revision: 1.2 $
-@date     \$Date: 2012/09/24 21:45:39 $
+@version  \$Revision: 1.3 $
+@date     \$Date: 2012/11/30 20:39:20 $
 
 Sample program for running a trained network
 
 $Log: runtrained.py,v $
-Revision 1.2  2012/09/24 21:45:39  paegerm
-adding dbconfig option, loading net from database
+Revision 1.3  2012/11/30 20:39:20  paegerm
+convert del to nodel option
 
+convert del to nodel option
+
+Revision 1.2  2012/09/24 21:45:39  paegerm
 adding dbconfig option, loading net from database
 
 Revision 1.1  2012/07/06 20:34:19  paegerm
@@ -41,6 +44,9 @@ import trainnet
 if __name__ == '__main__':
     usage = '%prog [options] [fitname]'
     parser = OptionParser(usage=usage)
+    parser.add_option('--clscol', dest='clscol', type='string', 
+                      default='varcls',
+                      help='dictionary column for class (varcls)')
     parser.add_option('--clsname', dest='clsname', type='string', 
                       default='asascls.sqlite',
                       help='name for database with results (asascls.sqlite)')
@@ -49,8 +55,10 @@ if __name__ == '__main__':
     parser.add_option('--dbconfig', dest='dbconfig', type = 'string', 
                       default='Asas',
                       help='name of database configuration (default = Asas')
-    parser.add_option('--del', dest='delete', action='store_true', default=True,
-                      help='per starudi: delete old entries in plc (default = True)')
+#    parser.add_option('--del', dest='delete', action='store_true', default=True,
+#                      help='per starudi: delete old entries in plc (default = True)')
+    parser.add_option('--nodel', dest='delete', action='store_false', default=True,
+                      help='per staruid: do not delete old entries (default = delete)')
     parser.add_option('--dict', dest='dictname', type='string', 
                       default='asasdict.sqlite',
                       help='dictionary database file')
@@ -108,6 +116,9 @@ if __name__ == '__main__':
     
     watch = Stopwatch()
     watch.start()
+    
+    watch2 = Stopwatch()
+    watch2.start()
 
     dictreader = dbr.DbReader(options.rootdir + options.dictname)
     fitreader  = dbr.DbReader(options.rootdir + options.fitname)
@@ -138,6 +149,9 @@ if __name__ == '__main__':
     dictreader.close()
     fitreader.close()
     
+    readtime = watch2.stop()
+    watch2.start()
+
     net = loadnet.loadnet(options.fqnetdb, options.netuid, options.netname)
     options.classes = net.classes
 
@@ -147,15 +161,28 @@ if __name__ == '__main__':
                                                    coeffarr, False,
                                                    net.normsubtract, 
                                                    net.normdevide)
+    preptime = watch2.stop()
+    watch2.start()
     
 #    print 'initial report'
 #    net.report('%7s ', '%7d ', '%7.2f ', options.classes)
 
     print ''
+    print nofit, 'stars without fit'
     res = net.evaluate(alld, False)
+    cm = net.confmat(alld, allt, True)
+    net.comment = options.select
+    net.trainstats = None
+    net.validstats = None
+    net.teststats  = None
+    net.report('%7s ', '%7d ', '%7.2f ', options.classes, options.repname,
+               '%7s', True, len(alld))
+    classtime = watch2.stop()
+    watch2.start()
+    
     probidx = res.argsort(axis=1)
     maxidx  = len(net.classes) - 1
-    dictwriter = dbw.DbWriter(options.rootdir + options.dictname, dbc.dictcols)
+#    dictwriter = dbw.DbWriter(options.rootdir + options.dictname, dbc.dictcols)
     clswriter  = dbw.DbWriter(options.rootdir + options.clsname, dbc.clscols, 
                               dbc.clstname, dbc.clstypes, dbc.clsnulls)
     repf = None
@@ -165,8 +192,8 @@ if __name__ == '__main__':
         
     clss = []
     for i in xrange(len(allnames)):
-        dictwriter.update('update stars set varcls = ? where id = ?', 
-                          [(net.classes[probidx[i][maxidx]], allnames[i])], False)
+#        dictwriter.update('update stars set varcls = ? where id = ?', 
+#                          [(net.classes[probidx[i][maxidx]], allnames[i])], False)
         if (options.delete == True):
             clswriter.deletebystaruid(staruids[i])
         clss.append([staruids[i], allnames[i], 
@@ -191,12 +218,17 @@ if __name__ == '__main__':
 
     if (repf != None):
         repf.close()    
-    dictwriter.commit()
-    dictwriter.close()
+#    dictwriter.commit()
+#    dictwriter.close()
     
     clswriter.insert(clss, True)
     clswriter.close()
     
     print nrstars, 'light curves prepared and classified in ', watch.stop(), 's'
+    print 'reading records:', readtime
+    print 'preparing data :', preptime
+    print 'classification :', classtime
+    print 'writing results:', watch2.stop()
+    print ''
     print 'Done'
     
