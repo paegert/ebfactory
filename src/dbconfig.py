@@ -3,14 +3,18 @@ Created on Jun 19, 2012
 
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.3 $
-@date     \$Date: 2012/09/24 21:24:18 $
+@version  \$Revision: 1.4 $
+@date     \$Date: 2012/11/30 20:27:55 $
 
 $Log: dbconfig.py,v $
-Revision 1.3  2012/09/24 21:24:18  paegerm
-adding class for LINEAR database, adding statistic functions,
-adding rlcuid to phased light curve
+Revision 1.4  2012/11/30 20:27:55  paegerm
+adding Verr to missingstats for Asas, adding calcls, calprob to Asas dict,
+correcting index in getto and getperiod for Asas
 
+adding Verr to missingstats for Asas, adding calcls, calprob to Asas dict,
+correcting index in getto and getperiod for Asas
+
+Revision 1.3  2012/09/24 21:24:18  paegerm
 adding class for LINEAR database, adding statistic functions, 
 adding rlcuid to phased light curve
 
@@ -38,23 +42,23 @@ class Asas(object):
         
         # dictionary
         self.dicttname = 'stars'
-        self.t         = {'id' : 1, 'mag' : 5, 'mean' : 5, 'median' : 24,
+        self.t         = {'id' : 1, 'mag' : 6, 'mean' : 6, 'median' : 24,
                           'varcls' : 20}
         self.dictcols  = ['ID', 'Ra', 'Dec', 'Period', 'T0', 'Vmag', 'Vamp', 
                           'varcls', 'GCVS_ID', 'GCVS_type', 'fmin', 'fmax', 
                           'stddev', 'chi2', 'sdir', 'ir12', 'ir25', 'ir60', 
                           'ir100', 'jmag', 'hmag', 'kmag', 'tmassname', 
-                          'Verr', 'Vmedian', 'plcmaxgap']
+                          'Verr', 'Vmedian', 'plcmaxgap', 'calcls', 'calprob']
         self.dicttypes = ['TEXT', 'REAL', 'REAL', 'REAL', 'REAL', 'REAL', 'REAL', 
                           'TEXT', 'TEXT', 'TEXT', 'REAL', 'REAL', 
                           'REAL', 'REAL', 'TEXT', 'REAL', 'REAL', 'REAL', 
                           'REAL', 'REAL', 'REAL', 'REAL', 'TEXT', 
-                          'REAL', 'REAL', 'REAL']
+                          'REAL', 'REAL', 'REAL', 'TEXT', 'REAL']
         self.dictnulls = ['NOT NULL', ' NOT NULL', ' NOT NULL', '', '', '', '', 
                           '', '', '', '', '', 
                           '', '', '', '', '', '', 
                           '', '', '', '', '',
-                          '', '', '']
+                          '', '', '', '', '']
         self.varclsindex = 8
         self.sdirindex   = 15
         self.npdicttype = [('uid', 'i4'), ('id', 'a13'), 
@@ -68,7 +72,8 @@ class Asas(object):
                            ('IR60', 'f4'), ('IR100', 'f4'), 
                            ('jmag', 'f4'), ('hmag', 'f4'), ('kmag', 'f4'), 
                            ('tmassname', 'a20'), ('Verr', 'f4'), 
-                           ('Vmedian', 'f4'), ('plcmaxgap', 'f4')]
+                           ('Vmedian', 'f4'), ('plcmaxgap', 'f4'),
+                           ('calcls', 'a20'), ('calprob', 'f4')]
 
         # raw light curve
         self.rlctname = 'stars'
@@ -121,7 +126,7 @@ class Asas(object):
         self.fitnulls = [' NOT NULL', ' NOT NULL', ' NOT NULL']
 
         self.missingstats = 'update stars ' \
-                            'set Vmed = ? where uid = ?;'
+                            'set Vmedian = ?, Verr = ? where uid = ?;'
         self.allstats = 'update stars ' \
                         'set Vmag = ?, Verr = ?, medmag = ?, ramp = ?, ' + \
                         'fmin = ?, fmax = ? where uid = ?;'
@@ -198,14 +203,14 @@ class Asas(object):
     
     
     def getperiod(self, star):
-        return star[3]
+        return star[4]
     
     
     def getshift(self, star):
         return 0.0
     
     def gett0(self, star):
-        return star[4]
+        return star[5]
 
 
 
