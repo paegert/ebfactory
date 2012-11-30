@@ -3,13 +3,20 @@ Created on Jul 2, 2012
 
 @package  runpoly
 @author   map
-@version  \$Revision: 1.6 $
-@date     \$Date: 2012/09/24 21:42:58 $
+@version  \$Revision: 1.7 $
+@date     \$Date: 2012/11/30 20:37:27 $
 
 $Log: runpoly.py,v $
-Revision 1.6  2012/09/24 21:42:58  paegerm
-adding dbconfig option, adding fontsize
+Revision 1.7  2012/11/30 20:37:27  paegerm
+pass options to fitlc, add clscol option
+adding period to plots
+adding logfile option
 
+pass options to fitlc, add clscol option
+adding period to plots
+adding logfile option
+
+Revision 1.6  2012/09/24 21:42:58  paegerm
 adding dbconfig option, adding fontsize
 
 Revision 1.5  2012/08/23 16:36:54  paegerm
@@ -41,6 +48,7 @@ import sqlitetools.dbreader as dbr
 import dbconfig
 from functions import *
 from stopwatch import *
+from logfile import *
 
 
 
@@ -70,9 +78,10 @@ def getfit(outstring, staruid):
 
 
 
-def fitlc(star, plc, blc, debug = 0, fsize = 18):
-    if debug > 0:
+def fitlc(star, plc, blc, options):
+    if options.debug > 0:
         print 'processing', star['id']
+    fsize = options.fsize
     polyinname = star['id'] + '.tmp'
     polyfile = open(polyinname, 'w')
     for entry in blc:
@@ -102,7 +111,7 @@ def fitlc(star, plc, blc, debug = 0, fsize = 18):
     resold = p.returncode
     if (resold == 0):
         (oldchi2, oldcoeffs, oldfit) = getfit(outstring, star['uid'])
-    if (debug > 0):
+    if (options.debug > 0):
         print 'resold = ', resold, ' old chi2 = ', oldchi2
 
     p = subprocess.Popen(newargs, stdout=subprocess.PIPE)
@@ -110,7 +119,7 @@ def fitlc(star, plc, blc, debug = 0, fsize = 18):
     resnew = p.returncode
     if (resnew == 0):
         (newchi2, newcoeffs, newfit) = getfit(outstring, star['uid'])
-    if (debug > 0):
+    if (options.debug > 0):
         print 'resnew = ', resnew, ' new chi2 = ', newchi2
 
     if (resold == 0):
@@ -145,7 +154,8 @@ def fitlc(star, plc, blc, debug = 0, fsize = 18):
         pl.plot(plcphases, plcmags, 'k.',
                 blcphases, blcmags, 'r.')
         pl.xlim(-0.5, 0.5)
-        pl.xlabel('Phase')
+        tmp = 'Phase (Period = ' + str(star['Period']) + ' d)'
+        pl.xlabel(tmp, fontsize=options.fsize)
         pl.ylabel('Flux')
         pl.title(star['id'] + '  ' + varcls)
         pl.savefig(plotname)
@@ -174,7 +184,8 @@ def fitlc(star, plc, blc, debug = 0, fsize = 18):
     pl.xticks(fontsize = fsize)
     pl.yticks(fontsize = fsize)
     pl.xlim(-0.5, 0.5)
-    pl.xlabel('Phase', fontsize=fsize)
+    tmp = 'Phase (Period = ' + str(star['Period']) + ' d)'
+    pl.xlabel(tmp, fontsize=options.fsize)
     pl.ylabel('normalized mag', fontsize=fsize)
     pl.title(star['id'] + '  ' + varcls, fontsize=fsize)
     pl.savefig(plotname)
@@ -191,6 +202,9 @@ def get_polyopts():
     parser.add_option('--blc', dest='blcname', type='string', 
                       default='asasblc.sqlite',
                       help='database file with binned light curves')
+    parser.add_option('--clscol', dest='clscol', type='string', 
+                      default='varcls',
+                      help='dictionary column for class (varcls)')
     parser.add_option('-d', dest='debug', type='int', default=1,
                       help='debug setting (default: 1)')
     parser.add_option('--dbconfig', dest='dbconfig', type = 'string', 
@@ -205,6 +219,9 @@ def get_polyopts():
     parser.add_option('--fsize', dest='fsize', type='int', 
                       default=18,
                       help='font size for plots (default: 18')
+    parser.add_option('--logfile', dest='logfile', type='string', 
+                      default=None,
+                      help='name of logfile (None)')
     parser.add_option('--plc', dest='plcname', type='string', 
                       default='asasplc.sqlite',
                       help='database file with phased light curves')
@@ -232,6 +249,8 @@ def get_polyopts():
         options.select = fsel.read()
         fsel.close()
         options.select = options.select.replace("\n", "")
+    
+    options.lf = Logfile(options.logfile, True, True)
 
     return options
 
@@ -285,8 +304,8 @@ if __name__ == '__main__':
                 os.mkdir('plots')
             if not os.path.exists('failed'):
                 os.mkdir('failed')
-        (ok, chi2, coeffs, fit) = fitlc(star, plc, blc, 
-                                        options.debug, options.fsize)
+        (ok, chi2, coeffs, fit) = fitlc(star, plc, blc, options)
+#                                        options.debug, options.fsize)
         dictwriter.update('update stars set chi2 = ? where uid = ?;', 
                           [(chi2, star['uid'])])
         if ok == False:
