@@ -3,17 +3,25 @@ Created on Jul 2, 2012
 
 @package  runpolymp
 @author   map
-@version  \$Revision: 1.2 $
-@date     \$Date: 2012/09/24 21:43:43 $
+@version  \$Revision: 1.3 $
+@date     \$Date: 2012/11/30 20:38:21 $
 
 Multi-process version of runpoly. Set $OMP_NUM_THREADS to desired number of 
 threads
 
 $Log: runpolymp.py,v $
-Revision 1.2  2012/09/24 21:43:43  paegerm
-passing font size to fitlc, setting title to 'not classified' if varcls is
-missing, catching sqlite database lock
+Revision 1.3  2012/11/30 20:38:21  paegerm
+passing options to fitlc, catching OSError in case another process created
+the dictionary before the actual one could
+converting prints to writing to logfile
+passing options object to fitlc
 
+passing options to fitlc, catching OSError in case another process created 
+the dictionary before the actual one could
+converting prints to writing to logfile
+passing options object to fitlc
+
+Revision 1.2  2012/09/24 21:43:43  paegerm
 passing font size to fitlc, setting title to 'not classified' if varcls is 
 missing, catching sqlite database lock
 
@@ -40,12 +48,12 @@ from runpoly import *
 
 
 
-def runpolyproc(options, lmax, stars):
-    print 'max = ', lmax
+def runpolyproc(options, dbc, lmax, stars):
     nrstars   = 0
     failed    = 0
     olddir    = options.rootdir
     os.chdir(olddir)
+    options.lf.write('max = ' + str(lmax))
     plcreader  = dbr.DbReader(options.rootdir + options.plcname)
     blcreader  = dbr.DbReader(options.rootdir + options.blcname)
     dictwriter = dbw.DbWriter(options.rootdir + options.dictname, 
@@ -70,12 +78,20 @@ def runpolyproc(options, lmax, stars):
             olddir = options.rootdir + sdir
             os.chdir(olddir)
             if not os.path.exists('plots'):
-                os.mkdir('plots')
+                try:
+                    os.mkdir('plots')
+                except OSError:       # in case its created by another process
+                    pass
             if not os.path.exists('failed'):
-                os.mkdir('failed')
-        dstar = {'uid': staruid, 'id': star[1] , 'varcls' : star[dbc.varclsindex]}
-        (ok, chi2, coeffs, fit) = fitlc(dstar, plc, blc, 
-                                        options.debug, options.fsize)
+                try:
+                    os.mkdir('failed')
+                except OSError:
+                    pass
+        varclsidx = 1 + dbc.dictcols.index(options.clscol)
+        dstar = {'uid': staruid, 'id': star[1] , 'varcls' : star[varclsidx], 
+                 'Period' : dbc.getperiod(star)}
+        (ok, chi2, coeffs, fit) = fitlc(dstar, plc, blc, options)
+#                                        options.debug, options.fsize)
         try:
             dictwriter.update('update stars set chi2 = ? where uid = ?;', 
                               [(chi2, staruid)], True)
@@ -149,9 +165,9 @@ if __name__ == '__main__':
         lmax = (i + 1) * chunksize
         if (lmax > len(stars)):
             lmax = len(stars)
-#        runpolyproc(options, lmax, stars[lmin:lmax])
+#        runpolyproc(options, dbc, lmax, stars[lmin:lmax])
         results.append(pool.apply_async(runpolyproc, 
-                                        (options, lmax, stars[lmin:lmax])))
+                                        (options, dbc, lmax, stars[lmin:lmax])))
         
     pool.close()
     pool.join()
@@ -166,8 +182,9 @@ if __name__ == '__main__':
         nrstars += nr
         failed  += nf
         
-    print nrstars, ' processed, ', failed, ' lightcurves failed'
-    print watch.stop(), ' seconds'
-    print ''
-    print 'Done'
+    options.lf.write(str(nrstars) + ' processed, ' + 
+                     str(failed) + ' lightcurves failed')
+    options.lf.write(str(watch.stop()) + ' seconds')
+    options.lf.write('')
+    options.lf.write('Done')
     
