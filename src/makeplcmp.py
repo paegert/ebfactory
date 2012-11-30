@@ -3,14 +3,19 @@ Created on Jun 18, 2012
 
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.1 $
-@date     \$Date: 2012/09/24 21:36:16 $
+@version  \$Revision: 1.2 $
+@date     \$Date: 2012/11/30 20:32:04 $
 
 multi-process version of makeplc and makeblc, phases the lightcurve if T0 <= 0.0
 
 $Log: makeplcmp.py,v $
+Revision 1.2  2012/11/30 20:32:04  paegerm
+adding logfile option, cleaning code
+
+adding logfile option, cleaning code
+
 Revision 1.1  2012/09/24 21:36:16  paegerm
-multi-process version of makeplc and makeblc, phases the lightcurve if T0 <= 0.0
+adding logfile, option del converted to nodel
 
 Initial revision
 
@@ -28,6 +33,7 @@ import sqlitetools.dbreader as dbr
 import dbconfig
 from functions import *
 from stopwatch import *
+from logfile import *
 
 
 def binlc(plc, staruid, nrbins = 100):
@@ -83,7 +89,7 @@ def binlc(plc, staruid, nrbins = 100):
 
 
 def runmakeplc(options, lmax, stars):
-    print 'max = ', lmax
+    options.lf.write('max = ' + str(lmax))
     nrstars   = 0
     failed    = 0
     gaps = []
@@ -99,39 +105,25 @@ def runmakeplc(options, lmax, stars):
         period = dbc.getperiod(star)    
         shift  = dbc.getshift(star)
         t0     = dbc.gett0(star)        
-        magmin = 999.9
-        magmax = 0.0
-        hjdmin = 0.0
-        hjdmax = 0.0
-#        if (t0 <= 0.0):
-#            for entry in lc:
-#                if entry['vmag'] < magmin:
-#                    magmin = entry['vmag']
-#                    hjdmin = entry['hjd']
-#                if entry['vmag'] > magmax:
-#                    magmax = entry['vmag']
-#                    hjdmax = entry['hjd']
-#            if (star[dbc.t['mean']] > star[dbc.t['median']]):
-#                t0 = hjdmax
-#            else:
-#                t0 = hjdmin
         if period <= 0.0:
             failed += 1
             continue
         if options.delete == True:
             plcwriter = dbw.DbWriter(options.rootdir + options.plcname, dbc.plccols, 
-                             'stars', dbc.plctypes, dbc.plcnulls)
+                             'stars', dbc.plctypes, dbc.plcnulls, tout=60.0)
             plcwriter.deletebystaruid(staruid)
             plcwriter.close()
             blcwriter = dbw.DbWriter(options.rootdir + options.blcname, dbc.blccols, 
-                             'stars', dbc.blctypes, dbc.blcnulls)
+                             'stars', dbc.blctypes, dbc.blcnulls, tout=60.0)
             blcwriter.deletebystaruid(staruid)
             blcwriter.close()
         (plc, gap) = makephasedlc(lc, t0, star[dbc.t['mag']], 
                                   period, 0.0)
         (blc, mmin, mmax, fmin, fmax) = binlc(plc, staruid, options.nrbins)
         if (t0 <= 0.0):
-            shift = 0.0
+            hjdmin = 0.0
+            hjdmax = 0.0
+            shift  = 0.0
             if (star[dbc.t['mean']] < star[dbc.t['median']]):
                 shift = -blc[mmax][1]
                 t0 = hjdmax
@@ -158,15 +150,15 @@ def runmakeplc(options, lmax, stars):
     
     lcreader.close()    
     plcwriter = dbw.DbWriter(options.rootdir + options.plcname, dbc.plccols, 
-                             'stars', dbc.plctypes, dbc.plcnulls, tout = 30.0)
+                             'stars', dbc.plctypes, dbc.plcnulls, tout = 60.0)
     plcwriter.insert(plcs, True)
     plcwriter.close()
     blcwriter = dbw.DbWriter(options.rootdir + options.blcname, dbc.blccols, 
-                             'stars', dbc.blctypes, dbc.blcnulls, tout = 30.0)
+                             'stars', dbc.blctypes, dbc.blcnulls, tout = 60.0)
     blcwriter.insert(blcs, True)
     blcwriter.close()
     
-    print 'done', lmax
+    options.lf.write('done ' + str(lmax))
     return gaps
     
 
@@ -182,11 +174,16 @@ if __name__ == '__main__':
     parser.add_option('--dbconfig', dest='dbconfig', type = 'string', 
                       default='Asas',
                       help='name of database configuration (default = Asas')
-    parser.add_option('--del', dest='delete', action='store_true', default=True,
-                      help='per starudi: delete old entries in plc (default = True)')
+#    parser.add_option('--del', dest='delete', action='store_true', default=True,
+#                      help='per staruid: delete old entries in plc (default = True)')
+    parser.add_option('--nodel', dest='delete', action='store_false', default=True,
+                      help='per staruid: do not delete old entries in plc (default = delete)')
     parser.add_option('--dict', dest='dictname', type='string', 
                       default='asasdict.sqlite',
                       help='dictionary database file')
+    parser.add_option('--logfile', dest='logfile', type='string',
+                      default=None,
+                      help='name of logfile (None)')
     parser.add_option('--nrbins', dest='nrbins', type='int', 
                       default=100,
                       help='number of bins (100)')
@@ -219,6 +216,8 @@ if __name__ == '__main__':
         options.select = fsel.read()
         fsel.close()
         options.select = options.select.replace("\n", "")
+    
+    options.lf = Logfile(options.logfile, True, True)
 
     watch = Stopwatch()
     watch.start()
@@ -251,7 +250,7 @@ if __name__ == '__main__':
     pool.join()
     
     # collect results
-    print 'updating dictionary'
+    options.lf.write('updating dictionary')
     nrstars = 0
     failed  = 0
     nr = 0
@@ -266,7 +265,8 @@ if __name__ == '__main__':
                           gaps, True)
     dictwriter.close()
     
-    print nrstars, 'light curves read in ', watch.stop(), ' seconds'
-    print failed, 'light curves failed to phase (period <= 0)' 
-    print ''       
-    print 'done'
+    options.lf.write(str(nrstars) + ' light curves read in ' + 
+                     str(watch.stop()) + ' seconds')
+    options.lf.write(str(failed) + ' light curves failed to phase (period <= 0)') 
+    options.lf.write('')       
+    options.lf.write('done')
