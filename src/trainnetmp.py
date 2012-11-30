@@ -3,17 +3,20 @@ Created on Jul 18, 2012
 
 @package  trainnetmp
 @author   map
-@version  \$Revision: 1.2 $
-@date     \$Date: 2012/09/24 21:46:52 $
+@version  \$Revision: 1.3 $
+@date     \$Date: 2012/11/30 20:40:59 $
 
 Multi-processing training of multiple networks at once. Be sue to have the 
 environment variable OMP_NUM_THREADS set to a reasonable value (number of CPUs
 for example). The default is working with just 2 processes.
 
 $Log: trainnetmp.py,v $
-Revision 1.2  2012/09/24 21:46:52  paegerm
-store select statement as comment in net object, class mlp --> Mlp
+Revision 1.3  2012/11/30 20:40:59  paegerm
+adding clscol option, adding logfile and converting print statements
 
+adding clscol option, adding logfile and converting print statements
+
+Revision 1.2  2012/09/24 21:46:52  paegerm
 store select statement as comment in net object, class mlp --> Mlp
 
 Revision 1.1  2012/07/20 20:24:34  paegerm
@@ -56,10 +59,6 @@ if __name__ == '__main__':
     resdir = options.rootdir + options.resdir
     if not os.path.exists(resdir):
         os.mkdir(resdir)
-    lfname = None
-    if (options.logfile != None):
-        lfname = resdir + '/' + options.logfile
-    lf = Logfile(lfname, True, True)
     
     cls = getattr(dbconfig, 'Asas')
     dbc = cls()
@@ -70,16 +69,18 @@ if __name__ == '__main__':
     watchprep.start()
     
     # read from database
-    lf.write(options.select)
-    (dictarr, coeffarr, nrstars, noclass) = readdata(options, dbc)
+    options.lf.write(options.select)
+    (dictarr, coeffarr, nrstars, noclass, nofit) = readdata(options, dbc)
     
     # prepare the data, target and normalization values
     (alld, allt, allnames, 
      normsubtract, normdevide) = prepdata(options, dbc, dictarr, coeffarr)
     
-    print nrstars, ' selected in '
-    print noclass, ' stars skipped'
-    print nrstars - noclass, 'prepared in', watchprep.stop(), ' seconds'
+    options.lf.write(str(nrstars) + ' selected')
+    options.lf.write(str(noclass) + ' stars with unknown class')
+    options.lf.write(str(nofit) + ' stars without fit')
+    options.lf.write(str(nrstars - noclass) + ' prepared in ' + 
+                     str(watchprep.stop()) + ' seconds')
     watchprep.start()
 
     # split into training, validation and testing set
@@ -115,7 +116,9 @@ if __name__ == '__main__':
                 os.mkdir(net.subdir)
             net.debug = options.debug
             net.setnormvalues(normsubtract, normdevide)
-            kwargs = {'net': net, 'nrhidden': i, 'iteration': j, 'logfile': lf}
+            kwargs = {'net': net, 'nrhidden': i, 'iteration': j, 
+                      'logfile': options.lf}
+#            callnet(*args, **kwargs)
             results.append(pool.apply_async(callnet, args, kwargs))
             
     # collect results and write a summary report, pickle the network with the 
@@ -167,7 +170,9 @@ if __name__ == '__main__':
     oline = '%f minutes over all\n' % (watch.stop() / 60.0)
     of.write(oline)
     of.close()
-        
+
+    options.lf.write(oline)
+            
     print ''
     print oline
     print 'done'
