@@ -3,15 +3,18 @@ Created on Aug 28, 2012
 
 @package  makestats
 @author   map
-@version  \$Revision: 1.1 $
-@date     \$Date: 2012/09/24 21:37:00 $
+@version  \$Revision: 1.2 $
+@date     \$Date: 2012/11/30 20:32:48 $
 
 Make missing or all statistics from raw light curve data
 
 $Log: makestats.py,v $
-Revision 1.1  2012/09/24 21:37:00  paegerm
-Make missing or all statistics from raw light curve data
+Revision 1.2  2012/11/30 20:32:48  paegerm
+deleting unused --del and --ext option
 
+deleting unused --del and --ext option
+
+Revision 1.1  2012/09/24 21:37:00  paegerm
 Initial revision
 '''
 
@@ -23,7 +26,6 @@ import sqlitetools.dbreader as dbr
 import dbconfig
 from functions import *
 from stopwatch import *
-from sqlitetools.dbfunctions import rowtolist
 
 
 
@@ -37,13 +39,9 @@ if __name__ == '__main__':
     parser.add_option('--dbconfig', dest='dbconfig', type = 'string', 
                       default='Asas',
                       help='name of database configuration (default = Asas')
-    parser.add_option('--del', dest='delete', action='store_true', default=True,
-                      help='per staruid: delete old entries in plc (default = True)')
     parser.add_option('--dict', dest='dictname', type='string', 
                       default='asasdict.sqlite',
                       help='dictionary database file')
-    parser.add_option('--ext', dest='ext', type='string', default='',
-                      help='filename extension (default = empty string)')
     parser.add_option('--rawlc', dest='rlcname', type='string', 
                       default='asaslc.sqlite',
                       help='database file with raw light curves')
