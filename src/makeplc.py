@@ -3,15 +3,18 @@ Created on Jun 18, 2012
 
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.2 $
-@date     \$Date: 2012/09/24 21:35:04 $
+@version  \$Revision: 1.3 $
+@date     \$Date: 2012/11/30 20:31:10 $
 
 make phase folded light curves
 
 $Log: makeplc.py,v $
-Revision 1.2  2012/09/24 21:35:04  paegerm
-adding dbconfig and selfile option, adding maxgap to dictionary
+Revision 1.3  2012/11/30 20:31:10  paegerm
+convert del to nodel option
 
+convert del to nodel option
+
+Revision 1.2  2012/09/24 21:35:04  paegerm
 adding dbconfig and selfile option, adding maxgap to dictionary
 
 Revision 1.1  2012/07/06 20:34:19  paegerm
@@ -39,8 +42,10 @@ if __name__ == '__main__':
     parser.add_option('--dbconfig', dest='dbconfig', type = 'string', 
                       default='Asas',
                       help='name of database configuration (default = Asas')
-    parser.add_option('--del', dest='delete', action='store_true', default=True,
-                      help='per starudi: delete old entries in plc (default = True)')
+#    parser.add_option('--del', dest='delete', action='store_true', default=True,
+#                      help='per starudi: delete old entries in plc (default = True)')
+    parser.add_option('--nodel', dest='delete', action='store_false', default=True,
+                      help='per staruid: do not delete old entries in plc (default = delete)')
     parser.add_option('--dict', dest='dictname', type='string', 
                       default='asasdict.sqlite',
                       help='dictionary database file')

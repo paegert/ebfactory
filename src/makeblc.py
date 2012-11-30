@@ -3,15 +3,18 @@ Created on Jun 28, 2012
 
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.2 $
-@date     \$Date: 2012/09/24 21:34:11 $
+@version  \$Revision: 1.3 $
+@date     \$Date: 2012/11/30 20:30:27 $
 
 make phase folded light curves
 
 $Log: makeblc.py,v $
-Revision 1.2  2012/09/24 21:34:11  paegerm
-adding dbconfig and selfile option, trigger creation if database does not exist adding nrbins option
+Revision 1.3  2012/11/30 20:30:27  paegerm
+convert del to nodel option
 
+convert del to nodel option
+
+Revision 1.2  2012/09/24 21:34:11  paegerm
 adding dbconfig and selfile option, trigger creation if database does not exist
 adding nrbins option
 
@@ -42,8 +45,10 @@ if __name__ == '__main__':
     parser.add_option('--dbconfig', dest='dbconfig', type = 'string', 
                       default='Asas',
                       help='name of database configuration (default = Asas')
-    parser.add_option('--del', dest='delete', action='store_true', default=False,
-                      help='per staruid: delete old entries in plc (default = False)')
+#    parser.add_option('--del', dest='delete', action='store_true', default=False,
+#                      help='per staruid: delete old entries in plc (default = False)')
+    parser.add_option('--nodel', dest='delete', action='store_false', default=True,
+                      help='per staruid: do not delete old entries in plc (default = delete)')
     parser.add_option('--dict', dest='dictname', type='string', 
                       default='asasdict.sqlite',
                       help='dictionary database file')
