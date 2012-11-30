@@ -3,8 +3,8 @@ Created on Jul 5, 2012
 
 @package  trainnet
 @author   map
-@version  \$Revision: 1.3 $
-@date     \$Date: 2012/09/24 21:46:22 $
+@version  \$Revision: 1.4 $
+@date     \$Date: 2012/11/30 20:40:07 $
 
 Routines for retrieving, preparing and handing data over to a neural network 
 for training. Note: the main part is just for testing purposes, use trainnetmp
@@ -12,6 +12,13 @@ for all real training
 
 
 $Log: trainnet.py,v $
+Revision 1.4  2012/11/30 20:40:07  paegerm
+convert printstatements to logfile output
+write unknown classes, stars without fit or with multiple fits to logfile
+
+convert printstatements to logfile output
+write unknown classes, stars without fit or with multiple fits to logfile
+
 Revision 1.3  2012/09/24 21:46:22  paegerm
 store select statement as comment in net object, class mlp --> Mlp,
 add database model to prepdata
@@ -35,7 +42,7 @@ import pickle
 import mlp
 import dbconfig
 from stopwatch import *
-
+from logfile import *
 
 import sqlitetools.dbwriter as dbw
 import sqlitetools.dbreader as dbr
@@ -68,6 +75,7 @@ def prepdata(options, dbc, arr, cff, shuffle = True,
     row each block of 3 coefficients is normalized individually
     
     Used: 4 blocks of node cff1, cff2, cff3 (second order fit)
+          log10(Period)
           Vmag
           Max - Min for normalized magnitutes
           chi2 from polyfit
@@ -116,7 +124,7 @@ def prepdata(options, dbc, arr, cff, shuffle = True,
         alld[i, 19]  = arr[i]['chi2']
         
         # make the target value line
-        maketarget(options.classes, arr[i]['varcls'], allt[i])
+        maketarget(options.classes, arr[i][options.clscol], allt[i])
 
     # normalize vmag
     if (newnorm == True):
@@ -145,21 +153,25 @@ def readdata(options, dbconfig):
     generator  = dictreader.traverse(options.select, None, 5000)
     nrstars    = 0
     noclass    = 0
+    nofit      = 0
     curidx     = 0
     dictarr    = np.zeros(0, dtype = dbconfig.npdicttype)
     coeffarr   = np.zeros(0, dtype = dbconfig.npcoefftype)
     for star in generator:
         nrstars += 1
-        if not (star['varcls'] in options.classes):
+        if not (star[options.clscol] in options.classes):
             noclass += 1
-            print 'star', star['id'], 'with class', star['varcls'], 'skipped'
+            options.lf.write('star '+ star['id'] + ' with class ' + 
+                             star[options.clscol] + ' skipped')
             continue
         coeffs = fitreader.getlc(star['uid'], dbconfig.cfftname)
         if len(coeffs) == 0:
-            print 'Warning: no fit for', star['id'], 'skipping'
+            nofit += 1
+            options.lf.write('Warning: no fit for ' + star['id'] + ' skipping')
             continue
         if (len(coeffs) > 1):
-            print 'Warning: ', len(coeffs), ' fits for', star['id'], 'taking first'
+            options.lf.write('Warning: ' + str(len(coeffs)) + ' fits for ' +
+                             star['id'] + ', taking first')
         dictarr = np.append(dictarr, np.zeros(1, dbconfig.npdicttype))
         dictarr[curidx] = tuple(star)
         coeffarr = np.append(coeffarr, np.zeros(1, dbconfig.npcoefftype))
@@ -169,7 +181,7 @@ def readdata(options, dbconfig):
     dictreader.close()
     fitreader.close()
     
-    return (dictarr, coeffarr, nrstars, noclass)
+    return (dictarr, coeffarr, nrstars, noclass, nofit)
     
     
     
@@ -204,6 +216,9 @@ def parseoptions():
     parser.add_option('--classes', dest='clsnames', type='string', 
                       default='classes.txt',
                       help='file with space separated classnames (classes.txt)')
+    parser.add_option('--clscol', dest='clscol', type='string', 
+                      default='varcls',
+                      help='dictionary column for class (varcls)')
     parser.add_option('-d', dest='debug', type='int', default=0,
                       help='debug setting (default: 0)')
     parser.add_option('--dict', dest='dictname', type='string', 
@@ -291,6 +306,9 @@ def parseoptions():
         fsel.close()
         options.select = options.select.replace("\n", "")
 
+    options.lf = Logfile(options.rootdir + options.resdir + '/' + 
+                         options.logfile, True, True)
+    
     return (options, args)
 
 
@@ -335,14 +353,15 @@ if __name__ == '__main__':
     watchprep.start()
     
     # read from database
-    (dictarr, coeffarr, nrstars, noclass) = readdata(options, dbc)
+    (dictarr, coeffarr, nrstars, noclass, nofit) = readdata(options, dbc)
     
     # prepare the data, target and normalization values
     (alld, allt, allnames, 
      normsubtract, normdevide) = prepdata(options, dbc, dictarr, coeffarr)
     
     print nrstars, ' selected in '
-    print noclass, ' stars skipped'
+    print noclass, ' stars skipped because of unknown class'
+    print nofit,   ' stars have no fit'
     print nrstars - noclass, 'prepared in', watchprep.stop(), ' seconds'
     watchprep.start()
     
