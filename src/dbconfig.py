@@ -3,14 +3,18 @@ Created on Jun 19, 2012
 
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.4 $
-@date     \$Date: 2012/11/30 20:27:55 $
+@version  \$Revision: 1.5 $
+@date     \$Date: 2013/06/03 19:29:46 $
 
 $Log: dbconfig.py,v $
-Revision 1.4  2012/11/30 20:27:55  paegerm
-adding Verr to missingstats for Asas, adding calcls, calprob to Asas dict,
-correcting index in getto and getperiod for Asas
+Revision 1.5  2013/06/03 19:29:46  paegerm
+add KeplerEBs
+add runname to classification database
 
+add KeplerEBs
+add runname to classification database
+
+Revision 1.4  2012/11/30 20:27:55  paegerm
 adding Verr to missingstats for Asas, adding calcls, calprob to Asas dict,
 correcting index in getto and getperiod for Asas
 
@@ -175,12 +179,12 @@ class Asas(object):
         
         # classification
         self.clstname      = 'classification'
-        self.clscols       = ['staruid', 'id', 'cls1', 'prob1', 
+        self.clscols       = ['staruid', 'id', 'runname', 'cls1', 'prob1', 
                               'cls2', 'prob2', 'cls3', 'prob3']
-        self.clstypes      = ['INTEGER', 'TEXT', 'REAL', 'REAL', 
+        self.clstypes      = ['INTEGER', 'TEXT', 'TEXT', 'REAL', 'REAL', 
                               'REAL', 'REAL', 'REAL', 'REAL', ]
         self.clsnulls      = [' NOT NULL', '', '', '',
-                              '', '', '', '']
+                              '', '', '', '', '']
         
 
     def makerlcstats(self, staruid, nprlc):
@@ -296,7 +300,49 @@ class Linear(Asas):
     
     def gett0(self, star):
         return star[25]
+
+
+
+class KeplerEBs(Asas):
+    '''
+    class wrapper for Kepler EBs
+    '''
+    
+    def __init__(self):
         
+        super(KeplerEBs, self).__init__()
+        
+        # dictionary
+        self.dicttname = 'stars'
+        
+        # NO 0 OFFSET because col 0 is UID
+        self.t         = {'id' : 1, 'mag' : 6, 'mean' : 20, 'median' : 21,
+                          'varcls' : 7}
+        self.dictcols  = ['ID', 'Ra', 'Dec', 'Period', 'T0', 'kmag', 'varcls', 
+                          't2t1', 'r1r2', 'q', 'esinw', 'ecosw', 'ff', 'sini',
+                          'fmin', 'fmax', 'stddev', 'chi2', 'sdir', 
+                          'fmean', 'fmedian', 'plcmaxgap']
+        self.dicttypes = ['TEXT', 'REAL', 'REAL', 'REAL', 'REAL', 'REAL', 'TEXT',
+                          'REAL', 'REAL', 'REAL', 'REAL', 'REAL', 'REAL', 'REAL', 
+                          'REAL', 'REAL', 'REAL', 'REAL', 'TEXT',
+                          'REAL', 'REAL', 'REAL']
+        self.dictnulls = ['NOT NULL', '', '', '', '', '', '', 
+                          '', '', '', '', '', '', '', 
+                          '', '', '', '', '', 
+                          '', '', '']
+        self.npdicttype = [('uid', 'i4'), ('id', 'a11'), 
+                           ('ra', 'f4'),  ('dec', 'f4'), 
+                           ('period', 'f4'), ('t0', 'f8'),
+                           ('kmag', 'f4'), ('varcls', 'a12'),
+                           ('t2t1', 'f4'), ('r1r2', 'f4'), ('q', 'f4'), 
+                           ('esinw', 'f4'), ('ecosw', 'f4'), ('ff', 'f4'), 
+                           ('sini', 'f4'), ('fmin', 'f4'), ('fmax', 'f4'), 
+                           ('stddev', 'f4'), ('chi2', 'f4'), ('sdir', 'a10'), 
+                           ('fmean', 'f4'), ('fmedian', 'f4'), 
+                           ('plcmaxgap', 'f4')] 
+        self.sdirindex   = 19
+                           
+     
     
         
 if __name__ == '__main__':
