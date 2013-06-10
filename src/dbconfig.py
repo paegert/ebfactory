@@ -3,14 +3,16 @@ Created on Jun 19, 2012
 
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.5 $
-@date     \$Date: 2013/06/03 19:29:46 $
+@version  \$Revision: 1.6 $
+@date     \$Date: 2013/06/10 22:45:17 $
 
 $Log: dbconfig.py,v $
-Revision 1.5  2013/06/03 19:29:46  paegerm
-add KeplerEBs
-add runname to classification database
+Revision 1.6  2013/06/10 22:45:17  paegerm
+Mast added for new version of Kepler EBs
 
+Mast added for new version of Kepler EBs
+
+Revision 1.5  2013/06/03 19:29:46  paegerm
 add KeplerEBs
 add runname to classification database
 
@@ -93,11 +95,21 @@ class Asas(object):
         self.plctypes = ['INTEGER', 'INTEGER', 'REAL', 'REAL', 'REAL']
         self.plcnulls = [' NOT NULL', ' NOT NULL', '', '', '']
         
+        # raw and phased together
+        self.rplctmane = 'stars'
+        self.rplccols  = ['staruid','bjd', 'phase', 'raw_flux', 'raw_error',
+                          'corr_flux','corr_err', 'dtr_flux', 'dtr_err']
+        self.rplctypes = ['INTEGER', 'REAL', 'REAL', 'REAL', 'REAL','REAL',
+                          'REAL', 'REAL', 'REAL']
+        self.rplcnulls = [' NOT NULL', ' NOT NULL', 'NOT NULL',
+                           '', '','','','','']
+        
         # binned light curve
         self.blctname = 'stars'
         self.blccols  = ['staruid', 'phase', 'normmag', 'errnormmag']
         self.blctypes = ['INTEGER', 'REAL', 'REAL', 'REAL']
         self.blcnulls = [' NOT NULL', '', '', '']
+        
 
         # knots and coefficients from polyfit
         self.cfftname = 'coeffs'
@@ -343,10 +355,57 @@ class KeplerEBs(Asas):
         self.sdirindex   = 19
                            
      
+class Mast(KeplerEBs):
+    '''
+    class wrapper for Kepler EBs
+    '''
     
+    def __init__(self):
+        
+        super(Mast, self).__init__()
+        
+        
+        # NO 0 OFFSET because col 0 is UID
+        self.t         = {'KIC' : 1, 'period' : 2, 'bjd0' : 3, 'morph' : 4}
+        self.dictcols  = ['KIC', 'period', 'bjd0', 'morph', 'T21', 
+                          'rho12', 'q', 'e_sin_omega', 'e_cos_omega', 'FF', 
+                          'sin_i', 'Teff', 'kmag', 'RA', 'DEC', 
+                          'SC', 'sdir', 'cls', 'rf_min', 'rf_max',
+                          'rf_mean', 'rf_median', 'cf_min', 'cf_max','cf_mean', 
+                          'cf_median', 'df_min', 'df_max','df_mean', 'df_median']
+        self.dicttypes = ['TEXT', 'REAL', 'REAL', 'REAL', 'REAL',
+                          'REAL', 'REAL', 'REAL', 'REAL', 'REAL',
+                          'REAL', 'REAL', 'REAL', 'REAL', 'REAL',
+                          'REAL', 'TEXT', 'TEXT', 'REAL', 'REAL',
+                          'REAL', 'REAL', 'REAL', 'REAL', 'REAL', 
+                          'REAL', 'REAL', 'REAL', 'REAL', 'REAL']
+        self.dictnulls = ['NOT NULL', ' NOT NULL', ' NOT NULL', 
+                          '', '', '', '', '',
+                          '', '', '', '', '',
+                          '', '', '', '', '', 
+                          '', '', '', '', '',
+                          '', '', '', '', '',
+                          '', '']
+        self.npdicttype = [('KIC', 'a10'), 
+                           ('period', 'f8'),  ('bjd0', 'f8'), 
+                           ('morph', 'f2'), ('T21', 'f8'), 
+                           ('rho12', 'f8'), ('q', 'f8'), ('e_sin_omega', 'f8'), 
+                           ('e_cos_omega', 'f8'), ('FF', 'f8'),            
+                           ('sin_i', 'f8'), ('Teff', 'f4'), 
+                           ('kmag', 'f4'), 
+                           ('RA', 'f4'), ('DEC', 'f4'), 
+                           ('SC', 'i1'), ('sdir', 'a10'), ('cls', 'a12'),
+                           ('rf_min', 'f6'), ('rf_max','f6'), ('rf_mean', 'f6'), ('rf_median', 'f6'),
+                           ('cf_min', 'f6'), ('cf_max','f6'), ('cf_mean', 'f6'), ('cf_median', 'f6'),
+                           ('df_min','f6'), ('df_max','f6'), ('df_mean', 'f6'), ('df_median','f6')]
+
+        self.sdirindex   = 30
+        
+        
+        
         
 if __name__ == '__main__':
-    x = Linear()
+    x = Mast()
     print x.cffcols
     print dir(x)
     
