@@ -3,13 +3,16 @@ Created on Jun 18, 2012
 
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.2 $
-@date     \$Date: 2012/09/24 21:26:30 $
+@version  \$Revision: 1.3 $
+@date     \$Date: 2013/06/20 18:24:06 $
 
 $Log: functions.py,v $
-Revision 1.2  2012/09/24 21:26:30  paegerm
-adding uid of raw light curve entry to phased light curve, adding phase shift
+Revision 1.3  2013/06/20 18:24:06  paegerm
+skip None entries, add rounding and correct actbin in makebinnedlc
 
+skip None entries, add rounding and correct actbin in makebinnedlc
+
+Revision 1.2  2012/09/24 21:26:30  paegerm
 adding uid of raw light curve entry to phased light curve, adding phase shift
 
 Revision 1.1  2012/07/06 20:34:19  paegerm
@@ -72,12 +75,15 @@ def makebinnedlc(plc, staruid, nrbins = 100):
     sigmas = np.ndarray((0,))
     binfluxes = np.ndarray((0,))
     for entry in plc:
-        actbin = int((0.5 + entry['phase']) / binsize)
+        if entry['phase'] == None:
+            continue
+        # actbin = int((0.5 + entry['phase']) / binsize)
+        actbin = int((0.5 + entry['phase']) * nrbins + 0.5)
         if (actbin != oldbin):
             if (oldbin != -1):
-                mean  = binfluxes.mean()
-                sigma = binfluxes.std()
-                phase = oldbin * binsize - 0.5
+                mean  = round(binfluxes.mean(), 6)
+                sigma = round(binfluxes.std(), 6)
+                phase = round(oldbin * binsize - 0.5, 6)
                 if (sigma < 0.001):
                     sigma = 0.001
                 blc.append([staruid, phase, mean, sigma])
@@ -91,9 +97,9 @@ def makebinnedlc(plc, staruid, nrbins = 100):
             binfluxes = np.append(binfluxes, entry['normmag'])
 
     if (len(binfluxes) > 0):
-        mean  = binfluxes.mean()
-        sigma = binfluxes.std()
-        phase = oldbin * binsize - 0.5
+        mean  = round(binfluxes.mean(), 6)
+        sigma = round(binfluxes.std(), 6)
+        phase = round(oldbin * binsize - 0.5, 6)
         if (sigma < 0.001):
             sigma = 0.001
         blc.append([staruid, phase, mean, sigma])
@@ -107,7 +113,7 @@ def makebinnedlc(plc, staruid, nrbins = 100):
     if (len(fluxes) > 0):
         fmin = fluxes.min()
         fmax = fluxes.max()
-        std  = deriv2(phases, fluxes) / (fluxes.max() - fluxes.min())
+        std  = round(deriv2(phases, fluxes) / (fluxes.max() - fluxes.min()), 6)
     
     return (blc, fmin, fmax, std)
 
