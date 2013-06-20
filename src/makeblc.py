@@ -3,15 +3,18 @@ Created on Jun 28, 2012
 
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.3 $
-@date     \$Date: 2012/11/30 20:30:27 $
+@version  \$Revision: 1.4 $
+@date     \$Date: 2013/06/20 18:26:05 $
 
 make phase folded light curves
 
 $Log: makeblc.py,v $
-Revision 1.3  2012/11/30 20:30:27  paegerm
-convert del to nodel option
+Revision 1.4  2013/06/20 18:26:05  paegerm
+Skip blcs with length 0
 
+Skip blcs with length 0
+
+Revision 1.3  2012/11/30 20:30:27  paegerm
 convert del to nodel option
 
 Revision 1.2  2012/09/24 21:34:11  paegerm
@@ -103,6 +106,8 @@ if __name__ == '__main__':
         if options.delete == True:
             blcwriter.deletebystaruid(star['uid'])            
         (blc, mmin, mmax, std) = makebinnedlc(plc, star['uid'], options.nrbins)
+        if len(blc) == 0:
+            continue
         blcwriter.insert(blc)
         dictupd.append([mmin, mmax, std, star['uid']])
     
