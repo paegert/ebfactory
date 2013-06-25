@@ -3,10 +3,13 @@ Created on Jun 18, 2012
 
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.3 $
-@date     \$Date: 2013/06/20 18:24:06 $
+@version  \$Revision: 1.4 $
+@date     \$Date: 2013/06/25 17:03:12 $
 
 $Log: functions.py,v $
+Revision 1.4  2013/06/25 17:03:12  paegerm
+*** empty log message ***
+
 Revision 1.3  2013/06/20 18:24:06  paegerm
 skip None entries, add rounding and correct actbin in makebinnedlc
 
@@ -117,6 +120,62 @@ def makebinnedlc(plc, staruid, nrbins = 100):
     
     return (blc, fmin, fmax, std)
 
+def makebinnedlc_MAST(rplc, staruid, nrbins = 200):
+    binsize = 1.0 / nrbins
+    oldbin = -1
+    blc = []
+    phases = np.ndarray((0,))
+    fluxes = np.ndarray((0,))
+    sigmas = np.ndarray((0,))
+    binfluxes = np.ndarray((0,))
+    binfluxuids = np.ndarray((0,))
+    for entry in rplc:
+        actbin = int((0.5 + entry['phase']) * nrbins + 0.5)
+        if (actbin != oldbin):
+            if (oldbin != -1):
+                mean  = binfluxes.mean()
+                sigma = binfluxes.std()
+                phase = oldbin * binsize - 0.5
+                if (sigma < 0.001):
+                    sigma = 0.001
+                blc.append([staruid, phase, mean, sigma])
+                phases = np.append(phases, phase)
+                fluxes = np.append(fluxes, mean)
+                sigmas = np.append(sigmas, sigma)
+            oldbin = actbin
+            binfluxes = np.ndarray((0,))
+            binfluxes = np.append(binfluxes, entry['dtr_flux'])
+        else:
+            binfluxes = np.append(binfluxes, entry['dtr_flux'])
+            
+        # Test of rplc UIDs in bin encapsulating phase 0.0   
+#         if (staruid == 2 and actbin == 99): 
+#             binfluxuids = np.append(binfluxuids, entry['UID'])
+#             binfluxuids = np.sort(binfluxuids)
+#             binfluxuids.tofile('/Users/mahmoudparvizi/vphome/kepler/buid_2_99.txt', sep='\n', format="%s")
+
+    if (len(binfluxes) > 0):
+        mean  = binfluxes.mean()
+        sigma = binfluxes.std()
+        phase = oldbin * binsize - 0.5
+        if (sigma < 0.001):
+            sigma = 0.001
+        blc.append([staruid, phase, mean, sigma])
+        phases = np.append(phases, phase)
+        fluxes = np.append(fluxes, mean)
+        sigmas = np.append(sigmas, sigma)
+     
+
+            
+    blc_min = None
+    blc_max = None
+    blc_std  = None
+    if (len(fluxes) > 0):
+        blc_min = fluxes.min()
+        blc_max = fluxes.max()
+        blc_std  = deriv2(phases, fluxes) / (fluxes.max() - fluxes.min())
+    
+    return (blc, blc_min, blc_max, blc_std)
 
         
 if __name__ == '__main__':
