@@ -3,10 +3,13 @@ Created on Jun 19, 2012
 
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.8 $
-@date     \$Date: 2013/07/02 20:33:19 $
+@version  \$Revision: 1.9 $
+@date     \$Date: 2013/07/02 21:17:12 $
 
 $Log: dbconfig.py,v $
+Revision 1.9  2013/07/02 21:17:12  paegerm
+Added 'VARCLS" to Kepq3
+
 Revision 1.8  2013/07/02 20:33:19  paegerm
 Added Kepq3
 
@@ -449,20 +452,20 @@ class Kepq3(Mast):
         self.t         = {'KIC' : 1, 'RA' : 2, 'DEC' : 3, 'KEPMAG' : 14}
         self.dictcols  = ['KIC', 'RA', 'DEC', 'PMRA', 'PMDEC', 
                           'GMAG', 'RMAG', 'IMAG', 'ZMAG', 'D51MAG',
-                          'JMAG', 'HMAG', 'KMAG', 'KEPMAG',
+                          'JMAG', 'HMAG', 'KMAG', 'KEPMAG', 'VARCLS',
                           'TEFF', 'LOGG', 'FEH', 'AV', 'RADIUS']
 
-        self.dicttypes = ['TEXT', 'REAL', 'REAL', 'REAL', 'REAL',
+        self.dicttypes = ['TEXT', 'REAL', 'REAL', 'REAL', 'REAL', 
                           'REAL', 'REAL', 'REAL', 'REAL', 'REAL', 
-                          'REAL', 'REAL', 'REAL', 'REAL',
+                          'REAL', 'REAL', 'REAL', 'REAL', 'TEXT',
                           'REAL', 'REAL', 'REAL', 'REAL', 'REAL']
-        self.dictnulls = ['NOT NULL', '', '', '', '',
+        self.dictnulls = ['NOT NULL', '', '', '', '', '',
                           '', '', '', '', '',  
                           '', '', '', '', 
                           '', '', '', '', '']
-        self.npdicttype = [('KIC', 'a10'), ('RA', 'f4'),  ('DEC', 'f4'), ('PMRA', 'f4'), ('PMDEC', 'f4'),
+        self.npdicttype = [('KIC', 'a10'), ('RA', 'f4'),  ('DEC', 'f4'), ('PMRA', 'f4'), ('PMDEC', 'f4'), 
                            ('GMAG', 'f4'), ('RMAG', 'f4'), ('IMAG', 'f4'), ('ZMAG', 'f4'), ('D51MAG', 'f4'),
-                           ('JMAG', 'f4'), ('HMAG', 'f4'), ('KMAG', 'f4'), ('KEPMAG', 'f4'), 
+                           ('JMAG', 'f4'), ('HMAG', 'f4'), ('KMAG', 'f4'), ('KEPMAG', 'f4'), ('VARCLS', 'a12'),
                            ('TEFF', 'f4'), ('LOGG', 'f4'), ('FEH', 'f4'), ('AV', 'f4'), ('RADIUS', 'f4')] 
         self.sdirindex   = 19
                            
