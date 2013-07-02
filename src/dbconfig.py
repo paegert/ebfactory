@@ -3,13 +3,14 @@ Created on Jun 19, 2012
 
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.6 $
-@date     \$Date: 2013/06/10 22:45:17 $
+@version  \$Revision: 1.7 $
+@date     \$Date: 2013/07/02 14:58:02 $
 
 $Log: dbconfig.py,v $
-Revision 1.6  2013/06/10 22:45:17  paegerm
-Mast added for new version of Kepler EBs
+Revision 1.7  2013/07/02 14:58:02  paegerm
+Updated to include "midpoints" table
 
+Revision 1.6  2013/06/10 22:45:17  parvizm
 Mast added for new version of Kepler EBs
 
 Revision 1.5  2013/06/03 19:29:46  paegerm
@@ -135,11 +136,37 @@ class Asas(object):
                             ('knot4', 'f4'), ('c41', 'f4'), ('c42', 'f4'), 
                             ('c43', 'f4')]
 
-        # fitted light curve from polyfit        
+        # fitted theoretical light curve from polyfit        
         self.fittname = 'fit'
         self.fitcols  = ['staruid', 'phase', 'value']
         self.fittypes = ['INTEGER', 'REAL', 'REAL']
         self.fitnulls = [' NOT NULL', ' NOT NULL', ' NOT NULL']
+        
+        
+        # knots, midpoints, and flux from polyfit --midpoints
+        self.kmntname = 'midpoints'
+        self.kmncols  = ['staruid', 'knot1', 'k1_flux', 'mid1', 'm1_flux', 
+                         'knot2', 'k2_flux', 'mid2', 'm2_flux',
+                         'knot3', 'k3_flux', 'mid3', 'm3_flux',
+                         'knot4', 'k4_flux', 'mid4', 'm4_flux']
+        self.kmntypes = ['INTEGER', 'REAL', 'REAL', 'REAL', 'REAL', 
+                         'REAL', 'REAL', 'REAL', 'REAL', 
+                         'REAL', 'REAL', 'REAL', 'REAL', 
+                         'REAL', 'REAL', 'REAL', 'REAL']
+        self.kmnnulls = [' NOT NULL', ' NOT NULL', ' NOT NULL', ' NOT NULL', ' NOT NULL', 
+                         ' NOT NULL', ' NOT NULL', ' NOT NULL', ' NOT NULL', 
+                         '', '', '', '', 
+                         '', '', '', '']
+        self.npkmntype = [('uid', 'i4'), ('staruid', 'i4'), 
+                            ('knot1', 'f4'), ('k1_flux', 'f4'), ('mid1', 'f4'), 
+                            ('m1_flux', 'f4'), 
+                            ('knot2', 'f4'), ('k2_flux', 'f4'), ('mid2', 'f4'), 
+                            ('m2_flux', 'f4'), 
+                            ('knot3', 'f4'), ('k3_flux', 'f4'), ('mid3', 'f4'), 
+                            ('m3_flux', 'f4'), 
+                            ('knot4', 'f4'), ('k4_flux', 'f4'), ('mid4', 'f4'), 
+                            ('m4_flux', 'f4')]
+        
 
         self.missingstats = 'update stars ' \
                             'set Vmedian = ?, Verr = ? where uid = ?;'
