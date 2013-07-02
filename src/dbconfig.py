@@ -3,10 +3,13 @@ Created on Jun 19, 2012
 
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.7 $
-@date     \$Date: 2013/07/02 14:58:02 $
+@version  \$Revision: 1.8 $
+@date     \$Date: 2013/07/02 20:33:19 $
 
 $Log: dbconfig.py,v $
+Revision 1.8  2013/07/02 20:33:19  paegerm
+Added Kepq3
+
 Revision 1.7  2013/07/02 14:58:02  paegerm
 Updated to include "midpoints" table
 
@@ -391,6 +394,8 @@ class Mast(KeplerEBs):
         
         super(Mast, self).__init__()
         
+        # dictionary
+        self.dicttname = 'stars'
         
         # NO 0 OFFSET because col 0 is UID
         self.t         = {'KIC' : 1, 'period' : 2, 'bjd0' : 3, 'morph' : 4}
@@ -428,11 +433,51 @@ class Mast(KeplerEBs):
 
         self.sdirindex   = 30
         
-        
-        
-        
-if __name__ == '__main__':
-    x = Mast()
-    print x.cffcols
-    print dir(x)
+class Kepq3(Mast):
+    '''
+    class wrapper for Kepler Q3 data
+    '''
     
+    def __init__(self):
+        
+        super(Kepq3, self).__init__()
+        
+        # dictionary
+        self.dicttname = 'stars'
+        
+        # NO 0 OFFSET because col 0 is UID
+        self.t         = {'KIC' : 1, 'RA' : 2, 'DEC' : 3, 'KEPMAG' : 14}
+        self.dictcols  = ['KIC', 'RA', 'DEC', 'PMRA', 'PMDEC', 
+                          'GMAG', 'RMAG', 'IMAG', 'ZMAG', 'D51MAG',
+                          'JMAG', 'HMAG', 'KMAG', 'KEPMAG',
+                          'TEFF', 'LOGG', 'FEH', 'AV', 'RADIUS']
+
+        self.dicttypes = ['TEXT', 'REAL', 'REAL', 'REAL', 'REAL',
+                          'REAL', 'REAL', 'REAL', 'REAL', 'REAL', 
+                          'REAL', 'REAL', 'REAL', 'REAL',
+                          'REAL', 'REAL', 'REAL', 'REAL', 'REAL']
+        self.dictnulls = ['NOT NULL', '', '', '', '',
+                          '', '', '', '', '',  
+                          '', '', '', '', 
+                          '', '', '', '', '']
+        self.npdicttype = [('KIC', 'a10'), ('RA', 'f4'),  ('DEC', 'f4'), ('PMRA', 'f4'), ('PMDEC', 'f4'),
+                           ('GMAG', 'f4'), ('RMAG', 'f4'), ('IMAG', 'f4'), ('ZMAG', 'f4'), ('D51MAG', 'f4'),
+                           ('JMAG', 'f4'), ('HMAG', 'f4'), ('KMAG', 'f4'), ('KEPMAG', 'f4'), 
+                           ('TEFF', 'f4'), ('LOGG', 'f4'), ('FEH', 'f4'), ('AV', 'f4'), ('RADIUS', 'f4')] 
+        self.sdirindex   = 19
+                           
+    
+        # Kepq3 bjd, phased, raw, and dtr 
+        self.keplctmane = 'stars'
+        self.keplccols  = ['staruid','BJD', 'PHASE', 
+                          'SAP_FLUX', 'SAP_ERR', 'SAP_BKG', 'SAP_BKG_ERR',
+                          'PDCSAP_FLUX','PDCSAP_ERR', 'DTR_FLUX', 'DTR_ERR']
+        self.keplctypes = ['INTEGER', 'REAL', 'REAL', 
+                          'REAL', 'REAL', 'REAL', 'REAL',
+                          'REAL', 'REAL', 'REAL', 'REAL']
+        self.keplcnulls = ['NOT NULL', '', '',
+                           '', '', '', '',
+                           '', '', '', '']
+        self.npkeplctype = [('staruid', 'i6'), ('BJD', 'f4'),  ('PHASE', 'f4'), 
+                            ('SAP_FLUX', 'f4'), ('SAP_ERR', 'f4'), ('SAP_BKG', 'f4'), ('SAP_BKG_ERR', 'f4')
+                            ('PDCSAP_FLUX', 'f4'), ('PDCSAP_ERR', 'f4'), ('DTR_FLUX', 'f4'), ('DTR_ERR', 'f4') ]
