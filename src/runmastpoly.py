@@ -3,10 +3,13 @@ Created on Jul 2, 2012
 
 @package  runpoly
 @author   map
-@version  \$Revision: 1.1 $
-@date     \$Date: 2013/07/02 14:58:49 $
+@version  \$Revision: 1.2 $
+@date     \$Date: 2013/07/02 17:16:04 $
 
 $Log: runmastpoly.py,v $
+Revision 1.2  2013/07/02 17:16:04  paegerm
+corrected "fail bug"
+
 Revision 1.1  2013/07/02 14:58:49  paegerm
 initial revision
 
@@ -193,7 +196,7 @@ def fitlc(star, plc, blc, options):
         tmp = 'Phase (Period = ' + str(star['Period']) + ' d)'
         pl.xlabel(tmp, fontsize=options.fsize)
         pl.ylabel('Flux')
-        pl.title(star['KIC'] + '  ' + varcls)
+        pl.title(star['KIC'] + '  EB')
         pl.savefig(plotname)
         pl.clf()
 #         return (False, chi2, coeffs, fit)
