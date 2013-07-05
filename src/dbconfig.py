@@ -3,17 +3,20 @@ Created on Jun 19, 2012
 
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.9 $
-@date     \$Date: 2013/07/02 21:17:12 $
+@version  \$Revision: 1.10 $
+@date     \$Date: 2013/07/05 14:45:35 $
 
 $Log: dbconfig.py,v $
-Revision 1.9  2013/07/02 21:17:12  paegerm
+Revision 1.10  2013/07/05 14:45:35  paegerm
+correcting login, adding raw and phased lightcurve  for Asas
+
+Revision 1.9  2013/07/02 21:17:12  parvizm
 Added 'VARCLS" to Kepq3
 
-Revision 1.8  2013/07/02 20:33:19  paegerm
+Revision 1.8  2013/07/02 20:33:19  parvizm
 Added Kepq3
 
-Revision 1.7  2013/07/02 14:58:02  paegerm
+Revision 1.7  2013/07/02 14:58:02  parvizm
 Updated to include "midpoints" table
 
 Revision 1.6  2013/06/10 22:45:17  parvizm
@@ -96,6 +99,14 @@ class Asas(object):
         self.rlnptype = [('uid', 'i4'), ('staruid', 'i4'), ('hjd', 'f8'),
                          ('mag', 'f4'), ('err', 'f4'), ('quality', 'a10')]
         
+        # normalized and phased raw light curve
+        self.nplctname  = 'stars'
+        self.nplccols   = ['staruid', 'hjd', 'phase', 'normmag', 'errnormmag']
+        self.nplctypes  = ['INTEGER', 'REAL', 'REAL', 'REAL', 'REAL']
+        self.nplcnulls  = [' NOT NULL', ' NOT NULL', '', '', '']
+        self.nplctype   = [('uid', 'i4'), ('staruid', 'i4'), ('hjd', 'f8'),
+                           ('phase', 'f4'), ('mag', 'f4'), ('err', 'f4')]
+        
         # phased light curve
         self.plctname = 'stars'
         self.plccols  = ['staruid', 'rlcuid', 'phase', 'normmag', 'errnormmag']
@@ -103,7 +114,7 @@ class Asas(object):
         self.plcnulls = [' NOT NULL', ' NOT NULL', '', '', '']
         
         # raw and phased together
-        self.rplctmane = 'stars'
+        self.rplctname = 'stars'
         self.rplccols  = ['staruid','bjd', 'phase', 'raw_flux', 'raw_error',
                           'corr_flux','corr_err', 'dtr_flux', 'dtr_err']
         self.rplctypes = ['INTEGER', 'REAL', 'REAL', 'REAL', 'REAL','REAL',
