@@ -3,14 +3,19 @@ Created on Jul 18, 2012
 
 @package  trainnetmp
 @author   map
-@version  \$Revision: 1.3 $
-@date     \$Date: 2012/11/30 20:40:59 $
+@version  \$Revision: 1.4 $
+@date     \$Date: 2013/07/26 20:33:59 $
 
 Multi-processing training of multiple networks at once. Be sue to have the 
 environment variable OMP_NUM_THREADS set to a reasonable value (number of CPUs
 for example). The default is working with just 2 processes.
 
 $Log: trainnetmp.py,v $
+Revision 1.4  2013/07/26 20:33:59  paegerm
+passing logfile to net
+
+passing logfile to net
+
 Revision 1.3  2012/11/30 20:40:59  paegerm
 adding clscol option, adding logfile and converting print statements
 
@@ -114,6 +119,7 @@ if __name__ == '__main__':
             net.comment = options.select
             if not os.path.exists(net.subdir):
                 os.mkdir(net.subdir)
+            net.lf    = options.lf
             net.debug = options.debug
             net.setnormvalues(normsubtract, normdevide)
             kwargs = {'net': net, 'nrhidden': i, 'iteration': j, 
