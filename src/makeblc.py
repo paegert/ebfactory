@@ -3,15 +3,18 @@ Created on Jun 28, 2012
 
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.4 $
-@date     \$Date: 2013/06/20 18:26:05 $
+@version  \$Revision: 1.5 $
+@date     \$Date: 2013/07/26 20:28:14 $
 
 make phase folded light curves
 
 $Log: makeblc.py,v $
-Revision 1.4  2013/06/20 18:26:05  paegerm
-Skip blcs with length 0
+Revision 1.5  2013/07/26 20:28:14  paegerm
+print message only every 100 stars
 
+print message only every 100 stars
+
+Revision 1.4  2013/06/20 18:26:05  paegerm
 Skip blcs with length 0
 
 Revision 1.3  2012/11/30 20:30:27  paegerm
@@ -48,8 +51,6 @@ if __name__ == '__main__':
     parser.add_option('--dbconfig', dest='dbconfig', type = 'string', 
                       default='Asas',
                       help='name of database configuration (default = Asas')
-#    parser.add_option('--del', dest='delete', action='store_true', default=False,
-#                      help='per staruid: delete old entries in plc (default = False)')
     parser.add_option('--nodel', dest='delete', action='store_false', default=True,
                       help='per staruid: do not delete old entries in plc (default = delete)')
     parser.add_option('--dict', dest='dictname', type='string', 
@@ -102,7 +103,8 @@ if __name__ == '__main__':
     for star in generator:
         nrstars += 1
         plc = plcreader.getlc(star['uid'], order = 'phase')
-        print 'binning ', nrstars, star['id']
+        if nrstars % 100 == 0:
+            print 'binning ', nrstars, star['id']
         if options.delete == True:
             blcwriter.deletebystaruid(star['uid'])            
         (blc, mmin, mmax, std) = makebinnedlc(plc, star['uid'], options.nrbins)
@@ -115,7 +117,8 @@ if __name__ == '__main__':
     dictreader.dbconn.close()
     dictwriter = dbw.DbWriter(options.rootdir + options.dictname, dbc.dictcols)
     updcmd = 'update stars set fmin = ?, fmax = ?, stddev = ? where uid = ?;'
-    dictwriter.update(updcmd, dictupd)
+    dictwriter.update(updcmd, dictupd, True)
+    dictwriter.close()
     
     print nrstars, ' light curves binned in ', watch.stop(), ' seconds'        
     print 'done'
