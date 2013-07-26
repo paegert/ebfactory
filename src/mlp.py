@@ -1,20 +1,25 @@
 '''
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.4 $
-@date     \$Date: 2012/11/30 20:34:44 $
+@version  \$Revision: 1.5 $
+@date     \$Date: 2013/07/26 20:26:28 $
 
 A simple muulti-layer perceptron, currently restricted to one hidden layer
 
 @requires: numpy
 
 $Log: mlp.py,v $
+Revision 1.5  2013/07/26 20:26:28  paegerm
+adding select string for report, adding logfile (lf) to self, write weights
+only for debug > 1
+
+adding select string for report, adding logfile (lf) to self, write weights
+only for debug > 1
+
 Revision 1.4  2012/11/30 20:34:44  paegerm
 Converting spaces
 
 Revision 1.3  2012/09/24 21:38:31  paegerm
-adding comment, correcting spelling errors, class mlp --> Mlp
-
 adding comment, correcting spelling errors, class mlp --> Mlp
 
 Revision 1.2  2012/07/20 20:22:22  paegerm
@@ -28,7 +33,7 @@ Initial revision
 '''
 
 from numpy import *
-
+from logfile import *
 
 
 class MlpError(Exception):
@@ -97,6 +102,8 @@ class Mlp(object):
         self.normdivide   = None
         self.classes      = None
         self.comment      = ''
+        self.select       = ''
+        self.lf           = None
 
         # Initialise network
         self.weights1 = ((random.rand(self.nin + 1, self.nhidden) - 0.5) * 2 / 
@@ -179,7 +186,7 @@ class Mlp(object):
         self.validerror  = 100000
 
         self.stopcount = 0
-        if ((self.writeweights == True) or (self.debug > 0)):
+        if ((self.writeweights == True) or (self.debug > 1)):
             fnhidden = '%s/hidden%d' % (self.subdir, self.stopcount)
             fnoutput = '%s/output%d' % (self.subdir, self.stopcount)
             savetxt(fnhidden, self.weights1, '%8.4f')
@@ -193,12 +200,16 @@ class Mlp(object):
             old_val_error1 = self.validerror
             validout = self._mlpfwd(valid)
             self.validerror = 0.5 * sum((validtargets - validout) ** 2)
-            if (self.debug > 0):
+            if (self.debug > 1):
                 fmt = '%3d  trainerr = %7.3f  validerr = %7.3f, ' + \
                       'dold = %8.4f, dnew = %8.4f'
-                print  fmt % (self.stopcount, self.trainerror, self.validerror,
+                line = fmt % (self.stopcount, self.trainerror, self.validerror,
                               old_val_error2 - old_val_error1,
                               old_val_error1 - self.validerror)
+                if self.lf == None:
+                    print line
+                else:
+                    self.lf.write(line)
 
         if ((self.writeweights == True) or (self.debug > 0)):
             fnhidden = '%s/hidden%d' % (self.subdir, self.stopcount)
@@ -404,6 +415,7 @@ class Mlp(object):
         # nrclasses = len(classes)
         
         olines.append(self.comment)
+        olines.append(self.select)
         olines.append('')
         olines.append('Input  nodes = %d' % self.nin)
         olines.append('Hidden nodes = %d' % self.nhidden)
