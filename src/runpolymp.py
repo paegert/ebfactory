@@ -3,20 +3,20 @@ Created on Jul 2, 2012
 
 @package  runpolymp
 @author   map
-@version  \$Revision: 1.3 $
-@date     \$Date: 2012/11/30 20:38:21 $
+@version  \$Revision: 1.4 $
+@date     \$Date: 2013/07/26 20:06:19 $
 
 Multi-process version of runpoly. Set $OMP_NUM_THREADS to desired number of 
 threads
 
 $Log: runpolymp.py,v $
+Revision 1.4  2013/07/26 20:06:19  paegerm
+adding midpoints and fullfit options, switching to mastpolyfit
+
+adding midpoints and fullfit options, switching to mastpolyfit
+
 Revision 1.3  2012/11/30 20:38:21  paegerm
 passing options to fitlc, catching OSError in case another process created
-the dictionary before the actual one could
-converting prints to writing to logfile
-passing options object to fitlc
-
-passing options to fitlc, catching OSError in case another process created 
 the dictionary before the actual one could
 converting prints to writing to logfile
 passing options object to fitlc
@@ -53,15 +53,17 @@ def runpolyproc(options, dbc, lmax, stars):
     failed    = 0
     olddir    = options.rootdir
     os.chdir(olddir)
-    options.lf.write('max = ' + str(lmax))
+    options.lf.write(str(lmax) + ' started')
     plcreader  = dbr.DbReader(options.rootdir + options.plcname)
     blcreader  = dbr.DbReader(options.rootdir + options.blcname)
     dictwriter = dbw.DbWriter(options.rootdir + options.dictname, 
-                              dbc.dictcols, tout = 30.0)
+                              dbc.dictcols, tout = 60.0)
     cffwriter  = dbw.DbWriter(options.rootdir + options.fitname, 
-                              dbc.cffcols, dbc.cfftname, tout = 30.0)
+                              dbc.cffcols, dbc.cfftname, tout = 60.0)
     fitwriter  = dbw.DbWriter(options.rootdir + options.fitname, 
-                              dbc.fitcols, dbc.fittname, tout = 30.0)
+                              dbc.fitcols, dbc.fittname, tout = 60.0)
+    midwriter  = dbw.DbWriter(options.rootdir + options.fitname,
+                              dbc.kmncols, dbc.kmntname, tout = 60.0)
     for star in stars:
         nrstars += 1
         staruid = star[0]    
@@ -71,9 +73,12 @@ def runpolyproc(options, dbc, lmax, stars):
         try:
             cffwriter.deletebystaruid(staruid)
             fitwriter.deletebystaruid(staruid)
+            midwriter.deletebystaruid(staruid)
         except sqlite3.OperationalError as err:
-            print max, 'fit database is locked'
-            print err
+            options.lf.write(str(lmax) + ' ' + str(staruid) + 
+                             ' fit database is locked while deleting')
+            options.lf.write(str(err))
+            options.lf.write()
         if (options.rootdir + sdir != olddir):
             olddir = options.rootdir + sdir
             os.chdir(olddir)
@@ -88,31 +93,40 @@ def runpolyproc(options, dbc, lmax, stars):
                 except OSError:
                     pass
         varclsidx = 1 + dbc.dictcols.index(options.clscol)
+        # fake the database star by a dictionary. Necessary because the
+        # sqlite type of star will not be handled correctly over process
+        # borders
         dstar = {'uid': staruid, 'id': star[1] , 'varcls' : star[varclsidx], 
                  'Period' : dbc.getperiod(star)}
-        (ok, chi2, coeffs, fit) = fitlc(dstar, plc, blc, options)
-#                                        options.debug, options.fsize)
+        (ok, chi2, coeffs, fit, midpoints) = fitlc(dstar, plc, blc, options)
         try:
             dictwriter.update('update stars set chi2 = ? where uid = ?;', 
                               [(chi2, staruid)], True)
         except sqlite3.OperationalError as err:
-            print max, 'dict database is locked'
-            print err
+            options.lf.write(str(lmax) + ' ' + str(staruid) + 
+                             ' dict database is locked')
+            options.lf.write(str(err))
+            options.lf.write()
 
         if ok == False:
             failed += 1
             continue
         
-        if (len(coeffs) == 8):
+        if (len(coeffs) == 9):
             for i in range(0, 8):
                 coeffs.append(0.0)
-        coeffs.insert(0, staruid)
         try:
-            fitwriter.insert(fit, True)
             cffwriter.insert((coeffs,), True)
+            if options.fullfit == True:
+                fitwriter.insert(fit, True)
+            if options.fittype == 'midpoints':
+                midwriter.insert([midpoints], True)
         except sqlite3.OperationalError as err:
-            print max, 'fit database is locked while inserting'
-            print err
+            print staruid, midpoints
+            options.lf.write(str(lmax) + ' ' + str(staruid) + 
+                             ' fit database is locked while inserting')
+            options.lf.write(str(err))
+            options.lf.write()
         
     plcreader.close()
     blcreader.close()
@@ -121,7 +135,10 @@ def runpolyproc(options, dbc, lmax, stars):
     
     dictwriter.close()
     cffwriter.close()
-    fitwriter.close()    
+    fitwriter.close()  
+    midwriter.close()  
+    
+    options.lf.write(str(lmax) + ' done')
 
     return(nrstars, failed)
 
@@ -143,6 +160,10 @@ if __name__ == '__main__':
     tmpwriter = dbw.DbWriter(options.rootdir + options.fitname, 
                              dbc.fitcols, dbc.fittname, 
                              dbc.fittypes, dbc.fitnulls)
+    tmpwriter.close()
+    tmpwriter = dbw.DbWriter(options.rootdir + options.fitname, 
+                             dbc.kmncols, dbc.kmntname, 
+                             dbc.kmntypes, dbc.kmnnulls)
     tmpwriter.close()
 
     watch = Stopwatch()

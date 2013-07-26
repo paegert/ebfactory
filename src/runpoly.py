@@ -3,15 +3,16 @@ Created on Jul 2, 2012
 
 @package  runpoly
 @author   map
-@version  \$Revision: 1.7 $
-@date     \$Date: 2012/11/30 20:37:27 $
+@version  \$Revision: 1.8 $
+@date     \$Date: 2013/07/26 20:07:27 $
 
 $Log: runpoly.py,v $
-Revision 1.7  2012/11/30 20:37:27  paegerm
-pass options to fitlc, add clscol option
-adding period to plots
-adding logfile option
+Revision 1.8  2013/07/26 20:07:27  paegerm
+adding midpoints and fullfit options, switching to mastpolyfit
 
+adding midpoints and fullfit options, switching to mastpolyfit
+
+Revision 1.7  2012/11/30 20:37:27  paegerm
 pass options to fitlc, add clscol option
 adding period to plots
 adding logfile option
@@ -54,6 +55,7 @@ from logfile import *
 
 def getfit(outstring, staruid):
     coeffs = []
+    coeffs.append(staruid)
     fit    = []
     chi2   = 1.0e11
     outstring = outstring.split('\n')
@@ -72,7 +74,11 @@ def getfit(outstring, staruid):
             continue
         else:
             splitted = line.split('\t')
-            fit.append([staruid, float(splitted[0]), float(splitted[1])])
+            if ((abs(float(splitted[0]) - 999.0) <= 1.0e-6) and
+                (abs(float(splitted[1]) - 999.0) <= 1.0e-6)):
+                fit.append([staruid, 0.0, 0.0])
+            else:
+                fit.append([staruid, float(splitted[0]), float(splitted[1])])
 
     return (chi2, coeffs, fit)
 
@@ -80,8 +86,7 @@ def getfit(outstring, staruid):
 
 def fitlc(star, plc, blc, options):
     if options.debug > 0:
-        print 'processing', star['id']
-    fsize = options.fsize
+        options.lf.write('processing ' + star['id'] + ' ' + str(star['uid']))
     polyinname = star['id'] + '.tmp'
     polyfile = open(polyinname, 'w')
     for entry in blc:
@@ -90,8 +95,10 @@ def fitlc(star, plc, blc, options):
                        str(round(entry['errnormmag'], 5)) + '\n')
     polyfile.close()
     
-    oldargs = ('asaspolyfit', '--find-knots', '--find-step', polyinname)
-    newargs = ('asaspolyfit_new', '--find-knots', '--find-step', polyinname)
+    oldargs = ('mastpolyfit', '--find-knots', '--find-step', '--midpoints',  
+               '--four-chain', polyinname)
+    newargs = ('mastpolyfit', '--find-knots', '--find-step', '--midpoints', 
+               '--two-chain', polyinname)
 
     plcphases = [x[3] for x in plc]
     plcmags   = [x[4] for x in plc]
@@ -111,7 +118,7 @@ def fitlc(star, plc, blc, options):
     resold = p.returncode
     if (resold == 0):
         (oldchi2, oldcoeffs, oldfit) = getfit(outstring, star['uid'])
-    if (options.debug > 0):
+    if (options.debug > 1):
         print 'resold = ', resold, ' old chi2 = ', oldchi2
 
     p = subprocess.Popen(newargs, stdout=subprocess.PIPE)
@@ -119,7 +126,7 @@ def fitlc(star, plc, blc, options):
     resnew = p.returncode
     if (resnew == 0):
         (newchi2, newcoeffs, newfit) = getfit(outstring, star['uid'])
-    if (options.debug > 0):
+    if (options.debug > 1):
         print 'resnew = ', resnew, ' new chi2 = ', newchi2
 
     if (resold == 0):
@@ -140,6 +147,26 @@ def fitlc(star, plc, blc, options):
             usefit = 'new'
         else:
             usefit = None
+    if usefit == 'new':
+        options.lf.write('using new fit (2 chains) for ' + str(star['uid']))
+
+    # call polyfit again for getting the full fit (theoretical lightcurve)
+    tmpchi2 = 1.0e11
+    coeffs  = []
+    fullfit  = []
+    args    = ('mastpolyfit', '--find-knots', '--find-step',  
+               '--four-chain', polyinname)
+    if (usefit == 'new'):
+        args = ('mastpolyfit', '--find-knots', '--find-step',  
+                '--two-chain', polyinname)
+    p = subprocess.Popen(args, stdout=subprocess.PIPE)
+    (outstring, errstring) = p.communicate()
+    res = p.returncode
+    if (res == 0):
+        (tmpchi2, coeffs, fullfit) = getfit(outstring, star['uid'])
+    if (options.debug > 1):
+        print 'res = ', res, ' tmpchi2 = ', tmpchi2
+        print ''
 
     os.remove(polyinname)            
 
@@ -147,6 +174,8 @@ def fitlc(star, plc, blc, options):
     coeffs = None
     fit    = None
     varcls = star['varcls']
+    legends = ['raw', 'binned']
+    fsize = options.fsize
     if varcls == None:
         varcls = 'not classified'
     if (usefit == None):
@@ -155,12 +184,13 @@ def fitlc(star, plc, blc, options):
                 blcphases, blcmags, 'r.')
         pl.xlim(-0.5, 0.5)
         tmp = 'Phase (Period = ' + str(star['Period']) + ' d)'
-        pl.xlabel(tmp, fontsize=options.fsize)
+        pl.xlabel(tmp, fontsize = fsize)
         pl.ylabel('Flux')
         pl.title(star['id'] + '  ' + varcls)
+#        pl.legend(legends)
         pl.savefig(plotname)
         pl.clf()
-        return (False, chi2, coeffs, fit)
+        return (False, chi2, coeffs, fullfit, fit)
     
     chi2   = oldchi2
     coeffs = oldcoeffs
@@ -169,10 +199,13 @@ def fitlc(star, plc, blc, options):
         chi2   = newchi2
         coeffs = newcoeffs
         fit    = newfit
-    fitphases = [x[1] for x in fit]
-    fitvalues = [x[2] for x in fit]
+        
+    fitphases  = [x[1] for x in fit]
+    fitvalues  = [x[2] for x in fit]
+    fullphases = [x[1] for x in fullfit]
+    fullvalues = [x[2] for x in fullfit]
 
-    #fsize = 18
+    legends = ['raw', 'binned', 'polyfit', 'gridpoints']
     plotname = 'plots/' + star['id'] + '.png'
 #    fig = pl.figure()
 #    ax  = fig.add_subplot(111)
@@ -180,19 +213,28 @@ def fitlc(star, plc, blc, options):
 #        tick.label.fontsize = 20
     pl.plot(plcphases, plcmags, 'k.', 
             blcphases, blcmags, 'r.', 
-            fitphases, fitvalues, 'b-')
+            fullphases, fullvalues, 'b-',
+            fitphases, fitvalues, 'go')
     pl.xticks(fontsize = fsize)
     pl.yticks(fontsize = fsize)
     pl.xlim(-0.5, 0.5)
     tmp = 'Phase (Period = ' + str(star['Period']) + ' d)'
     pl.xlabel(tmp, fontsize=options.fsize)
-    pl.ylabel('normalized mag', fontsize=fsize)
-    pl.title(star['id'] + '  ' + varcls, fontsize=fsize)
+    pl.ylabel('normalized mag', fontsize = fsize)
+    pl.title(star['id'] + '  ' + varcls, fontsize = fsize)
+#    pl.legend(legends)
     pl.savefig(plotname)
-    # pl.show()
+#    pl.show()
     pl.clf()
     
-    return (True, chi2, coeffs, fit)
+    if options.fittype == 'midpoints':
+        newfit = [star['uid']]
+        for i in xrange(len(fit)):
+            newfit.append(fit[i][1])
+            newfit.append(fit[i][2])
+        fit = newfit
+    
+    return (True, chi2, coeffs, fullfit, fit)
     
     
     
@@ -216,15 +258,29 @@ def get_polyopts():
     parser.add_option('--fit', dest='fitname', type='string', 
                       default='asasfit.sqlite',
                       help='database file with fitted light curves')
+    parser.add_option('--fittype', dest='fittype', type='string', 
+                      default='coeffs',
+                      help='coeffs (default) / midpoints')
     parser.add_option('--fsize', dest='fsize', type='int', 
                       default=18,
                       help='font size for plots (default: 18')
+    parser.add_option('--fullfit', dest='fullfit', action='store_true', 
+                      default=False,
+                      help='store fitted lightcurve (False)')
     parser.add_option('--logfile', dest='logfile', type='string', 
                       default=None,
                       help='name of logfile (None)')
     parser.add_option('--plc', dest='plcname', type='string', 
                       default='asasplc.sqlite',
                       help='database file with phased light curves')
+    parser.add_option('--polydir', dest='polydir', type='string', 
+                      default=None,
+                      help='directory for polyfit files (default = rootdir)')
+    parser.add_option('--polyopt', dest='polyopt', type='string', 
+                      default= ' --find-knots --find-step --midpoints ',
+                      help='cmd line options for polyfit entered within ""; ' +
+                           'example: --polyopt "--step-size 0.005"; ' +
+                           '(default:  --find-knots --find-step --midpoints )')
     parser.add_option('--rootdir', dest='rootdir', type='string', 
                       default='./',
                       help='directory for database files (default = ./)')
@@ -243,14 +299,19 @@ def get_polyopts():
 
     if (len(args) == 1):
         options.fitname = args[0]
-    
+        
+    if (options.polydir == None):
+        options.polydir = options.rootdir
+    if (options.polydir[-1] != '/'):
+        options.polydir += '/'
+
     if options.selfile != None:
         fsel = open(options.rootdir + options.selfile)
         options.select = fsel.read()
         fsel.close()
         options.select = options.select.replace("\n", "")
     
-    options.lf = Logfile(options.logfile, True, True)
+    options.lf = Logfile(options.rootdir + options.logfile, True, True)
 
     return options
 
@@ -272,6 +333,10 @@ if __name__ == '__main__':
                              dbc.fitcols, dbc.fittname, 
                              dbc.fittypes, dbc.fitnulls)
     tmpwriter.close()
+    tmpwriter = dbw.DbWriter(options.rootdir + options.fitname, 
+                             dbc.kmncols, dbc.kmntname, 
+                             dbc.kmntypes, dbc.kmnnulls)
+    tmpwriter.close()
 
     watch = Stopwatch()
     watch.start()
@@ -286,6 +351,8 @@ if __name__ == '__main__':
                               dbc.cffcols, dbc.cfftname)
     fitwriter  = dbw.DbWriter(options.rootdir + options.fitname, 
                               dbc.fitcols, dbc.fittname)
+    midwriter  = dbw.DbWriter(options.rootdir + options.fitname,
+                              dbc.kmncols, dbc.kmntname)
     
     generator = dictreader.traverse(options.select, None, 1000)
     nrstars   = 0
@@ -297,6 +364,7 @@ if __name__ == '__main__':
         blc = blcreader.getlc(star['uid'], 'stars', 'phase')
         cffwriter.deletebystaruid(star['uid'])
         fitwriter.deletebystaruid(star['uid'])
+        midwriter.deletebystaruid(star['uid'])
         if (options.rootdir + star['sdir'] != olddir):
             olddir = options.rootdir + star['sdir']
             os.chdir(olddir)
@@ -304,20 +372,21 @@ if __name__ == '__main__':
                 os.mkdir('plots')
             if not os.path.exists('failed'):
                 os.mkdir('failed')
-        (ok, chi2, coeffs, fit) = fitlc(star, plc, blc, options)
-#                                        options.debug, options.fsize)
+        (ok, chi2, coeffs, fit, midpoints) = fitlc(star, plc, blc, options)
         dictwriter.update('update stars set chi2 = ? where uid = ?;', 
                           [(chi2, star['uid'])])
         if ok == False:
             failed += 1
             continue
         
-        if (len(coeffs) == 8):
+        if (len(coeffs) == 9):
             for i in range(0, 8):
                 coeffs.append(0.0)
-        coeffs.insert(0, star['uid'])
-        fitwriter.insert(fit, True)
         cffwriter.insert((coeffs,), True)
+        if options.fullfit == True:
+            fitwriter.insert(fit, True)
+        if options.fittype == 'midpoints':
+            midwriter.insert([midpoints], True)
         
     dictreader.close()
     plcreader.close()
@@ -328,6 +397,7 @@ if __name__ == '__main__':
     dictwriter.close()
     cffwriter.close()
     fitwriter.close()    
+    midwriter.close()
 
     print nrstars, ' processed, ', failed, ' lightcurves failed'
     print watch.stop(), ' seconds'
