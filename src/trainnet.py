@@ -3,8 +3,8 @@ Created on Jul 5, 2012
 
 @package  trainnet
 @author   map
-@version  \$Revision: 1.4 $
-@date     \$Date: 2012/11/30 20:40:07 $
+@version  \$Revision: 1.5 $
+@date     \$Date: 2013/07/26 20:32:44 $
 
 Routines for retrieving, preparing and handing data over to a neural network 
 for training. Note: the main part is just for testing purposes, use trainnetmp
@@ -12,22 +12,21 @@ for all real training
 
 
 $Log: trainnet.py,v $
-Revision 1.4  2012/11/30 20:40:07  paegerm
-convert printstatements to logfile output
-write unknown classes, stars without fit or with multiple fits to logfile
+Revision 1.5  2013/07/26 20:32:44  paegerm
+adding fittype, passing logfile to net
 
-convert printstatements to logfile output
+adding fittype, passing logfile to net
+
+Revision 1.4  2012/11/30 20:40:07  paegerm
+convert print statements to logfile output
 write unknown classes, stars without fit or with multiple fits to logfile
 
 Revision 1.3  2012/09/24 21:46:22  paegerm
 store select statement as comment in net object, class mlp --> Mlp,
 add database model to prepdata
 
-store select statement as comment in net object, class mlp --> Mlp,
-add database model to prepdata
-
 Revision 1.2  2012/07/20 20:24:34  paegerm
-adding readdata(), resuffle(), parseoptions() and options for the network
+adding readdata(), reshuffle(), parseoptions() and options for the network
 
 Revision 1.1  2012/07/06 20:34:19  paegerm
 Initial revision
@@ -68,7 +67,7 @@ def maketarget(classes, varcls, target):
 
 
 def prepdata(options, dbc, arr, cff, shuffle = True, 
-             normsubtract = None, normdevide = None):
+             normsubtract = None, normdivide = None):
     '''
     Prepare data for neural network (assemble and normalize). Note: the polyfit
     coefficients and normalized row-wise, NOT column-wise as usual. Within a 
@@ -89,12 +88,12 @@ def prepdata(options, dbc, arr, cff, shuffle = True,
         arr = arr[order, :]
         cff = cff[order, :]
 
-    nrinputs = 20
+    nrinputs = 19
     newnorm = False
     alld = np.zeros((nrrows, nrinputs))
-    if (normsubtract == None) or (normdevide == None):
+    if (normsubtract == None) or (normdivide == None):
         normsubtract = np.zeros(nrinputs)
-        normdevide   = np.ones(nrinputs)
+        normdivide   = np.ones(nrinputs)
         newnorm = True
     allt = np.zeros((nrrows, len(options.classes)))
     allnames = []
@@ -102,26 +101,27 @@ def prepdata(options, dbc, arr, cff, shuffle = True,
         allnames.append(arr[i]['id'])
         # normalize coefficients per row
         coeffs = np.asarray(tuple(cff[i]))
-        coeffs[3:6]   = (coeffs[3:6] - coeffs[3:6].mean()) / \
-                           coeffs[3:6].std()
-        coeffs[7:10]  = (coeffs[7:10] - coeffs[7:10].mean()) / \
-                           coeffs[7:10].std()
-        std = coeffs[11:14].std()
-        if (std > 1e-6):
-            coeffs[11:14] = (coeffs[11:14] - coeffs[11:14].mean()) / std
-        std = coeffs[15:18].std()
-        if (std > 1e-6):
-            coeffs[15:18] = (coeffs[15:18] - coeffs[15:18].mean()) / std
+        if options.fittype == 'coeffs':    # no normalization for midpoints
+            coeffs[3:6]   = (coeffs[3:6] - coeffs[3:6].mean()) / \
+                               coeffs[3:6].std()
+            coeffs[7:10]  = (coeffs[7:10] - coeffs[7:10].mean()) / \
+                               coeffs[7:10].std()
+            std = coeffs[11:14].std()
+            if (std > 1e-6):
+                coeffs[11:14] = (coeffs[11:14] - coeffs[11:14].mean()) / std
+            std = coeffs[15:18].std()
+            if (std > 1e-6):
+                coeffs[15:18] = (coeffs[15:18] - coeffs[15:18].mean()) / std
                            
 
-        # copy knots and normalized coeffs to data table
+        # copy knots and normalized coeffs/fluxes to data table
         alld[i, :16] = coeffs[2:]
         
         # add period, magnitude, difference of normalized magnitudes, chi2
         alld[i, 16]  = np.log10(arr[i]['period'])
         alld[i, 17]  = arr[i][dbc.t['mag']]
         alld[i, 18]  = arr[i]['fmax'] - arr[i]['fmin']
-        alld[i, 19]  = arr[i]['chi2']
+#        alld[i, 19]  = arr[i]['chi2']
         
         # make the target value line
         maketarget(options.classes, arr[i][options.clscol], allt[i])
@@ -129,18 +129,18 @@ def prepdata(options, dbc, arr, cff, shuffle = True,
     # normalize vmag
     if (newnorm == True):
         normsubtract[17] = alld[:, 17].mean()
-        normdevide[17]   = alld[:, 17].std()
-    alld[:, 17] = (alld[:, 17] - normsubtract[17]) / normdevide[17] 
+        normdivide[17]   = alld[:, 17].std()
+    alld[:, 17] = (alld[:, 17] - normsubtract[17]) / normdivide[17] 
 
     # skip normalized magnitude difference (already small enough)
 
-    # chi2 (devide by 5 * std to avoid overflows due to huge spread
-    if (newnorm == True):
-        normsubtract[19] = alld[:, 19].mean()
-        normdevide[19]   = 5.0 * alld[:, 19].std()
-    alld[:, 19] = (alld[:, 19] - normsubtract[19]) / normdevide[19] 
+    # chi2 (divide by 5 * std to avoid overflows due to huge spread
+#    if (newnorm == True):
+#        normsubtract[19] = alld[:, 19].mean()
+#        normdivide[19]   = 5.0 * alld[:, 19].std()
+#    alld[:, 19] = (alld[:, 19] - normsubtract[19]) / normdivide[19] 
 
-    return (alld, allt, allnames, normsubtract, normdevide)
+    return (alld, allt, allnames, normsubtract, normdivide)
 
 
 
@@ -155,8 +155,14 @@ def readdata(options, dbconfig):
     noclass    = 0
     nofit      = 0
     curidx     = 0
+    fitdtype   = dbconfig.npcoefftype
+    tablename  = dbconfig.cfftname
     dictarr    = np.zeros(0, dtype = dbconfig.npdicttype)
-    coeffarr   = np.zeros(0, dtype = dbconfig.npcoefftype)
+    if options.fittype == 'midpoints':
+        fitdtype   = dbconfig.npkmntype
+        tablename  = dbconfig.kmntname
+    fitarr = np.zeros(0, dtype = fitdtype)
+
     for star in generator:
         nrstars += 1
         if not (star[options.clscol] in options.classes):
@@ -164,24 +170,32 @@ def readdata(options, dbconfig):
             options.lf.write('star '+ star['id'] + ' with class ' + 
                              star[options.clscol] + ' skipped')
             continue
-        coeffs = fitreader.getlc(star['uid'], dbconfig.cfftname)
-        if len(coeffs) == 0:
+#        coeffs = fitreader.getlc(star['uid'], dbconfig.cfftname)
+        fits = fitreader.getlc(star['uid'], tablename)            
+        if len(fits) == 0:
             nofit += 1
-            options.lf.write('Warning: no fit for ' + star['id'] + ' skipping')
+            options.lf.write('Warning: no fit for ' + str(star['uid']) + ', ' + 
+                             star['id'] + ', ' + star['sdir'] + ' skipping')
             continue
-        if (len(coeffs) > 1):
-            options.lf.write('Warning: ' + str(len(coeffs)) + ' fits for ' +
+        if (len(fits) > 1):
+            options.lf.write('Warning: ' + str(len(fits)) + ' fits for ' +
                              star['id'] + ', taking first')
         dictarr = np.append(dictarr, np.zeros(1, dbconfig.npdicttype))
-        dictarr[curidx] = tuple(star)
-        coeffarr = np.append(coeffarr, np.zeros(1, dbconfig.npcoefftype))
-        coeffarr[curidx] = tuple(coeffs[0])
+        try:
+            dictarr[curidx] = tuple(star)
+        except ValueError as err:
+            print curidx
+            print star
+            print err
+            exit(1)
+        fitarr = np.append(fitarr, np.zeros(1, fitdtype))
+        fitarr[curidx] = tuple(fits[0])
         curidx += 1
         
     dictreader.close()
     fitreader.close()
     
-    return (dictarr, coeffarr, nrstars, noclass, nofit)
+    return (dictarr, fitarr, nrstars, noclass, nofit)
     
     
     
@@ -221,6 +235,9 @@ def parseoptions():
                       help='dictionary column for class (varcls)')
     parser.add_option('-d', dest='debug', type='int', default=0,
                       help='debug setting (default: 0)')
+    parser.add_option('--dbconfig', dest='dbconfig', type = 'string', 
+                      default='Asas',
+                      help='name of database configuration (default = Asas')
     parser.add_option('--dict', dest='dictname', type='string', 
                       default='asasdict.sqlite',
                       help='dictionary database file')
@@ -230,12 +247,15 @@ def parseoptions():
     parser.add_option('--fit', dest='fitname', type='string', 
                       default='asasfit.sqlite',
                       help='database file with fitted light curves')
+    parser.add_option('--fittype', dest='fittype', type='string', 
+                      default='coeffs',
+                      help='coeffs (default) / midpoints')
     parser.add_option('--logfile', dest='logfile', type='string', 
-                      default=None,
-                      help='name of logfile (None)')
+                      default='trainlog.txt',
+                      help='name of logfile (trainlog.txt)')
     parser.add_option('--maxhidden', dest='maxhidden', type='int', 
                       default=0,
-                      help='Minimum number of hidden neurons (nr of outputs)')
+                      help='Maximum number of hidden neurons (nr of outputs)')
     parser.add_option('--minhidden', dest='minhidden', type='int', 
                       default=1,
                       help='Minimum number of hidden neurons (1)')
@@ -298,6 +318,7 @@ def parseoptions():
             options.classes = line.split()
     except IOError:
         parser.print_help()
+        print 'File ', options.rootdir + options.clsnames, 'not found'
         exit(1)
     
     if options.selfile != None:
@@ -306,6 +327,8 @@ def parseoptions():
         fsel.close()
         options.select = options.select.replace("\n", "")
 
+    if not os.path.exists(options.rootdir + options.resdir):
+        os.mkdir(options.rootdir + options.resdir)
     options.lf = Logfile(options.rootdir + options.resdir + '/' + 
                          options.logfile, True, True)
     
@@ -344,7 +367,7 @@ def splitdata(alld, allt, allnames, trainfrac = 0.5, validfrac = 0.25):
 if __name__ == '__main__':
     (options, args) = parseoptions()
     
-    cls = getattr(dbconfig, 'Asas')
+    cls = getattr(dbconfig, options.dbconfig)
     dbc = cls()
     
     watch = Stopwatch()
@@ -352,17 +375,23 @@ if __name__ == '__main__':
     watchprep = Stopwatch()
     watchprep.start()
     
+    options.lf.write('Select statement:')
+    options.lf.write(options.select)
+    
+    
     # read from database
     (dictarr, coeffarr, nrstars, noclass, nofit) = readdata(options, dbc)
     
     # prepare the data, target and normalization values
     (alld, allt, allnames, 
-     normsubtract, normdevide) = prepdata(options, dbc, dictarr, coeffarr)
+     normsubtract, normdivide) = prepdata(options, dbc, dictarr, coeffarr)
     
-    print nrstars, ' selected in '
-    print noclass, ' stars skipped because of unknown class'
-    print nofit,   ' stars have no fit'
-    print nrstars - noclass, 'prepared in', watchprep.stop(), ' seconds'
+    options.lf.write(str(nrstars) + ' selected')
+    options.lf.write(str(noclass) + ' stars skipped because of unknown class')
+    options.lf.write(str(nofit) + ' stars have no fit')
+    options.lf.write(str(nrstars - noclass) + ' prepared in ' +
+                     str(watchprep.stop()) + ' seconds')
+    options.lf.write('')
     watchprep.start()
     
     (traind, traint, trainn, 
@@ -370,6 +399,11 @@ if __name__ == '__main__':
      testd, testt, testn)    = splitdata(alld, allt, allnames, 0.5, 0.25)
 
     # testcode
+    options.lf.write('fittype  = ' + options.fittype)
+    options.lf.write('neurons  = ' + str(options.minhidden))
+    options.lf.write('eta      = ' + str(options.eta))
+    options.lf.write('momentum = ' + str(options.momentum))
+    options.lf.write('')
     net = mlp.Mlp(traind, traint, nhidden = options.minhidden, 
                   beta = options.beta, momentum = options.momentum, 
                   outtype = options.outtype, 
@@ -377,9 +411,10 @@ if __name__ == '__main__':
     net.subdir = options.rootdir + options.resdir
     if not os.path.exists(net.subdir):
         os.mkdir(net.subdir)
+    net.lf     = options.lf
     net.debug  = options.debug
     net.select = options.select
-    net.setnormvalues(normsubtract, normdevide)
+    net.setnormvalues(normsubtract, normdivide)
     try:
         net.earlystopping(traind, traint, validd, validt, 
                           eta = options.eta, 
@@ -396,7 +431,7 @@ if __name__ == '__main__':
     pickle.dump(net, pf)
     pf.close()
 
-    print watchprep.stop(), 'seconds for training'
-    print watch.stop(), 'seconds over all'
-    print ''
-    print 'Done'
+    options.lf.write(str(watchprep.stop()) + ' seconds for training')
+    options.lf.write(str(watch.stop()) + ' seconds over all')
+    options.lf.write('')
+    options.lf.write('Done')
