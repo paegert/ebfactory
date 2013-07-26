@@ -3,18 +3,21 @@ Created on Jun 18, 2012
 
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.2 $
-@date     \$Date: 2012/11/30 20:32:04 $
+@version  \$Revision: 1.3 $
+@date     \$Date: 2013/07/26 20:29:21 $
 
 multi-process version of makeplc and makeblc, phases the lightcurve if T0 <= 0.0
 
 $Log: makeplcmp.py,v $
-Revision 1.2  2012/11/30 20:32:04  paegerm
+Revision 1.3  2013/07/26 20:29:21  paegerm
+correct bin
+
+correct bin
+
+Revision 1.2  2012/11/30 20:32:04  parvizm
 adding logfile option, cleaning code
 
-adding logfile option, cleaning code
-
-Revision 1.1  2012/09/24 21:36:16  paegerm
+Revision 1.1  2012/09/24 21:36:16  parvizm
 adding logfile, option del converted to nodel
 
 Initial revision
@@ -45,7 +48,8 @@ def binlc(plc, staruid, nrbins = 100):
     sigmas = np.ndarray((0,))
     binfluxes = np.ndarray((0,))
     for entry in plc:
-        actbin = int((0.5 + entry[2]) / binsize)
+        #actbin = int((0.5 + entry[2]) / binsize)
+        actbin = int((0.5 + entry[2]) * nrbins + 0.5)
         if (actbin != oldbin):
             if (oldbin != -1):
                 mean  = binfluxes.mean()
