@@ -3,42 +3,20 @@ Created on Jul 2, 2012
 
 @package  runpoly
 @author   map
-@version  \$Revision: 1.2 $
-@date     \$Date: 2013/07/02 17:16:04 $
+@version  \$Revision: 1.3 $
+@date     \$Date: 2013/07/26 20:31:59 $
 
 $Log: runmastpoly.py,v $
-Revision 1.2  2013/07/02 17:16:04  paegerm
+Revision 1.3  2013/07/26 20:31:59  paegerm
+deleting old log messages from runpoly
+
+deleting old log messages from runpoly
+
+Revision 1.2  2013/07/02 17:16:04  parvizm
 corrected "fail bug"
 
-Revision 1.1  2013/07/02 14:58:49  paegerm
+Revision 1.1  2013/07/02 14:58:49  parvizm
 initial revision
-
-Revision 1.7  2012/11/30 20:37:27  paegerm
-pass options to fitlc, add clscol option
-adding period to plots
-adding logfile option
-
-pass options to fitlc, add clscol option
-adding period to plots
-adding logfile option
-
-Revision 1.6  2012/09/24 21:42:58  paegerm
-adding dbconfig option, adding fontsize
-
-Revision 1.5  2012/08/23 16:36:54  paegerm
-make fitlc silent for debug = 0
-
-Revision 1.4  2012/08/22 15:47:37  paegerm
-Changing font size of plots for successful fits
-
-Revision 1.3  2012/08/16 22:26:51  paegerm
-adding get_polyopts, adding debug variable
-
-Revision 1.2  2012/07/30 19:28:27  paegerm
-correcting index-error in fitlc, creation of fitphases and fitvalues
-
-Revision 1.1  2012/07/06 20:34:19  paegerm
-Initial revision
 
 '''
 
