@@ -3,14 +3,16 @@ Created on Jun 19, 2012
 
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.11 $
-@date     \$Date: 2013/07/31 16:51:14 $
+@version  \$Revision: 1.12 $
+@date     \$Date: 2013/07/31 19:11:09 $
 
 $Log: dbconfig.py,v $
-Revision 1.11  2013/07/31 16:51:14  paegerm
-adding netselect and remark to netdict
-Mast: add uid to npdicttype for Mast, adding missing clolumns (blc*, chi2)
+Revision 1.12  2013/07/31 19:11:09  paegerm
+adding missing stats to Mast, adding npblctype
 
+adding missing stats to Mast, adding npblctype
+
+Revision 1.11  2013/07/31 16:51:14  paegerm
 adding netselect and remark to netdict
 Mast: add uid to npdicttype for Mast, adding missing clolumns (blc*, chi2)
 
@@ -134,6 +136,8 @@ class Asas(object):
         self.blccols  = ['staruid', 'phase', 'normmag', 'errnormmag']
         self.blctypes = ['INTEGER', 'REAL', 'REAL', 'REAL']
         self.blcnulls = [' NOT NULL', '', '', '']
+        self.blcnptype= [('uid', 'i4'), ('staruid', 'i4'), ('phase', 'f4'),
+                         ('normmag', 'f4'), ('errornormmag', 'f4')]
         
 
         # knots and coefficients from polyfit
@@ -406,6 +410,7 @@ class KeplerEBs(Asas):
         self.sdirindex   = 19
                            
      
+     
 class Mast(KeplerEBs):
     '''
     class wrapper for Kepler EBs
@@ -420,7 +425,7 @@ class Mast(KeplerEBs):
         
         # NO 0 OFFSET because col 0 is UID
         self.t         = {'id' : 1, 'period' : 2, 'bjd0' : 3, 'morph' : 4,
-                          'mag' : 13, 'fmin' : 31, 'fmax' : 32 }
+                          'mag' : 13, 'varcls' : 18, 'fmin' : 31, 'fmax' : 32 }
         self.dictcols  = ['KIC', 'period', 'bjd0', 'morph', 'T21', 
                           'rho12', 'q', 'e_sin_omega', 'e_cos_omega', 'FF', 
                           'sin_i', 'Teff', 'kmag', 'RA', 'DEC', 
@@ -463,6 +468,21 @@ class Mast(KeplerEBs):
                            ('chi2', 'f4')]
 
         self.sdirindex   = 30
+        
+        
+
+        self.missingstats = 'update stars ' \
+                            'set blc_min = ?, blc_max = ? where uid = ?;'
+        
+        
+    def makemissingstats(self, staruid, npblc):
+#        median = round(np.median(npblc['normmag']), 4)
+#        mean   = round(npblc['normmag'].mean(), 4)
+        fmin = round(npblc['normmag'].min(), 4)
+        fmax = round(npblc['normmag'].max(), 4)
+        return [fmin, fmax, staruid]
+
+
         
 class Kepq3(Mast):
     '''
