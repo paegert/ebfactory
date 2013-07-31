@@ -3,10 +3,13 @@ Created on Jun 19, 2012
 
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.12 $
-@date     \$Date: 2013/07/31 19:11:09 $
+@version  \$Revision: 1.13 $
+@date     \$Date: 2013/07/31 19:24:35 $
 
 $Log: dbconfig.py,v $
+Revision 1.13  2013/07/31 19:24:35  paegerm
+Added classes for Kepq3test, Kepq3flat, kepq3FC2, kepq3var
+
 Revision 1.12  2013/07/31 19:11:09  paegerm
 adding missing stats to Mast, adding npblctype
 
@@ -130,6 +133,8 @@ class Asas(object):
                           'REAL', 'REAL', 'REAL']
         self.rplcnulls = [' NOT NULL', ' NOT NULL', 'NOT NULL',
                            '', '','','','','']
+        self.nprplctype = [('staruid', 'i4'), ('bjd', 'f8'), ('phase', 'f8'), ('raw_flux', 'f8'), ('raw_err', 'f8'),
+               ('corr_flux', 'f8'), ('corr_err', 'f8'),('dtr_flux', 'f8'), ('dtr_err', 'f8')]
         
         # binned light curve
         self.blctname = 'stars'
@@ -194,6 +199,23 @@ class Asas(object):
                             ('m3_flux', 'f4'), 
                             ('knot4', 'f4'), ('k4_flux', 'f4'), ('mid4', 'f4'), 
                             ('m4_flux', 'f4')]
+        
+         # Kepq3 bjd, phased, raw, and dtr 
+        self.keplctname = 'stars'
+        self.keplccols  = ['staruid','BJD', 'PHASE', 
+                          'SAP_FLUX', 'SAP_ERR', 'SAP_BKG', 'SAP_BKG_ERR',
+                          'PDCSAP_FLUX','PDCSAP_ERR', 'DTR_FLUX', 'DTR_ERR', 'SLC_FLAG']
+        self.keplctypes = ['INTEGER', 'REAL', 'REAL', 
+                          'REAL', 'REAL', 'REAL', 'REAL',
+                          'REAL', 'REAL', 'REAL', 'REAL', 'INTEGER']
+        self.keplcnulls = ['NOT NULL', '', '',
+                           '', '', '', '',
+                           '', '', '', '', '']
+        self.npkeplctype = [('staruid', 'i4'), ('BJD', 'f4'),  ('PHASE', 'f4'), 
+                            ('SAP_FLUX', 'f4'), ('SAP_ERR', 'f4'), ('SAP_BKG', 'f4'), ('SAP_BKG_ERR', 'f4'),
+                            ('PDCSAP_FLUX', 'f4'), ('PDCSAP_ERR', 'f4'), ('DTR_FLUX', 'f4'), ('DTR_ERR', 'f4'),
+                            ('SLC_FLAG', 'i1')]
+
         
 
         self.missingstats = 'update stars ' \
@@ -433,6 +455,7 @@ class Mast(KeplerEBs):
                           'rf_mean', 'rf_median', 'cf_min', 'cf_max','cf_mean', 
                           'cf_median', 'df_min', 'df_max','df_mean', 'df_median',
                           'blc_min', 'blc_max', 'blc_std', 'blc_std2', 'chi2']
+
         self.dicttypes = ['TEXT', 'REAL', 'REAL', 'REAL', 'REAL',
                           'REAL', 'REAL', 'REAL', 'REAL', 'REAL',
                           'REAL', 'REAL', 'REAL', 'REAL', 'REAL',
@@ -440,6 +463,7 @@ class Mast(KeplerEBs):
                           'REAL', 'REAL', 'REAL', 'REAL', 'REAL', 
                           'REAL', 'REAL', 'REAL', 'REAL', 'REAL',
                           'REAL', 'REAL', 'REAL', 'REAL', 'REAL']
+
         self.dictnulls = ['NOT NULL', ' NOT NULL', ' NOT NULL', 
                           '', '', '', '', '',
                           '', '', '', '', '',
@@ -457,17 +481,12 @@ class Mast(KeplerEBs):
                            ('kmag', 'f4'), 
                            ('RA', 'f4'), ('DEC', 'f4'), 
                            ('SC', 'i1'), ('sdir', 'a10'), ('cls', 'a12'),
-                           ('rf_min', 'f6'), ('rf_max','f6'), 
-                           ('rf_mean', 'f6'), ('rf_median', 'f6'),
-                           ('cf_min', 'f6'), ('cf_max','f6'), 
-                           ('cf_mean', 'f6'), ('cf_median', 'f6'),
-                           ('df_min','f6'), ('df_max','f6'), 
-                           ('df_mean', 'f6'), ('df_median','f6'),
-                           ('blc_min','f6'), ('blc_max','f6'), 
-                           ('blc_mean', 'f6'), ('blc_median','f6'),
-                           ('chi2', 'f4')]
+                           ('rf_min', 'f4'), ('rf_max','f4'), ('rf_mean', 'f4'), ('rf_median', 'f4'),
+                           ('cf_min', 'f4'), ('cf_max','f4'), ('cf_mean', 'f4'), ('cf_median', 'f4'),
+                           ('df_min','f4'), ('df_max','f4'), ('df_mean', 'f4'), ('df_median','f4'), ('chi2', 'f4')]
 
-        self.sdirindex   = 30
+
+        self.sdirindex   = 31
         
         
 
@@ -488,10 +507,52 @@ class Kepq3(Mast):
     '''
     class wrapper for Kepler Q3 data
     '''
+
+    def __init__(self):
+
+        super(Kepq3, self).__init__()
+
+        # dictionary
+        self.dicttname = 'stars'
+
+        # NO 0 OFFSET because col 0 is UID
+        self.t         = {'KIC' : 1, 'RA' : 2, 'DEC' : 3, 'KEPMAG' : 14}
+        self.dictcols  = ['KIC', 'RA', 'DEC', 'PMRA', 'PMDEC',
+                          'GMAG', 'RMAG', 'IMAG', 'ZMAG', 'D51MAG',
+                          'JMAG', 'HMAG', 'KMAG', 'KEPMAG', 'VARCLS',
+                          'TEFF', 'LOGG', 'FEH', 'AV', 'RADIUS',
+                          'PERIOD', 'SNR', 'AOV', 'FC2_PER', 'FC2_CHM',
+                          'AoV2_PER', 'AoV2_AOV', 'AoV2_SNR', 'AoV2_NEG']
+
+        self.dicttypes = ['TEXT', 'REAL', 'REAL', 'REAL', 'REAL',
+                          'REAL', 'REAL', 'REAL', 'REAL', 'REAL',
+                          'REAL', 'REAL', 'REAL', 'REAL', 'TEXT',
+                          'REAL', 'REAL', 'REAL', 'REAL', 'REAL',
+                          'REAL', 'REAL', 'REAL', 'REAL', 'REAL',
+                          'REAL', 'REAL', 'REAL', 'REAL']
+        self.dictnulls = [' NOT NULL UNIQUE ', '', '', '', '',
+                          '', '', '', '', '',
+                          '', '', '', '', '',
+                          '', '', '', '', '',
+                          '', '', '', '', '',
+                          '', '', '', '']
+        self.npdicttype = [('KIC', 'a10'), ('RA', 'f4'),  ('DEC', 'f4'), ('PMRA', 'f4'), ('PMDEC', 'f4'),
+                           ('GMAG', 'f4'), ('RMAG', 'f4'), ('IMAG', 'f4'), ('ZMAG', 'f4'), ('D51MAG', 'f4'),
+                           ('JMAG', 'f4'), ('HMAG', 'f4'), ('KMAG', 'f4'), ('KEPMAG', 'f4'), ('VARCLS', 'a12'),
+                           ('TEFF', 'f4'), ('LOGG', 'f4'), ('FEH', 'f4'), ('AV', 'f4'), ('RADIUS', 'f4'),
+                           ('PERIOD', 'f4'), ('SNR', 'f4'), ('AOV', 'f4'), ('FC2_PER', 'f4'), ('FC2_CHM', 'f4'),
+                           ('AoV2_PER', 'f4'), ('AoV2_AOV', 'f4'), ('AoV2_SNR', 'f4'), ('AoV2_NEG', 'f4')]
+        self.sdirindex   = 29
+
+        
+class Kepq3test(Mast):
+    '''
+    class wrapper for Kepler Q3 data
+    '''
     
     def __init__(self):
         
-        super(Kepq3, self).__init__()
+        super(Kepq3test, self).__init__()
         
         # dictionary
         self.dicttname = 'stars'
@@ -501,34 +562,135 @@ class Kepq3(Mast):
         self.dictcols  = ['KIC', 'RA', 'DEC', 'PMRA', 'PMDEC', 
                           'GMAG', 'RMAG', 'IMAG', 'ZMAG', 'D51MAG',
                           'JMAG', 'HMAG', 'KMAG', 'KEPMAG', 'VARCLS',
-                          'TEFF', 'LOGG', 'FEH', 'AV', 'RADIUS']
+                          'TEFF', 'LOGG', 'FEH', 'AV', 'RADIUS', 
+                          'PERIOD', 
+                          'AoV1_PER', 'AoV1_AOV', 'AoV1_SNR', 'AoV1_NEG',
+                          'AoV2_PER', 'AoV2_AOV', 'AoV2_SNR', 'AoV2_NEG',
+                          'FC2_PER', 'FC2_CHM',
+                          'BLS_PER', 'BLS_SNR']
 
         self.dicttypes = ['TEXT', 'REAL', 'REAL', 'REAL', 'REAL', 
                           'REAL', 'REAL', 'REAL', 'REAL', 'REAL', 
                           'REAL', 'REAL', 'REAL', 'REAL', 'TEXT',
-                          'REAL', 'REAL', 'REAL', 'REAL', 'REAL']
-        self.dictnulls = ['NOT NULL', '', '', '', '', '',
-                          '', '', '', '', '',  
-                          '', '', '', '', 
-                          '', '', '', '', '']
+                          'REAL', 'REAL', 'REAL', 'REAL', 'REAL',
+                          'REAL', 'REAL', 'REAL', 'REAL', 'REAL',
+                          'REAL', 'REAL', 'REAL', 'REAL', 'REAL',
+                          'REAL', 'REAL', 'REAL']
+        
+        self.dictnulls = [' NOT NULL UNIQUE ', '', '', '', '',
+                          '', '', '', '', '',
+                          '', '', '', '', '',
+                          '', '', '', '', '',
+                          '', '', '', '', '',
+                          '', '', '', '', '',
+                          '', '', '']
+        
         self.npdicttype = [('KIC', 'a10'), ('RA', 'f4'),  ('DEC', 'f4'), ('PMRA', 'f4'), ('PMDEC', 'f4'), 
                            ('GMAG', 'f4'), ('RMAG', 'f4'), ('IMAG', 'f4'), ('ZMAG', 'f4'), ('D51MAG', 'f4'),
                            ('JMAG', 'f4'), ('HMAG', 'f4'), ('KMAG', 'f4'), ('KEPMAG', 'f4'), ('VARCLS', 'a12'),
-                           ('TEFF', 'f4'), ('LOGG', 'f4'), ('FEH', 'f4'), ('AV', 'f4'), ('RADIUS', 'f4')] 
-        self.sdirindex   = 19
-                           
+                           ('TEFF', 'f4'), ('LOGG', 'f4'), ('FEH', 'f4'), ('AV', 'f4'), ('RADIUS', 'f4'),
+                           ('PERIOD', 'f4'), 
+                           ('AoV1_PER','f4'), ('AoV1_AOV', 'f4'), ('AoV1_SNR', 'f4'), ('AoV1_NEG', 'f4'),
+                           ('AoV2_PER', 'f4'), ('AoV2_AOV', 'f4'), ('AoV2_SNR', 'f4'), ('AoV2_NEG', 'f4'),
+                           ('FC2_PER', 'f4'), ('FC2_CHM', 'f4'),
+                           ('BLS_PER', 'f4'), ('BLS_SNR', 'f4'),] 
+        self.sdirindex   = 33
+                 
+      
+class Kepq3flat(Mast):
+    '''
+    class wrapper for Kepler Q3 data
+    '''
     
-        # Kepq3 bjd, phased, raw, and dtr 
-        self.keplctmane = 'stars'
-        self.keplccols  = ['staruid','BJD', 'PHASE', 
-                          'SAP_FLUX', 'SAP_ERR', 'SAP_BKG', 'SAP_BKG_ERR',
-                          'PDCSAP_FLUX','PDCSAP_ERR', 'DTR_FLUX', 'DTR_ERR']
-        self.keplctypes = ['INTEGER', 'REAL', 'REAL', 
+    def __init__(self):
+        
+        super(Kepq3flat, self).__init__()
+        
+        # dictionary
+        self.dicttname = 'stars'
+        
+        # NO 0 OFFSET because col 0 is UID
+        self.t         = {'staruid' : 1, 'KIC' : 2, 'PERIOD' : 3, 'A2R_NEG' : 19}
+        
+        self.dictcols  = ['staruid', 'KIC', 'PERIOD', 
+                          'A1F_PER', 'A1F_AOV', 'A1F_SNR', 'A1F_NEG',
+                          'A1R_PER', 'A1R_AOV', 'A1R_SNR', 'A1R_NEG',
+                          'A2F_PER', 'A2F_AOV', 'A2F_SNR', 'A2F_NEG',
+                          'A2R_PER', 'A2R_AOV', 'A2R_SNR', 'A2R_NEG']
+
+        self.dicttypes = ['INTEGER', 'TEXT', 'REAL',
+                          'REAL', 'REAL', 'REAL', 'REAL',
+                          'REAL', 'REAL', 'REAL', 'REAL',
                           'REAL', 'REAL', 'REAL', 'REAL',
                           'REAL', 'REAL', 'REAL', 'REAL']
-        self.keplcnulls = ['NOT NULL', '', '',
-                           '', '', '', '',
-                           '', '', '', '']
-        self.npkeplctype = [('staruid', 'i6'), ('BJD', 'f4'),  ('PHASE', 'f4'), 
-                            ('SAP_FLUX', 'f4'), ('SAP_ERR', 'f4'), ('SAP_BKG', 'f4'), ('SAP_BKG_ERR', 'f4')
-                            ('PDCSAP_FLUX', 'f4'), ('PDCSAP_ERR', 'f4'), ('DTR_FLUX', 'f4'), ('DTR_ERR', 'f4') ]
+        
+        self.dictnulls = [' NOT NULL UNIQUE ', '', '',
+                          '', '', '', '',
+                          '', '', '', '',
+                          '', '', '', '',
+                          '', '', '', '']
+        
+        self.npdicttype = [('staruid', 'i4'), ('KIC', 'a10'), ('PERIOD', 'f4'), 
+                           ('AF1_PER', 'f4'), ('AF1_AOV', 'f4'), ('AF1_SNR', 'f4'), ('AF1_NEG', 'f4'),
+                           ('AR1_PER', 'f4'), ('AR1_AOV', 'f4'), ('AR1_SNR', 'f4'), ('AR1_NEG', 'f4'),
+                           ('AF2_PER', 'f4'), ('AF2_AOV', 'f4'), ('AF2_SNR', 'f4'), ('AF2_NEG', 'f4'),
+                           ('AR2_PER', 'f4'), ('AR2_AOV', 'f4'), ('AR2_SNR', 'f4'), ('AR2_NEG', 'f4')] 
+        self.sdirindex   = 19
+                           
+class Kepq3FC2(Mast):
+    '''
+    class wrapper for Kepler Q3 data
+    '''
+    
+    def __init__(self):
+        
+        super(Kepq3FC2, self).__init__()
+        
+        # dictionary
+        self.dicttname = 'stars'
+        
+        # NO 0 OFFSET because col 0 is UID
+        self.t         = {'KIC' : 1, 'RA' : 2, 'DEC' : 3, 'KEPMAG' : 14}
+        self.dictcols  = ['KIC', 'RA', 'DEC', 'PMRA', 'PMDEC', 
+                          'GMAG', 'RMAG', 'IMAG', 'ZMAG', 'D51MAG',
+                          'JMAG', 'HMAG', 'KMAG', 'KEPMAG', 'VARCLS',
+                          'TEFF', 'LOGG', 'FEH', 'AV', 'RADIUS', 
+                          'PERIOD', 'FC2_PER', 'FC2_CHM']
+
+        self.dicttypes = ['TEXT', 'REAL', 'REAL', 'REAL', 'REAL', 
+                          'REAL', 'REAL', 'REAL', 'REAL', 'REAL', 
+                          'REAL', 'REAL', 'REAL', 'REAL', 'TEXT',
+                          'REAL', 'REAL', 'REAL', 'REAL', 'REAL',
+                          'REAL', 'REAL', 'REAL']
+        self.dictnulls = [' NOT NULL UNIQUE ', '', '', '', '',
+                          '', '', '', '', '', 
+                          '', '', '', '', '',
+                          '', '', '', '', '',
+                          '', '', '']
+        self.npdicttype = [('KIC', 'a10'), ('RA', 'f4'),  ('DEC', 'f4'), ('PMRA', 'f4'), ('PMDEC', 'f4'), 
+                           ('GMAG', 'f4'), ('RMAG', 'f4'), ('IMAG', 'f4'), ('ZMAG', 'f4'), ('D51MAG', 'f4'),
+                           ('JMAG', 'f4'), ('HMAG', 'f4'), ('KMAG', 'f4'), ('KEPMAG', 'f4'), ('VARCLS', 'a12'),
+                           ('TEFF', 'f4'), ('LOGG', 'f4'), ('FEH', 'f4'), ('AV', 'f4'), ('RADIUS', 'f4'),
+                           ('PERIOD', 'f4'), ('FC2_PER', 'f4'), ('FC2_CHM', 'f4')] 
+        self.sdirindex   = 23
+       
+class Kepq3var(Mast):
+    '''
+    class wrapper for Kepler Q3 data
+    '''
+    
+    def __init__(self):
+        
+        super(Kepq3var, self).__init__()
+        
+        # dictionary
+        self.dicttname = 'stars'
+        
+        # NO 0 OFFSET because col 0 is UID
+        self.t         = {'staruid' : 1, 'starkic' : 2, 'PERIOD' : 3}
+        self.dictcols  = ['staruid', 'KIC', 'PERIOD', 'CHI2', 'blc_min', 'blc_max', 'dtr_min', 'dtr_max']
+        self.dicttypes = ['INTEGER', 'TEXT', 'REAL', 'REAL', 'REAL', 'REAL', 'REAL', 'REAL']
+        self.dictnulls = [' NOT NULL UNIQUE ', ' NOT NULL UNIQUE ', '', '', '', '', '', '']
+        self.npdicttype = [('staruid', 'i6'), ('KIC', 'a10'), ('PERIOD', 'f4'), ('CHI2', 'f4'),
+                           ('blc_min', 'f4'), ('blc_max', 'f4'), ('dtr_min', 'f4'), ('dtr_max', 'f4')] 
+        self.sdirindex   = 8
