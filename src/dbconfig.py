@@ -3,10 +3,17 @@ Created on Jun 19, 2012
 
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.10 $
-@date     \$Date: 2013/07/05 14:45:35 $
+@version  \$Revision: 1.11 $
+@date     \$Date: 2013/07/31 16:51:14 $
 
 $Log: dbconfig.py,v $
+Revision 1.11  2013/07/31 16:51:14  paegerm
+adding netselect and remark to netdict
+Mast: add uid to npdicttype for Mast, adding missing clolumns (blc*, chi2)
+
+adding netselect and remark to netdict
+Mast: add uid to npdicttype for Mast, adding missing clolumns (blc*, chi2)
+
 Revision 1.10  2013/07/05 14:45:35  paegerm
 correcting login, adding raw and phased lightcurve  for Asas
 
@@ -77,7 +84,7 @@ class Asas(object):
                           '', '', '', '', '']
         self.varclsindex = 8
         self.sdirindex   = 15
-        self.npdicttype = [('uid', 'i4'), ('id', 'a13'), 
+        self.npdicttype = [('uid', 'i4'), ('id', 'a20'), 
                            ('ra', 'f4'),  ('dec', 'f4'), 
                            ('period', 'f4'), ('t0', 'f4'), 
                            ('vmag', 'f4'), ('Vamp', 'f4'), ('varcls', 'a20'), 
@@ -197,16 +204,16 @@ class Asas(object):
                              'beta', 'momentum', 'eta', 'outtype', 'multires',
                              'mdelta', 'w1rows', 'w1cols', 'w2rows', 'w2cols', 
                              'nrclasses', 'trainerror', 'validerror', 'stopcount',
-                             'allpercent', 'comment']
+                             'allpercent', 'comment', 'netselect', 'remark']
         self.netdicttypes  = ['TEXT', 'INTEGER', 'INTEGER', 'INTEGER', 'INTEGER', 
                               'REAL', 'REAL', 'REAL', 'TEXT', 'BOOL', 
                               'REAL', 'INTEGER', 'INTEGER', 'INTEGER', 'INTEGER', 
                               'INTEGER', 'REAL', 'REAL', 'REAL',
-                              'REAL', 'TEXT']
+                              'REAL', 'TEXT', 'TEXT', 'TEXT']
         self.netdictnulls  = [' NOT NULL UNIQUE', ' NOT NULL', ' NOT NULL', ' NOT NULL', ' NOT NULL', 
                               ' NOT NULL', ' NOT NULL', ' NOT NULL', ' NOT NULL', ' NOT NULL', 
                               '', ' NOT NULL', ' NOT NULL', ' NOT NULL', ' NOT NULL', 
-                              ' NOT NULL', '', '', '', '', '']
+                              ' NOT NULL', '', '', '', '', '', '', '']
         
         self.netclasstname = 'classes'
         self.netclasscols  = ['netuid', 'i', 'class']
@@ -412,18 +419,21 @@ class Mast(KeplerEBs):
         self.dicttname = 'stars'
         
         # NO 0 OFFSET because col 0 is UID
-        self.t         = {'KIC' : 1, 'period' : 2, 'bjd0' : 3, 'morph' : 4}
+        self.t         = {'id' : 1, 'period' : 2, 'bjd0' : 3, 'morph' : 4,
+                          'mag' : 13, 'fmin' : 31, 'fmax' : 32 }
         self.dictcols  = ['KIC', 'period', 'bjd0', 'morph', 'T21', 
                           'rho12', 'q', 'e_sin_omega', 'e_cos_omega', 'FF', 
                           'sin_i', 'Teff', 'kmag', 'RA', 'DEC', 
                           'SC', 'sdir', 'cls', 'rf_min', 'rf_max',
                           'rf_mean', 'rf_median', 'cf_min', 'cf_max','cf_mean', 
-                          'cf_median', 'df_min', 'df_max','df_mean', 'df_median']
+                          'cf_median', 'df_min', 'df_max','df_mean', 'df_median',
+                          'blc_min', 'blc_max', 'blc_std', 'blc_std2', 'chi2']
         self.dicttypes = ['TEXT', 'REAL', 'REAL', 'REAL', 'REAL',
                           'REAL', 'REAL', 'REAL', 'REAL', 'REAL',
                           'REAL', 'REAL', 'REAL', 'REAL', 'REAL',
                           'REAL', 'TEXT', 'TEXT', 'REAL', 'REAL',
                           'REAL', 'REAL', 'REAL', 'REAL', 'REAL', 
+                          'REAL', 'REAL', 'REAL', 'REAL', 'REAL',
                           'REAL', 'REAL', 'REAL', 'REAL', 'REAL']
         self.dictnulls = ['NOT NULL', ' NOT NULL', ' NOT NULL', 
                           '', '', '', '', '',
@@ -431,8 +441,9 @@ class Mast(KeplerEBs):
                           '', '', '', '', '', 
                           '', '', '', '', '',
                           '', '', '', '', '',
+                          '', '', '', '', '',
                           '', '']
-        self.npdicttype = [('KIC', 'a10'), 
+        self.npdicttype = [('uid', 'i4'), ('KIC', 'a10'), 
                            ('period', 'f8'),  ('bjd0', 'f8'), 
                            ('morph', 'f2'), ('T21', 'f8'), 
                            ('rho12', 'f8'), ('q', 'f8'), ('e_sin_omega', 'f8'), 
@@ -441,9 +452,15 @@ class Mast(KeplerEBs):
                            ('kmag', 'f4'), 
                            ('RA', 'f4'), ('DEC', 'f4'), 
                            ('SC', 'i1'), ('sdir', 'a10'), ('cls', 'a12'),
-                           ('rf_min', 'f6'), ('rf_max','f6'), ('rf_mean', 'f6'), ('rf_median', 'f6'),
-                           ('cf_min', 'f6'), ('cf_max','f6'), ('cf_mean', 'f6'), ('cf_median', 'f6'),
-                           ('df_min','f6'), ('df_max','f6'), ('df_mean', 'f6'), ('df_median','f6')]
+                           ('rf_min', 'f6'), ('rf_max','f6'), 
+                           ('rf_mean', 'f6'), ('rf_median', 'f6'),
+                           ('cf_min', 'f6'), ('cf_max','f6'), 
+                           ('cf_mean', 'f6'), ('cf_median', 'f6'),
+                           ('df_min','f6'), ('df_max','f6'), 
+                           ('df_mean', 'f6'), ('df_median','f6'),
+                           ('blc_min','f6'), ('blc_max','f6'), 
+                           ('blc_mean', 'f6'), ('blc_median','f6'),
+                           ('chi2', 'f4')]
 
         self.sdirindex   = 30
         
