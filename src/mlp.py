@@ -1,18 +1,18 @@
 '''
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.5 $
-@date     \$Date: 2013/07/26 20:26:28 $
+@version  \$Revision: 1.6 $
+@date     \$Date: 2013/08/07 15:39:55 $
 
 A simple muulti-layer perceptron, currently restricted to one hidden layer
 
 @requires: numpy
 
 $Log: mlp.py,v $
-Revision 1.5  2013/07/26 20:26:28  paegerm
-adding select string for report, adding logfile (lf) to self, write weights
-only for debug > 1
+Revision 1.6  2013/08/07 15:39:55  paegerm
+changing debug setting for writeweights
 
+Revision 1.5  2013/07/26 20:26:28  paegerm
 adding select string for report, adding logfile (lf) to self, write weights
 only for debug > 1
 
@@ -200,7 +200,7 @@ class Mlp(object):
             old_val_error1 = self.validerror
             validout = self._mlpfwd(valid)
             self.validerror = 0.5 * sum((validtargets - validout) ** 2)
-            if (self.debug > 1):
+            if (self.debug > 0):
                 fmt = '%3d  trainerr = %7.3f  validerr = %7.3f, ' + \
                       'dold = %8.4f, dnew = %8.4f'
                 line = fmt % (self.stopcount, self.trainerror, self.validerror,
@@ -211,7 +211,7 @@ class Mlp(object):
                 else:
                     self.lf.write(line)
 
-        if ((self.writeweights == True) or (self.debug > 0)):
+        if ((self.writeweights == True) or (self.debug > 1)):
             fnhidden = '%s/hidden%d' % (self.subdir, self.stopcount)
             fnoutput = '%s/output%d' % (self.subdir, self.stopcount)
             savetxt(fnhidden, self.weights1, '%8.4f')
