@@ -3,12 +3,18 @@ Created on Sep 6, 2012
 
 @package  pickle2db
 @author   map
-@version  \$Revision: 1.1 $
-@date     \$Date: 2012/09/24 21:39:34 $
+@version  \$Revision: 1.2 $
+@date     \$Date: 2013/08/07 15:43:10 $
 
-convert pickeled net to database
+convert pickeled net to database, devide --> divide
 
 $Log: pickle2db.py,v $
+Revision 1.2  2013/08/07 15:43:10  paegerm
+adding select and remark to network dictionary data,
+renaming dict to ndict where the dictionary of the trained network is meant
+
+
+
 Revision 1.1  2012/09/24 21:39:34  paegerm
 convert pickeled network into database
 
@@ -59,6 +65,9 @@ if __name__ == '__main__':
     parser.add_option('--pname', dest='picklename', type='string', 
                       default='mlp.pickle',
                       help='filename for the trained, pickled network (mlp.pickle)')
+    parser.add_option('--remark', dest='remark', type='string', 
+                      default=None,
+                      help='remark for this run')
     parser.add_option('--resdir', dest='resdir', type='string', 
                       default='results',
                       help='subdirectory for results (default = results)')
@@ -93,24 +102,26 @@ if __name__ == '__main__':
     net = pickle.load(pf)
     pf.close()
     
-    dictwriter = dbw.DbWriter(options.rootdir + options.dbname, dbc.netdictcols, 
-                              dbc.netdicttname, dbc.netdicttypes, dbc.netdictnulls)
+    ndictwriter = dbw.DbWriter(options.rootdir + options.dbname, dbc.netdictcols, 
+                               dbc.netdicttname, dbc.netdicttypes, 
+                               dbc.netdictnulls)
     (w1rows, w1cols) = np.shape(net.weights1)
     (w2rows, w2cols) = np.shape(net.weights2)
     mres = 0
     if net.multires == True:
         mres = 1
-    dictdata = [options.name, net.nin, net.nout, net.ndata, net.nhidden, 
-                net.beta, net.momentum, net.eta, net.outtype, mres,
-                net.mdelta, w1rows, w1cols, w2rows, w2cols, len(net.classes),
-                net.trainerror, net.validerror, net.stopcount, net.allpercent, 
-                net.comment]
-    dictwriter.insert((dictdata,), True)
-    netuid = dictwriter.dbcurs.lastrowid
-    res = dictwriter.dbcurs.execute('SELECT uid from ' + dbc.netdicttname + 
-                                    " where name = '" + options.name + "';")
+    ndictdata = [options.name, net.nin, net.nout, net.ndata, net.nhidden, 
+                 net.beta, net.momentum, net.eta, net.outtype, mres,
+                 net.mdelta, w1rows, w1cols, w2rows, w2cols, len(net.classes),
+                 net.trainerror, net.validerror, net.stopcount, net.allpercent, 
+                 net.comment, net.select, options.remark]
+#                 None, None, None]
+    ndictwriter.insert((ndictdata,), True)
+    # netuid = ndictwriter.dbcurs.lastrowid
+    res = ndictwriter.dbcurs.execute('SELECT uid from ' + dbc.netdicttname + 
+                                     " where name = '" + options.name + "';")
     (netuid,) =  res.fetchone()
-    dictwriter.close()
+    ndictwriter.close()
     
     # write weights
     vals = []
@@ -150,7 +161,7 @@ if __name__ == '__main__':
     
     writer = dbw.DbWriter(options.rootdir + options.dbname, dbc.netveccols,
                           dbc.netvectname, dbc.netvectypes, dbc.netvecnulls)
-    writevec(netuid, writer, net.normdevide, 'normdivide')
+    writevec(netuid, writer, net.normdivide, 'normdivide')
     writevec(netuid, writer, net.normsubtract, 'normsubtract')
 
     writevec(netuid, writer, net.trainstats, 'trainstats')
