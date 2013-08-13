@@ -3,8 +3,8 @@ Created on Jul 5, 2012
 
 @package  trainnet
 @author   map
-@version  \$Revision: 1.5 $
-@date     \$Date: 2013/07/26 20:32:44 $
+@version  \$Revision: 1.6 $
+@date     \$Date: 2013/08/13 19:17:12 $
 
 Routines for retrieving, preparing and handing data over to a neural network 
 for training. Note: the main part is just for testing purposes, use trainnetmp
@@ -12,9 +12,11 @@ for all real training
 
 
 $Log: trainnet.py,v $
-Revision 1.5  2013/07/26 20:32:44  paegerm
-adding fittype, passing logfile to net
+Revision 1.6  2013/08/13 19:17:12  paegerm
+maketarget: allow varcls to be None and return if so (needed for runtrained), take fmin, fmax from dbc.t
 
+
+Revision 1.5  2013/07/26 20:32:44  paegerm
 adding fittype, passing logfile to net
 
 Revision 1.4  2012/11/30 20:40:07  paegerm
@@ -53,6 +55,9 @@ def maketarget(classes, varcls, target):
     '''
     Set the target vector for a single object
     '''
+    if (varcls == None):
+        return
+    
     if (varcls.find('/') < 0):
         try:
             index = classes.index(varcls)
@@ -98,7 +103,7 @@ def prepdata(options, dbc, arr, cff, shuffle = True,
     allt = np.zeros((nrrows, len(options.classes)))
     allnames = []
     for i in xrange(nrrows):
-        allnames.append(arr[i]['id'])
+        allnames.append(arr[i][dbc.t['id']])
         # normalize coefficients per row
         coeffs = np.asarray(tuple(cff[i]))
         if options.fittype == 'coeffs':    # no normalization for midpoints
@@ -120,11 +125,14 @@ def prepdata(options, dbc, arr, cff, shuffle = True,
         # add period, magnitude, difference of normalized magnitudes, chi2
         alld[i, 16]  = np.log10(arr[i]['period'])
         alld[i, 17]  = arr[i][dbc.t['mag']]
-        alld[i, 18]  = arr[i]['fmax'] - arr[i]['fmin']
+        alld[i, 18]  = arr[i][dbc.t['fmax']] - arr[i][dbc.t['fmin']]
 #        alld[i, 19]  = arr[i]['chi2']
         
         # make the target value line
-        maketarget(options.classes, arr[i][options.clscol], allt[i])
+        varcls = None
+        if options.clscol != None:
+            varcls = arr[i][options.clscol]
+        maketarget(options.classes, varcls, allt[i])
 
     # normalize vmag
     if (newnorm == True):
@@ -411,9 +419,10 @@ if __name__ == '__main__':
     net.subdir = options.rootdir + options.resdir
     if not os.path.exists(net.subdir):
         os.mkdir(net.subdir)
-    net.lf     = options.lf
-    net.debug  = options.debug
-    net.select = options.select
+    net.lf      = options.lf
+    net.debug   = options.debug
+    net.select  = options.select
+    net.comment = options.fittype
     net.setnormvalues(normsubtract, normdivide)
     try:
         net.earlystopping(traind, traint, validd, validt, 
