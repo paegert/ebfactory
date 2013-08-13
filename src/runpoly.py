@@ -3,13 +3,14 @@ Created on Jul 2, 2012
 
 @package  runpoly
 @author   map
-@version  \$Revision: 1.8 $
-@date     \$Date: 2013/07/26 20:07:27 $
+@version  \$Revision: 1.9 $
+@date     \$Date: 2013/08/13 18:24:49 $
 
 $Log: runpoly.py,v $
-Revision 1.8  2013/07/26 20:07:27  paegerm
-adding midpoints and fullfit options, switching to mastpolyfit
+Revision 1.9  2013/08/13 18:24:49  paegerm
+Changing polydir helptext
 
+Revision 1.8  2013/07/26 20:07:27  paegerm
 adding midpoints and fullfit options, switching to mastpolyfit
 
 Revision 1.7  2012/11/30 20:37:27  paegerm
@@ -275,7 +276,7 @@ def get_polyopts():
                       help='database file with phased light curves')
     parser.add_option('--polydir', dest='polydir', type='string', 
                       default=None,
-                      help='directory for polyfit files (default = rootdir)')
+                      help='directory for polyfit files (default = None)')
     parser.add_option('--polyopt', dest='polyopt', type='string', 
                       default= ' --find-knots --find-step --midpoints ',
                       help='cmd line options for polyfit entered within ""; ' +
