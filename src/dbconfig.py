@@ -3,13 +3,14 @@ Created on Jun 19, 2012
 
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.14 $
-@date     \$Date: 2013/08/13 18:20:57 $
+@version  \$Revision: 1.15 $
+@date     \$Date: 2013/08/13 19:18:13 $
 
 $Log: dbconfig.py,v $
-Revision 1.14  2013/08/13 18:20:57  paegerm
-formatting code
+Revision 1.15  2013/08/13 19:18:13  paegerm
+adding fmin, fmax to self.t for Asas
 
+Revision 1.14  2013/08/13 18:20:57  paegerm
 formatting code
 
 Revision 1.13  2013/07/31 19:24:35  parvizm
@@ -73,8 +74,8 @@ class Asas(object):
         
         # dictionary
         self.dicttname = 'stars'
-        self.t         = {'id' : 1, 'mag' : 6, 'mean' : 6, 'median' : 24,
-                          'varcls' : 20}
+        self.t         = {'id' : 1, 'mag' : 6, 'mean' : 6, 'fmin' : 11, 
+                          'fmax' : 12, 'median' : 24, 'varcls' : 20}
         self.dictcols  = ['ID', 'Ra', 'Dec', 'Period', 'T0', 'Vmag', 'Vamp', 
                           'varcls', 'GCVS_ID', 'GCVS_type', 'fmin', 'fmax', 
                           'stddev', 'chi2', 'sdir', 'ir12', 'ir25', 'ir60', 
