@@ -3,22 +3,23 @@ Created on Jul 18, 2012
 
 @package  trainnetmp
 @author   map
-@version  \$Revision: 1.4 $
-@date     \$Date: 2013/07/26 20:33:59 $
+@version  \$Revision: 1.5 $
+@date     \$Date: 2013/08/13 19:15:29 $
 
 Multi-processing training of multiple networks at once. Be sue to have the 
 environment variable OMP_NUM_THREADS set to a reasonable value (number of CPUs
 for example). The default is working with just 2 processes.
 
 $Log: trainnetmp.py,v $
+Revision 1.5  2013/08/13 19:15:29  paegerm
+add net.select, write network options to logfile
+
+add net.select, write network options to logfile
+
 Revision 1.4  2013/07/26 20:33:59  paegerm
 passing logfile to net
 
-passing logfile to net
-
 Revision 1.3  2012/11/30 20:40:59  paegerm
-adding clscol option, adding logfile and converting print statements
-
 adding clscol option, adding logfile and converting print statements
 
 Revision 1.2  2012/09/24 21:46:52  paegerm
@@ -86,6 +87,13 @@ if __name__ == '__main__':
     options.lf.write(str(nofit) + ' stars without fit')
     options.lf.write(str(nrstars - noclass) + ' prepared in ' + 
                      str(watchprep.stop()) + ' seconds')
+    options.lf.write('')
+    options.lf.write('fittype  = ' + options.fittype)
+    options.lf.write('neurons  = ' + str(options.minhidden))
+    options.lf.write('eta      = ' + str(options.eta))
+    options.lf.write('momentum = ' + str(options.momentum))
+    options.lf.write('')
+
     watchprep.start()
 
     # split into training, validation and testing set
@@ -116,7 +124,8 @@ if __name__ == '__main__':
                           outtype = options.outtype, 
                           multires = options.multi, mdelta = options.mdelta)
             net.subdir  = resdir
-            net.comment = options.select
+            net.select  = options.select
+            net.comment = options.fittype
             if not os.path.exists(net.subdir):
                 os.mkdir(net.subdir)
             net.lf    = options.lf
