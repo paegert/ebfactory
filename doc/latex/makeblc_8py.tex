@@ -1,50 +1,8 @@
-\hypertarget{makeblc_8py}{
-\section{src/makeblc.py File Reference}
-\label{makeblc_8py}\index{src/makeblc.py@{src/makeblc.py}}
+\hypertarget{makeblc_8py}{\section{src/makeblc.py File Reference}
+\label{makeblc_8py}\index{src/makeblc.\-py@{src/makeblc.\-py}}
 }
 \subsection*{Namespaces}
 \begin{DoxyCompactItemize}
 \item 
 namespace \hyperlink{namespacemakeblc}{makeblc}
-\item 
-namespace \hyperlink{namespaceebf}{ebf}
-
-
-\begin{DoxyCompactList}\small\item\em Created on Jun 19, 2012. \item\end{DoxyCompactList}
-
-\end{DoxyCompactItemize}
-\subsection*{Variables}
-\begin{DoxyCompactItemize}
-\item 
-string \hyperlink{namespacemakeblc_af9d26964de16c4985555854c8d72580b}{makeblc::usage} = '\%prog \mbox{[}options\mbox{]} plcdbfile'
-\item 
-tuple \hyperlink{namespacemakeblc_a0dea09705bbc782eda44fd29626ff35b}{makeblc::parser} = OptionParser(usage=usage)
-\item 
-string \hyperlink{namespacemakeblc_a65838550e6d468b9df26e64e07388457}{makeblc::default} = 'asasblc.sqlite'
-\item 
-string \hyperlink{namespacemakeblc_a6dea7c4e16e828d56e7094476327ae97}{makeblc::help} = 'database file with phased light curves'
-\item 
-tuple \hyperlink{namespacemakeblc_a76c6a65c85e7590a747c0f90985c02c6}{makeblc::cls} = getattr(dbconfig, 'Asas')
-\item 
-tuple \hyperlink{namespacemakeblc_a69d352c98ad45dc93ce0c036904382ea}{makeblc::dbconfig} = cls()
-\item 
-tuple \hyperlink{namespacemakeblc_ac747659361bfa898ab3b4503fd962e9c}{makeblc::watch} = Stopwatch()
-\item 
-tuple \hyperlink{namespacemakeblc_a076cfa54febea93ec0a0367d9766b59b}{makeblc::dictreader} = dbr.DbReader(options.rootdir + options.dictname)
-\item 
-tuple \hyperlink{namespacemakeblc_a0eac396194b25b741b019161364a481e}{makeblc::generator} = dictreader.traverse(options.select, None, 1000)
-\item 
-int \hyperlink{namespacemakeblc_abd854e539cc9c9fe5d64b72438f277f2}{makeblc::nrstars} = 0
-\item 
-list \hyperlink{namespacemakeblc_aaf2dbaa320a13bde9a473d47104f7cb4}{makeblc::dictupd} = \mbox{[}$\,$\mbox{]}
-\item 
-tuple \hyperlink{namespacemakeblc_a0f835803cfdefeaeb151f6a83e76368f}{makeblc::plcreader} = dbr.DbReader(options.rootdir + options.plcname)
-\item 
-tuple \hyperlink{namespacemakeblc_aafed17d883003aa9d1b25476acf0dcb0}{makeblc::blcwriter} = dbw.DbWriter(options.rootdir + options.blcname, dbconfig.blccols)
-\item 
-tuple \hyperlink{namespacemakeblc_af310689cda88b823a447e448e95ee55d}{makeblc::plc} = plcreader.getlc(star\mbox{[}'uid'\mbox{]}, 'phase')
-\item 
-tuple \hyperlink{namespacemakeblc_a9cc6d5510f03009615ff8d73f8823bfd}{makeblc::dictwriter} = dbw.DbWriter(options.rootdir + options.dictname, dbconfig.dictcols)
-\item 
-string \hyperlink{namespacemakeblc_a7d13b64b84badf069728c58a2165c03d}{makeblc::updcmd} = 'update stars set fmin = ?, fmax = ?, stddev = ? where uid = ?;'
 \end{DoxyCompactItemize}

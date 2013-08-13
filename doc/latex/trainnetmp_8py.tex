@@ -1,71 +1,8 @@
-\hypertarget{trainnetmp_8py}{
-\section{src/trainnetmp.py File Reference}
-\label{trainnetmp_8py}\index{src/trainnetmp.py@{src/trainnetmp.py}}
+\hypertarget{trainnetmp_8py}{\section{src/trainnetmp.py File Reference}
+\label{trainnetmp_8py}\index{src/trainnetmp.\-py@{src/trainnetmp.\-py}}
 }
 \subsection*{Namespaces}
 \begin{DoxyCompactItemize}
 \item 
 namespace \hyperlink{namespacetrainnetmp}{trainnetmp}
-
-
-\begin{DoxyCompactList}\small\item\em Created on Jul 18, 2012. \item\end{DoxyCompactList}
-
-\end{DoxyCompactItemize}
-\subsection*{Functions}
-\begin{DoxyCompactItemize}
-\item 
-def \hyperlink{namespacetrainnetmp_ae69cdeadf6d4d73bf96600ae218927c4}{trainnetmp::callnet}
-\begin{DoxyCompactList}\small\item\em Wrapper function for calling the neural network. \item\end{DoxyCompactList}\end{DoxyCompactItemize}
-\subsection*{Variables}
-\begin{DoxyCompactItemize}
-\item 
-\hyperlink{namespacetrainnetmp_ab566ffaeaa6913a2b2b347cff1a608a4}{trainnetmp::resdir} = options.rootdir+options.resdir
-\item 
-\hyperlink{namespacetrainnetmp_a9ebecee08a7b0aefef2e0b192e970bda}{trainnetmp::lfname} = None
-\item 
-tuple \hyperlink{namespacetrainnetmp_ac6c0cf0d61312a5dbd34443a74310689}{trainnetmp::lf} = Logfile(lfname, True, True)
-\item 
-tuple \hyperlink{namespacetrainnetmp_ad12ea3655cd42b916f85fcedd267ad16}{trainnetmp::cls} = getattr(dbconfig, 'Asas')
-\item 
-tuple \hyperlink{namespacetrainnetmp_a5b13bd831f315c6820696cabf93a0d85}{trainnetmp::dbconfig} = cls()
-\item 
-tuple \hyperlink{namespacetrainnetmp_ad0c5cbbe64c5ef22afe865ff2f038740}{trainnetmp::watch} = Stopwatch()
-\item 
-tuple \hyperlink{namespacetrainnetmp_a0207abb6efd09545a76548318d6af4cf}{trainnetmp::watchprep} = Stopwatch()
-\item 
-tuple \hyperlink{namespacetrainnetmp_a0ce23022a012fafdc81c769f9ea2ae84}{trainnetmp::nrprocess} = int(os.environ\mbox{[}'OMP\_\-NUM\_\-THREADS'\mbox{]})
-\item 
-tuple \hyperlink{namespacetrainnetmp_aa0c8c776c3d1db6ced2d652b6ef39cec}{trainnetmp::args} = (traind, traint, validd, validt, options.eta, options.nriter, True)
-\item 
-float \hyperlink{namespacetrainnetmp_ae484804d6f3c2525ab89fc23b715d8d0}{trainnetmp::maxpercent} = 0.0
-\item 
-list \hyperlink{namespacetrainnetmp_acf60722e6b94f8b6613aff40c374d19f}{trainnetmp::results} = \mbox{[}$\,$\mbox{]}
-\item 
-tuple \hyperlink{namespacetrainnetmp_a03c784c70244aab9be7a7f087f99f1e8}{trainnetmp::pool} = Pool(processes = nrprocess)
-\item 
-tuple \hyperlink{namespacetrainnetmp_abc8273df12ede80d1022efecac2e6883}{trainnetmp::net}
-\item 
-dictionary \hyperlink{namespacetrainnetmp_afecb97f9f28c04c9cce1e3342010cd53}{trainnetmp::kwargs} = \{'net': net, 'nrhidden': i, 'iteration': j, 'logfile': lf\}
-\item 
-tuple \hyperlink{namespacetrainnetmp_aeaf295e503c8c7a7eb9d4e5a77ed5499}{trainnetmp::nrres} = len(results)
-\item 
-int \hyperlink{namespacetrainnetmp_a645db8b07923a52025222af462801dc2}{trainnetmp::oldj} = 1
-\item 
-float \hyperlink{namespacetrainnetmp_a8647e1123b531e4df1080e929f352389}{trainnetmp::mean} = 0.0
-\item 
-string \hyperlink{namespacetrainnetmp_a0fc6d0db466612f63fa6df1c682394d0}{trainnetmp::oline} = '\%2d: '
-\item 
-string \hyperlink{namespacetrainnetmp_a01a4fd22ee2cc1aba08b4566d95bb2a4}{trainnetmp::rname} = '/nrhidden'
-\item 
-tuple \hyperlink{namespacetrainnetmp_a5348e04a55d2a7563398585f1b851efa}{trainnetmp::of} = open(resdir + '/' + options.repname, 'w')
-\item 
-int \hyperlink{namespacetrainnetmp_aa4405feef7b967d4eb9749579d3b1dad}{trainnetmp::jmax} = 1
-\item 
-int \hyperlink{namespacetrainnetmp_a8c5a189bb47054d719066421ae589642}{trainnetmp::kmax} = 1
-\item 
-tuple \hyperlink{namespacetrainnetmp_af36e6597c6ab86263c1f5da739583e3f}{trainnetmp::cm} = net.confmat(testd, testt, True)
-\item 
-\hyperlink{namespacetrainnetmp_a72596b0af8ecedd242cba70b6819b03d}{trainnetmp::val} = net.allpercent
-\item 
-tuple \hyperlink{namespacetrainnetmp_a6b1fd4837c9650e7f0526c5e9b88fc05}{trainnetmp::pf}
 \end{DoxyCompactItemize}

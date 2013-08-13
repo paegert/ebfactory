@@ -1,53 +1,8 @@
-\hypertarget{runpolymp_8py}{
-\section{src/runpolymp.py File Reference}
-\label{runpolymp_8py}\index{src/runpolymp.py@{src/runpolymp.py}}
+\hypertarget{runpolymp_8py}{\section{src/runpolymp.py File Reference}
+\label{runpolymp_8py}\index{src/runpolymp.\-py@{src/runpolymp.\-py}}
 }
 \subsection*{Namespaces}
 \begin{DoxyCompactItemize}
 \item 
 namespace \hyperlink{namespacerunpolymp}{runpolymp}
-
-
-\begin{DoxyCompactList}\small\item\em Created on Jul 2, 2012. \item\end{DoxyCompactList}
-
-\end{DoxyCompactItemize}
-\subsection*{Functions}
-\begin{DoxyCompactItemize}
-\item 
-def \hyperlink{namespacerunpolymp_a387348680cd8eda0fa0653674010f752}{runpolymp::runpolyproc}
-\end{DoxyCompactItemize}
-\subsection*{Variables}
-\begin{DoxyCompactItemize}
-\item 
-tuple \hyperlink{namespacerunpolymp_a1696f14ff027e064a7d29eece7f4b66d}{runpolymp::options} = get\_\-polyopts()
-\item 
-int \hyperlink{namespacerunpolymp_aa79092d87180be0a238a99f8f9d7bef4}{runpolymp::chunksize} = 100
-\item 
-tuple \hyperlink{namespacerunpolymp_a792265f8b2a708d4ce5fdb59becb528a}{runpolymp::cls} = getattr(dbconfig, 'Asas')
-\item 
-tuple \hyperlink{namespacerunpolymp_af34401144c456e1951c68c99f91d5249}{runpolymp::dbconfig} = cls()
-\item 
-tuple \hyperlink{namespacerunpolymp_aba94d82f438bb9df93a754960d02b06a}{runpolymp::tmpwriter}
-\item 
-tuple \hyperlink{namespacerunpolymp_add54abd046ac5d9e780e62ea08417fbe}{runpolymp::watch} = Stopwatch()
-\item 
-tuple \hyperlink{namespacerunpolymp_a59d220b1ff9a930fe2889535b8835d13}{runpolymp::dictreader} = dbr.DbReader(options.rootdir + options.dictname)
-\item 
-tuple \hyperlink{namespacerunpolymp_a953b76537f2a9528d9e7ffdaab48614d}{runpolymp::stars} = dictreader.fetchall(options.select)
-\item 
-int \hyperlink{namespacerunpolymp_af5937209128980a2d0e0c0b9bb157b85}{runpolymp::tmax} = 1
-\item 
-list \hyperlink{namespacerunpolymp_af260c9116ecebd8a092ec6a918e3742a}{runpolymp::results} = \mbox{[}$\,$\mbox{]}
-\item 
-tuple \hyperlink{namespacerunpolymp_a61267842b66dc6998ce42d9c4446992b}{runpolymp::nrprocess} = int(os.environ\mbox{[}'OMP\_\-NUM\_\-THREADS'\mbox{]})
-\item 
-tuple \hyperlink{namespacerunpolymp_ab3ab11d6f45802c04f361e52f3695bf3}{runpolymp::pool} = Pool(processes = nrprocess)
-\item 
-\hyperlink{namespacerunpolymp_a4618edf2a059e4987f52db767ffb6d4d}{runpolymp::min} = i$\ast$chunksize
-\item 
-tuple \hyperlink{namespacerunpolymp_ae92e281387570c7fc239c7c639ac57d6}{runpolymp::max} = (i + 1)
-\item 
-int \hyperlink{namespacerunpolymp_a9bed810afed37bd8bc94fb240f3a836c}{runpolymp::nrstars} = 0
-\item 
-int \hyperlink{namespacerunpolymp_a0c32d94825e8d3aa839ff639347ef697}{runpolymp::failed} = 0
 \end{DoxyCompactItemize}

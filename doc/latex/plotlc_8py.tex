@@ -1,48 +1,8 @@
-\hypertarget{plotlc_8py}{
-\section{src/plotlc.py File Reference}
-\label{plotlc_8py}\index{src/plotlc.py@{src/plotlc.py}}
+\hypertarget{plotlc_8py}{\section{src/plotlc.py File Reference}
+\label{plotlc_8py}\index{src/plotlc.\-py@{src/plotlc.\-py}}
 }
 \subsection*{Namespaces}
 \begin{DoxyCompactItemize}
 \item 
 namespace \hyperlink{namespaceplotlc}{plotlc}
-
-
-\begin{DoxyCompactList}\small\item\em Created on Aug 15, 2012. \item\end{DoxyCompactList}
-
-\end{DoxyCompactItemize}
-\subsection*{Variables}
-\begin{DoxyCompactItemize}
-\item 
-string \hyperlink{namespaceplotlc_ae4114e18ea1de203a5df329cabaf76e5}{plotlc::usage} = '\%prog \mbox{[}options\mbox{]} staruid'
-\item 
-tuple \hyperlink{namespaceplotlc_abb846dd0f2e1e6a77c518417f0504a52}{plotlc::parser} = OptionParser(usage=usage)
-\item 
-string \hyperlink{namespaceplotlc_a19d5157c64a1c0f983eb1b6ac77d28ad}{plotlc::help} = 'debug setting (default: 1)'
-\item 
-string \hyperlink{namespaceplotlc_a78b903191c52c9ae7de23c57e216c537}{plotlc::default} = '.'
-\item 
-tuple \hyperlink{namespaceplotlc_aa0d67ca52f94cf7df7e8d42908675f95}{plotlc::cls} = getattr(dbconfig, 'Asas')
-\item 
-tuple \hyperlink{namespaceplotlc_ad02f25ea0c738c3d1867127ee20ae0a2}{plotlc::dbconfig} = cls()
-\item 
-tuple \hyperlink{namespaceplotlc_a2a0d074a3711ec9740f0c40e2b5f6739}{plotlc::lcsreader} = dbr.DbReader(options.dbdir + options.lcsname)
-\item 
-int \hyperlink{namespaceplotlc_a84471a136dabdafed339bdf74af64d6c}{plotlc::nrstars} = 0
-\item 
-list \hyperlink{namespaceplotlc_a1a420be8a418faa806bb3f235a64b7b4}{plotlc::col} = \mbox{[}'r', 'y', 'k', 'b', 'g'\mbox{]}
-\item 
-list \hyperlink{namespaceplotlc_a6d96382c484c88c062cee8524f2b3b4a}{plotlc::hjds} = \mbox{[}$\,$\mbox{]}
-\item 
-list \hyperlink{namespaceplotlc_abdfb5c2d4ea6f8b8a078e7a8098cf810}{plotlc::mags} = \mbox{[}$\,$\mbox{]}
-\item 
-list \hyperlink{namespaceplotlc_ac4ddf97fd899d00422bd2044f1695339}{plotlc::ruids} = \mbox{[}$\,$\mbox{]}
-\item 
-tuple \hyperlink{namespaceplotlc_a0f4044b7c539ef06d771594b766ca44b}{plotlc::staruid} = int(arg)
-\item 
-tuple \hyperlink{namespaceplotlc_abfc0239bb4b4ca08e710d0fc52097ddd}{plotlc::lc} = lcsreader.getlc(staruid, dbconfig.plctname)
-\item 
-tuple \hyperlink{namespaceplotlc_a4a20eb1a28e7335a93020398cadede85}{plotlc::data} = np.ndarray((3, 0))
-\item 
-string \hyperlink{namespaceplotlc_ac18e7742b8c5f7d21a2efe570d6e2baa}{plotlc::plotname} = '.png'
 \end{DoxyCompactItemize}
