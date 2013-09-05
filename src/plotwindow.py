@@ -1,15 +1,18 @@
 '''
 @package: plotwindow
 @author   : map
-@version  : \$Revision: 1.1 $
-@Date      : \$Date: 2013/08/13 19:34:32 $
+@version  : \$Revision: 1.2 $
+@Date      : \$Date: 2013/09/05 19:00:03 $
 
 Code for the plotwindow of lcview
  
 $Log: plotwindow.py,v $
-Revision 1.1  2013/08/13 19:34:32  paegerm
-initial revision
+Revision 1.2  2013/09/05 19:00:03  paegerm
+checking for symbols to be none, adding limits and labels
 
+checking for symbols to be none, adding limits and labels
+
+Revision 1.1  2013/08/13 19:34:32  paegerm
 Initial revision
 '''
 
@@ -68,7 +71,10 @@ class MyStaticMplCanvas(MyMplCanvas):
     
     def plot_figure(self, data):
         for (x, y, symbol) in data:
-            self.axes.plot(x, y, symbol)
+            if symbol == None:
+                self.axes.plot(x, y)
+            else:
+                self.axes.plot(x, y, symbol)
 
 
 
@@ -90,16 +96,21 @@ class PlotWindow(QtGui.QMainWindow):
 
 
 
-    def plot_figure(self, data, title, xlabel):
+    def plot_figure(self, data, title, xlabel, xlim = None, 
+                    ylabel = None, ylim = None, legends = None):
         self.fsize = 18
-        self.pwidget.axes.set_xlim(-0.5, 0.5)
+        if xlim != None:
+            self.pwidget.axes.set_xlim(xlim)
         for label in self.pwidget.axes.get_xticklabels() + \
                      self.pwidget.axes.get_yticklabels():
             label.set_fontsize(self.fsize - 2)
         self.pwidget.axes.set_title(title, fontsize = self.fsize)
         self.pwidget.axes.set_xlabel(xlabel, fontsize = self.fsize)
-        self.pwidget.axes.set_ylabel('normalized mag', fontsize = self.fsize)
+        if ylabel != None:
+            self.pwidget.axes.set_ylabel(ylabel, fontsize = self.fsize)
         self.pwidget.plot_figure(data)
+        if legends != None:
+            self.pwidget.axes.legend(legends, fontsize=16)
         self.pwidget.draw()
         self.main_widget.setFocus()
         # self.statusBar().showMessage("All hail matplotlib!", 2000)
@@ -116,5 +127,10 @@ class PlotWindow(QtGui.QMainWindow):
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
     myapp = PlotWindow()
+    from utilclasses import LogData
+    log = LogData('/home/map/data/asas11/testcoeffs/coeffslog26_30.txt26_0')
+    plotdata = [(log.idx, log.verr, None)]
+    legends = ['verr']
+    myapp.plot_figure(plotdata, 'myplot', 'iter', None, 'error', None, legends)
     myapp.show()
     sys.exit(app.exec_())
