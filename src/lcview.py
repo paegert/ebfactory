@@ -1,16 +1,18 @@
 '''
 @package: dicttest
 @author   : map
-@version  : \$Revision: 1.1 $
-@Date      : \$Date: 2013/08/13 19:25:53 $
+@version  : \$Revision: 1.2 $
+@Date      : \$Date: 2013/09/05 18:38:20 $
 
 Viewer for classified lightcurves
 
 $Log: lcview.py,v $
+Revision 1.2  2013/09/05 18:38:20  paegerm
+adding 4 chain and 2 chain fit, adding event filters for ddrag and drop
+
+
 Revision 1.1  2013/08/13 19:25:53  paegerm
 initial revision
-
-Initial revision
 '''
 
 import sys
@@ -45,9 +47,11 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.lcWidget.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.ui.lcWidget.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         
-        self.child = None
+        self.child  = None
+        self.childs = []
         
         self.offset = 0
+        self.newrun = True
         self.db = None
         if options.clsname != None:
             self.ui.fnameEdit.setText(options.rootdir + options.clsname)
@@ -75,7 +79,47 @@ class MainWindow(QtGui.QMainWindow):
         self.fitdb = None
         if options.fitname != None:
             self.fitdb = dbr.DbReader(options.rootdir + options.fitname)
+        
+        # enable drag and drop without subclassing QLineEdit
+        self.ui.fnameEdit.installEventFilter(self)   
+        self.ui.dnameEdit.installEventFilter(self)   
 
+        
+
+    def eventFilter(self, object, event):
+        if object is self.ui.fnameEdit:
+            if (event.type() == QtCore.QEvent.DragEnter):
+                if (event.mimeData().hasUrls()):
+                    event.accept()  # otherwise the drop can't occur
+                else:
+                    event.ignore()
+            if (event.type() == QtCore.QEvent.Drop):
+                if (event.mimeData().hasUrls()):
+                    event.accept()
+                    url = (event.mimeData().urls())[0]
+                    self.ui.fnameEdit.setText(url.toLocalFile())
+                    self.ui.lcWidget.clear()
+                    self.ui.lcWidget.setRowCount(0)
+                    self.load_file()
+                    return True     # we did process the event
+        elif object is self.ui.dnameEdit:
+            if (event.type() == QtCore.QEvent.DragEnter):
+                if (event.mimeData().hasUrls()):
+                    event.accept()  # otherwise the drop can't occur
+                else:
+                    event.ignore()
+            if (event.type() == QtCore.QEvent.Drop):
+                if (event.mimeData().hasUrls()):
+                    event.accept()
+                    url = (event.mimeData().urls())[0]
+                    self.ui.dnameEdit.setText(url.toLocalFile())
+                    self.ui.dictWidget.clear()
+                    self.ui.dictWidget.setRowCount(0)
+                    self.load_dict()
+                    return True     # we did process the event
+            
+        return False     # let event continue
+    
 
 
     def select_file(self):
@@ -88,6 +132,8 @@ class MainWindow(QtGui.QMainWindow):
 
     def load_file(self):
         fname = str(self.ui.fnameEdit.text())
+        if self.db != None:
+            self.db.close()
         self.db = dbr.DbReader(fname)
         res = self.db.fetchall("SELECT * FROM sqlite_master WHERE type='table';")
         # print res[0].keys()
@@ -98,11 +144,15 @@ class MainWindow(QtGui.QMainWindow):
 
     def load_dict(self):
         dname = str(self.ui.dnameEdit.text())
+        if self.dictdb != None:
+            self.dictdb.close()
         self.dictdb = dbr.DbReader(dname)
         
         
         
     def run_cmd(self):
+        if self.newrun == True:
+            self.offset = 0
         self.ui.lcWidget.clear()
         self.ui.lcWidget.setRowCount(0)
         cmd = str(self.ui.cmdEdit.text()) + ' limit 100 offset ' + \
@@ -117,6 +167,24 @@ class MainWindow(QtGui.QMainWindow):
             for j, col in enumerate(row):
                 item = QtGui.QTableWidgetItem(str(col));
                 self.ui.lcWidget.setItem(i, j, item)
+        self.newrun = True
+        
+        
+        
+    def prev(self):
+        if self.offset >= 100:
+            self.offset -= 100
+        else:
+            self.offset = 0
+        self.newrun = False
+        self.run_cmd()
+        
+        
+        
+    def next(self):
+        self.offset += 100
+        self.newrun = False
+        self.run_cmd()
         
         
         
@@ -129,7 +197,7 @@ class MainWindow(QtGui.QMainWindow):
         cell = self.ui.lcWidget.item(row, 5)
         self.prob1 = str(round(float(cell.text()), 4))
         if self.dictdb != None:
-            cmd  = 'select * from stars where uid = ?'
+            cmd  = 'select * from vardict where uid = ?'
             self.star = self.dictdb.fetchone(cmd, (self.staruid,))
             cols = self.star.keys()
             self.ui.dictWidget.setColumnCount(len(cols))
@@ -141,6 +209,64 @@ class MainWindow(QtGui.QMainWindow):
             
     
     
+    def plot_newlc(self):
+        self.child = None
+        self.plot_lc()
+        
+    
+
+    def fit4chains(self, fitphases, coeffs):
+        fitvalues = []
+        for x in fitphases:
+            if x >= coeffs[0]['knot1'] and x < coeffs[0]['knot2']:
+                xx = x - coeffs[0]['knot1']
+                y = coeffs[0]['c11'] + coeffs[0]['c12'] * xx + coeffs[0]['c13'] * xx * xx
+                fitvalues.append(y)
+            elif x >= coeffs[0]['knot2'] and x < coeffs[0]['knot3']:
+                xx = x - coeffs[0]['knot2']
+                y = coeffs[0]['c21'] + coeffs[0]['c22'] * xx + coeffs[0]['c23'] * xx * xx
+                fitvalues.append(y)
+            elif x >= coeffs[0]['knot3'] and x < coeffs[0]['knot4']:
+                xx = x - coeffs[0]['knot3']
+                y = coeffs[0]['c31'] + coeffs[0]['c32'] * xx + coeffs[0]['c33'] * xx * xx
+                fitvalues.append(y)
+            elif x >= coeffs[0]['knot4'] or x < coeffs[0]['knot1']:
+                dknot = 1.0 + coeffs[0]['knot1'] - coeffs[0]['knot4']
+                if x < coeffs[0]['knot1']:
+                    knot = coeffs[0]['knot4'] - 1
+                else:
+                    knot = coeffs[0]['knot4']
+                xx = x - knot
+                y = coeffs[0]['c41'] + coeffs[0]['c42'] * xx + coeffs[0]['c43'] * xx * xx
+                # correct for wrapping around
+                y -= coeffs[0]['c43'] * xx * dknot
+                fitvalues.append(y)
+        return fitvalues
+        
+    
+
+    def fit2chains(self, fitphases, coeffs):
+        fitvalues = []
+        for x in fitphases:
+            if x >= coeffs[0]['knot1'] and x < coeffs[0]['knot2']:
+                xx = x - coeffs[0]['knot1']
+                y = coeffs[0]['c11'] + coeffs[0]['c12'] * xx + coeffs[0]['c13'] * xx * xx
+                fitvalues.append(y)
+            elif x >= coeffs[0]['knot2'] or x < coeffs[0]['knot1']:
+                dknot = 1.0 + coeffs[0]['knot1'] - coeffs[0]['knot2']
+                if x < coeffs[0]['knot1']:
+                    knot = coeffs[0]['knot2'] - 1
+                else:
+                    knot = coeffs[0]['knot2']
+                xx = x - knot
+                y = coeffs[0]['c21'] + coeffs[0]['c22'] * xx + coeffs[0]['c23'] * xx * xx
+                # correct for wrapping around
+                y -= coeffs[0]['c23'] * xx * dknot
+                fitvalues.append(y)
+        return fitvalues
+
+
+
     def plot_lc(self):
         if self.staruid == 0:
             QtGui.QMessageBox.critical(self, 'Error', 'No star Selected')
@@ -149,14 +275,17 @@ class MainWindow(QtGui.QMainWindow):
         plcphases = None
         plcmags   = None
         if self.plcdb != None:
-            res = self.plcdb.getlc(self.staruid)
+            res = self.plcdb.getlc(self.staruid, 'stars', 'phase asc')
             plcphases = [x[3] for x in res]
-            plcmags   = [x[4] for x in res]
+            if type(dbc) == dbconfig.Kepq3:
+                plcmags = [x[10] for x in res]
+            else:
+                plcmags = [x[4] for x in res]
 
         blcphases = None
         blcmags   = None
         if self.blcdb != None:
-            res = self.blcdb.getlc(self.staruid)
+            res = self.blcdb.getlc(self.staruid, 'stars', 'phase asc')
             blcphases = [x[2] for x in res]
             blcmags   = [x[3] for x in res]
     
@@ -181,53 +310,44 @@ class MainWindow(QtGui.QMainWindow):
                 fitvalues = [x[3] for x in fit]
             else:
                 coeffs = self.fitdb.getlc(self.staruid, 'coeffs')
+                if len(coeffs) == 0:
+                    msg = 'Selected star has no light curve in ' + \
+                          self.fitdb.fname
+                    QtGui.QMessageBox.critical(self, 'Error', msg)
+                    return
                 fitphases = np.linspace(-0.5, 0.5, 100)
-                fitvalues = []
-                for x in fitphases:
-                    if x >= coeffs[0]['knot1'] and x < coeffs[0]['knot2']:
-                        xx = x - coeffs[0]['knot1']
-                        y = coeffs[0]['c11'] + coeffs[0]['c12'] * xx + \
-                            coeffs[0]['c13'] * xx * xx
-                        fitvalues.append(y)
-                    elif x >= coeffs[0]['knot2'] and x < coeffs[0]['knot3']:
-                        xx = x - coeffs[0]['knot2']
-                        y = coeffs[0]['c21'] + coeffs[0]['c22'] * xx + \
-                            coeffs[0]['c23'] * xx * xx
-                        fitvalues.append(y)
-                    elif x >= coeffs[0]['knot3'] and x < coeffs[0]['knot4']:
-                        xx = x - coeffs[0]['knot3']
-                        y = coeffs[0]['c31'] + coeffs[0]['c32'] * xx + \
-                            coeffs[0]['c33'] * xx * xx
-                        fitvalues.append(y)
-                    elif x >= coeffs[0]['knot4'] or x < coeffs[0]['knot1']:
-                        dknot = 1.0 + coeffs[0]['knot1'] - coeffs[0]['knot4']
-                        if x < coeffs[0]['knot1']:
-                            knot = coeffs[0]['knot4'] - 1
-                        else:
-                            knot = coeffs[0]['knot4']
-                        xx = x - knot
-                        y = coeffs[0]['c41'] + coeffs[0]['c42'] * xx + \
-                            coeffs[0]['c43'] * xx * xx
-                        # correct for wrapping around
-                        y -= coeffs[0]['c43'] * xx * dknot
-                        fitvalues.append(y)
+                if coeffs[0]['knot2'] != 0 and coeffs[0]['knot3'] != 0:
+                    fitvalues = self.fit4chains(fitphases, coeffs)
+                else:
+                    fitvalues = self.fit2chains(fitphases, coeffs)
+                    
 
         plotlcs = [(plcphases, plcmags, 'k.'), (blcphases, blcmags, 'r.'), 
                    (fitphases, fitvalues, 'b-'), (midphases, midvalues, 'go')]
-        title   = self.star['id'] + '  ' + self.star['varcls'] + '  (' + \
-                  self.cls1 + ': ' + self.prob1 + ')'
+        keylist = self.star.keys()
+        title   = str(self.star[dbc.t['id']]) + '  '
+        if 'varcls' in keylist and self.star['varcls'] != None:
+            title += self.star['varcls'] 
+        if 'cls1' in keylist and 'prob1' in keylist:
+            title += '  (' + self.cls1 + ': ' + self.prob1 + ')'
         xlabel  = 'Phase (Period = ' + str(self.star['period']) + 'd)' 
         
         if self.child == None:
             self.child = PlotWindow(self)
+            self.childs.append(self.child)
         else:
             self.child.pwidget.axes.clear()
-        self.child.plot_figure(plotlcs, title, xlabel)
+        self.child.plot_figure(plotlcs, title, xlabel, [-0.5, 0.5])
         self.child.show()
         
         
+        
     def close_child(self):
+        if self.child in self.childs:
+            self.childs.remove(self.child)
         self.child = None
+        if len(self.childs) != 0:
+            self.child = self.childs[-1]
         
         
     
@@ -281,9 +401,6 @@ if __name__ == '__main__':
     parser.add_option('--rootdir', dest='rootdir', type='string', 
                       default='./',
                       help='directory for database files (default = ./')
-    parser.add_option('--var', dest='varname', type='string', 
-                      default=None,
-                      help='database file with variable star parameters')
     
     (options, args) = parser.parse_args()
     
@@ -291,7 +408,7 @@ if __name__ == '__main__':
         options.rootdir += '/'
 
     cls = getattr(dbconfig, options.dbconfig)
-    dbconfig = cls()
+    dbc = cls()
 
     app = QtGui.QApplication(sys.argv)
     myapp = MainWindow()
