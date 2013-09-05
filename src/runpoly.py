@@ -3,10 +3,15 @@ Created on Jul 2, 2012
 
 @package  runpoly
 @author   map
-@version  \$Revision: 1.9 $
-@date     \$Date: 2013/08/13 18:24:49 $
+@version  \$Revision: 1.10 $
+@date     \$Date: 2013/09/05 19:02:16 $
 
 $Log: runpoly.py,v $
+Revision 1.10  2013/09/05 19:02:16  paegerm
+update chi2 in table vars instead of stars
+
+update chi2 in table vars instead of stars
+
 Revision 1.9  2013/08/13 18:24:49  paegerm
 Changing polydir helptext
 
@@ -101,8 +106,8 @@ def fitlc(star, plc, blc, options):
     newargs = ('mastpolyfit', '--find-knots', '--find-step', '--midpoints', 
                '--two-chain', polyinname)
 
-    plcphases = [x[3] for x in plc]
-    plcmags   = [x[4] for x in plc]
+    plcphases = [x[4] for x in plc]
+    plcmags   = [x[5] for x in plc]
     blcphases = [x[2] for x in blc]
     blcmags   = [x[3] for x in blc]
     
@@ -374,7 +379,7 @@ if __name__ == '__main__':
             if not os.path.exists('failed'):
                 os.mkdir('failed')
         (ok, chi2, coeffs, fit, midpoints) = fitlc(star, plc, blc, options)
-        dictwriter.update('update stars set chi2 = ? where uid = ?;', 
+        dictwriter.update('update vars set chi2 = ? where uid = ?;', 
                           [(chi2, star['uid'])])
         if ok == False:
             failed += 1
