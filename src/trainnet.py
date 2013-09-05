@@ -3,8 +3,8 @@ Created on Jul 5, 2012
 
 @package  trainnet
 @author   map
-@version  \$Revision: 1.6 $
-@date     \$Date: 2013/08/13 19:17:12 $
+@version  \$Revision: 1.7 $
+@date     \$Date: 2013/09/05 19:07:55 $
 
 Routines for retrieving, preparing and handing data over to a neural network 
 for training. Note: the main part is just for testing purposes, use trainnetmp
@@ -12,9 +12,18 @@ for all real training
 
 
 $Log: trainnet.py,v $
-Revision 1.6  2013/08/13 19:17:12  paegerm
-maketarget: allow varcls to be None and return if so (needed for runtrained), take fmin, fmax from dbc.t
+Revision 1.7  2013/09/05 19:07:55  paegerm
+switching to npviewtype (variable view of database) adding readfulldata,
+adding vmagamp to training for asas, adding fullfit option, reassigning net
+after training
 
+switching to npviewtype (variable view of database) adding readfulldata,
+adding vmagamp to training for asas, adding fullfit option, reassigning net
+after training
+
+Revision 1.6  2013/08/13 19:17:12  paegerm
+maketarget: allow varcls to be None and return if so (needed for runtrained), 
+take fmin, fmax from dbc.t
 
 Revision 1.5  2013/07/26 20:32:44  paegerm
 adding fittype, passing logfile to net
@@ -124,7 +133,7 @@ def prepdata(options, dbc, arr, cff, shuffle = True,
         
         # add period, magnitude, difference of normalized magnitudes, chi2
         alld[i, 16]  = np.log10(arr[i]['period'])
-        alld[i, 17]  = arr[i][dbc.t['mag']]
+        alld[i, 17]  = arr[i][dbc.t['magamp']]
         alld[i, 18]  = arr[i][dbc.t['fmax']] - arr[i][dbc.t['fmin']]
 #        alld[i, 19]  = arr[i]['chi2']
         
@@ -165,7 +174,7 @@ def readdata(options, dbconfig):
     curidx     = 0
     fitdtype   = dbconfig.npcoefftype
     tablename  = dbconfig.cfftname
-    dictarr    = np.zeros(0, dtype = dbconfig.npdicttype)
+    dictarr    = np.zeros(0, dtype = dbconfig.npviewtype)
     if options.fittype == 'midpoints':
         fitdtype   = dbconfig.npkmntype
         tablename  = dbconfig.kmntname
@@ -188,7 +197,7 @@ def readdata(options, dbconfig):
         if (len(fits) > 1):
             options.lf.write('Warning: ' + str(len(fits)) + ' fits for ' +
                              star['id'] + ', taking first')
-        dictarr = np.append(dictarr, np.zeros(1, dbconfig.npdicttype))
+        dictarr = np.append(dictarr, np.zeros(1, dbconfig.npviewtype))
         try:
             dictarr[curidx] = tuple(star)
         except ValueError as err:
@@ -198,6 +207,69 @@ def readdata(options, dbconfig):
             exit(1)
         fitarr = np.append(fitarr, np.zeros(1, fitdtype))
         fitarr[curidx] = tuple(fits[0])
+        curidx += 1
+        
+    dictreader.close()
+    fitreader.close()
+    
+    return (dictarr, fitarr, nrstars, noclass, nofit)
+
+
+
+def readfulldata(options, dbc):
+    '''
+    read data from database
+    '''
+    dictreader = dbr.DbReader(options.rootdir + options.dictname)
+    fitreader  = dbr.DbReader(options.rootdir + options.fitname)    
+    generator  = dictreader.traverse(options.select, None, 5000)
+    nrstars    = 0
+    noclass    = 0
+    nofit      = 0
+    curidx     = 0
+    dictarr    = np.zeros(0, dtype = dbc.npviewtype)
+    fitdtype   = dbc.npkmntype
+    fitarr = np.zeros(0, dtype = fitdtype)
+
+    for star in generator:
+        nrstars += 1
+        if not (star[options.clscol] in options.classes):
+            noclass += 1
+            options.lf.write('star '+ star['id'] + ' with class ' + 
+                             star[options.clscol] + ' skipped')
+            continue
+        fitlc = fitreader.getlc(star['uid'], 'fit', 'phase')            
+        if len(fitlc) == 0:
+            nofit += 1
+            options.lf.write('Warning: no fit for ' + str(star['uid']) + ', ' + 
+                             star['id'] + ', ' + star['sdir'] + ' skipping')
+            continue
+        dictarr = np.append(dictarr, np.zeros(1, dbc.npviewtype))
+        try:
+            dictarr[curidx] = tuple(star)
+        except ValueError as err:
+            print curidx
+            print star
+            print err
+            exit(1)
+        fitarr = np.append(fitarr, np.zeros(1, fitdtype))
+        fitarr[curidx]['uid'] = fitlc[0]['uid']
+        fitarr[curidx]['staruid'] = fitlc[0]['staruid']
+        fitarr[curidx][2] = fitlc[2]['value']
+        fitarr[curidx][3] = fitlc[5]['value']
+        fitarr[curidx][4] = fitlc[8]['value']
+        fitarr[curidx][5] = fitlc[12]['value']
+        fitarr[curidx][6] = fitlc[15]['value']
+        fitarr[curidx][7] = fitlc[18]['value']
+        fitarr[curidx][8] = fitlc[22]['value']
+        fitarr[curidx][9] = fitlc[25]['value']    # phase 0.0        
+        fitarr[curidx][10] = fitlc[28]['value']
+        fitarr[curidx][11] = fitlc[32]['value']
+        fitarr[curidx][12] = fitlc[35]['value']
+        fitarr[curidx][13] = fitlc[38]['value']
+        fitarr[curidx][14] = fitlc[42]['value']
+        fitarr[curidx][15] = fitlc[45]['value']
+        fitarr[curidx][16] = fitlc[49]['value']
         curidx += 1
         
     dictreader.close()
@@ -388,7 +460,16 @@ if __name__ == '__main__':
     
     
     # read from database
-    (dictarr, coeffarr, nrstars, noclass, nofit) = readdata(options, dbc)
+    dictarr = None
+    coeffarr = None
+    nrstars = 0
+    noclass = 0
+    nofit = 0
+    if options.fittype == 'fullfit':
+        (dictarr, coeffarr, nrstars, noclass, nofit) = readfulldata(options, 
+                                                                    dbc)
+    else:
+        (dictarr, coeffarr, nrstars, noclass, nofit) = readdata(options, dbc)
     
     # prepare the data, target and normalization values
     (alld, allt, allnames, 
@@ -425,10 +506,10 @@ if __name__ == '__main__':
     net.comment = options.fittype
     net.setnormvalues(normsubtract, normdivide)
     try:
-        net.earlystopping(traind, traint, validd, validt, 
-                          eta = options.eta, 
-                          niterations = options.nriter, 
-                          stopval = options.stopval, makestats = True)
+        net = net.earlystopping(traind, traint, validd, validt, 
+                                eta = options.eta, 
+                                niterations = options.nriter, 
+                                stopval = options.stopval, makestats = True)
     except mlp.MlpError as err:
         print 'star name in line ', err.value, ' = ', trainn[err.value]
         
