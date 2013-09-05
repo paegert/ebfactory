@@ -3,17 +3,20 @@ Created on Jul 18, 2012
 
 @package  trainnetmp
 @author   map
-@version  \$Revision: 1.5 $
-@date     \$Date: 2013/08/13 19:15:29 $
+@version  \$Revision: 1.6 $
+@date     \$Date: 2013/09/05 19:10:33 $
 
 Multi-processing training of multiple networks at once. Be sue to have the 
 environment variable OMP_NUM_THREADS set to a reasonable value (number of CPUs
 for example). The default is working with just 2 processes.
 
 $Log: trainnetmp.py,v $
-Revision 1.5  2013/08/13 19:15:29  paegerm
-add net.select, write network options to logfile
+Revision 1.6  2013/09/05 19:10:33  paegerm
+rassigning net after training, adding fullfit option
 
+rassigning net after training, adding fullfit option
+
+Revision 1.5  2013/08/13 19:15:29  paegerm
 add net.select, write network options to logfile
 
 Revision 1.4  2013/07/26 20:33:59  paegerm
@@ -53,7 +56,7 @@ def callnet(*args, **kwargs):
     lf = kwargs['logfile']
     lf.write('start training ' + str(kwargs['nrhidden']) + ' ' + 
              str(kwargs['iteration']))
-    net.earlystopping(*args)
+    net = net.earlystopping(*args)
     lf.write('finished ' + str(kwargs['nrhidden']) + ' ' + 
              str(kwargs['iteration']))
     return (net, kwargs['nrhidden'], kwargs['iteration'])
@@ -75,8 +78,18 @@ if __name__ == '__main__':
     watchprep.start()
     
     # read from database
+    
     options.lf.write(options.select)
-    (dictarr, coeffarr, nrstars, noclass, nofit) = readdata(options, dbc)
+    dictarr = None
+    coeffarr = None
+    nrstars = 0
+    noclass = 0
+    nofit = 0
+    if options.fittype == 'fullfit':
+        (dictarr, coeffarr, nrstars, noclass, nofit) = readfulldata(options, 
+                                                                    dbc)
+    else:
+        (dictarr, coeffarr, nrstars, noclass, nofit) = readdata(options, dbc)
     
     # prepare the data, target and normalization values
     (alld, allt, allnames, 
@@ -128,11 +141,13 @@ if __name__ == '__main__':
             net.comment = options.fittype
             if not os.path.exists(net.subdir):
                 os.mkdir(net.subdir)
-            net.lf    = options.lf
+            net.lf    = Logfile(options.rootdir + options.resdir + '/' + 
+                         options.logfile + str(i) + '_' + str(j), True, True)
             net.debug = options.debug
             net.setnormvalues(normsubtract, normdevide)
+
             kwargs = {'net': net, 'nrhidden': i, 'iteration': j, 
-                      'logfile': options.lf}
+                      'logfile': net.lf}
 #            callnet(*args, **kwargs)
             results.append(pool.apply_async(callnet, args, kwargs))
             
