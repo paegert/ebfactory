@@ -1,14 +1,20 @@
 '''
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.6 $
-@date     \$Date: 2013/08/07 15:39:55 $
+@version  \$Revision: 1.7 $
+@date     \$Date: 2013/09/05 18:56:15 $
 
 A simple muulti-layer perceptron, currently restricted to one hidden layer
 
 @requires: numpy
 
 $Log: mlp.py,v $
+Revision 1.7  2013/09/05 18:56:15  paegerm
+*** empty log message ***
+
+stabilizing training in early stopping, dynamic eta, restoring previous nets
+if step leads to negative validation errors twice. 
+
 Revision 1.6  2013/08/07 15:39:55  paegerm
 changing debug setting for writeweights
 
@@ -32,6 +38,7 @@ Initial revision
 
 '''
 
+import copy as cp
 from numpy import *
 from logfile import *
 
@@ -173,6 +180,8 @@ class Mlp(object):
 
         # add the bias nodes
         valid = concatenate((valid, -ones((shape(valid)[0], 1))), axis = 1)
+        lenval = len(valid)
+        lentrain = len(inputs)
         
         self.eta = eta
         self.trainstats = None
@@ -184,6 +193,8 @@ class Mlp(object):
         old_val_error1 = 100002
         old_val_error2 = 100001
         self.validerror  = 100000
+        dnew = old_val_error1 - self.validerror
+        dold = old_val_error2 - old_val_error1
 
         self.stopcount = 0
         if ((self.writeweights == True) or (self.debug > 1)):
@@ -192,24 +203,93 @@ class Mlp(object):
             savetxt(fnhidden, self.weights1, '%8.4f')
             savetxt(fnoutput, self.weights2, '%8.4f')
             
-        while (((old_val_error1 - self.validerror) > stopval) or 
-               ((old_val_error2 - old_val_error1) > stopval)):
+        oldnet = None
+        saveta = eta
+        savoldvalerror1 = 0.0
+        savoldvalerror2 = 0.0
+        steprestored    = 0
+        nretareject     = 0
+        lastrestored    = -10
+        lastnegative    = -10
+        mainbreak       = True
+        while ((dnew > stopval * self.eta / eta) or 
+               (dold > stopval * self.eta / eta)):
+            if ((oldnet == None) or 
+                ((self.validerror < old_val_error1) and 
+                 (self.validerror < old_val_error2))):
+                oldnet = cp.deepcopy(self)
+                saveta = eta
+                savoldvalerror1 = old_val_error1
+                savoldvalerror2 = old_val_error2
             self.stopcount += 1
             self.trainerror = self.mlptrain(inputs, targets, eta, niterations)
             old_val_error2 = old_val_error1
             old_val_error1 = self.validerror
             validout = self._mlpfwd(valid)
             self.validerror = 0.5 * sum((validtargets - validout) ** 2)
+            addon = ''
+            dold  = old_val_error2 - old_val_error1
+            dnew  = old_val_error1 - self.validerror
+            if dnew < 0.0:
+                lastnegative = self.stopcount
+#            if self.validerror > old_val_error2:
+            if dold <= 0.0 and dnew < 0.0:
+                nretareject = 0
+                if (eta > 0.25 * self.eta):
+                    eta = 0.9 * saveta
+                addon = 'restoring ' + str(oldnet.stopcount) + \
+                        ', eta = ' + str(round(eta, 2))
+            elif ((dnew > 0.0) and (abs(dold - dnew) < 0.001) and 
+                  (self.stopcount - lastrestored > 10) and
+                  (self.stopcount - lastnegative > 10)):
+                neweta = 1.1 * eta
+                testeta = cp.deepcopy(self)
+                testtrainerror = testeta.mlptrain(inputs, targets, neweta, 
+                                                  niterations)
+                testvalidout = testeta._mlpfwd(valid)
+                testvaliderror = 0.5 * sum((validtargets - testvalidout) ** 2)
+                testdnew = self.validerror - testvaliderror
+                testeta = None
+                if testdnew < 0.0 and dnew < 0.1:
+                    nretareject += 1
+                    addon = 'new eta rejected'
+                else:
+                    eta = neweta
+                    nretareject = 0
+                    addon = 'new eta = ' + str(round(eta, 2))
             if (self.debug > 0):
-                fmt = '%3d  trainerr = %7.3f  validerr = %7.3f, ' + \
-                      'dold = %8.4f, dnew = %8.4f'
-                line = fmt % (self.stopcount, self.trainerror, self.validerror,
-                              old_val_error2 - old_val_error1,
-                              old_val_error1 - self.validerror)
+                fmt = '%3d  trainerr = %7.4f  validerr = %7.4f, ' + \
+                      'dold = %8.4f, dnew = %8.4f %s'
+                line = fmt % (self.stopcount, 100 * self.trainerror / lentrain, 
+                              100 * self.validerror / lenval,
+                              dold, dnew, addon)
                 if self.lf == None:
                     print line
                 else:
                     self.lf.write(line)
+#            if self.validerror > old_val_error2:
+            if dold <= 0.0 and dnew < 0.0:
+                self = cp.deepcopy(oldnet)
+                nretareject    = 0
+                old_val_error1 = savoldvalerror1
+                old_val_error2 = savoldvalerror2
+                dold = old_val_error2 - old_val_error1
+                dnew = old_val_error1 - self.validerror
+                lastrestored   = self.stopcount
+                if self.stopcount == steprestored:
+                    mainbreak = False
+                    break
+                steprestored = self.stopcount
+            if (nretareject > 20):
+                mainbreak = False
+                break
+
+        if (mainbreak == True) and (dnew < 0.0) and (dold > 0.0):
+            self = cp.deepcopy(oldnet)
+            old_val_error1 = savoldvalerror1
+            old_val_error2 = savoldvalerror2
+            dold = old_val_error2 - old_val_error1
+            dnew = old_val_error1 - self.validerror
 
         if ((self.writeweights == True) or (self.debug > 1)):
             fnhidden = '%s/hidden%d' % (self.subdir, self.stopcount)
@@ -217,7 +297,16 @@ class Mlp(object):
             savetxt(fnhidden, self.weights1, '%8.4f')
             savetxt(fnoutput, self.weights2, '%8.4f')
 
-        return (self.validerror, self.trainerror)
+        fmt = '%3d  trainerr = %7.4f  validerr = %7.4f, ' + \
+              'dold = %8.4f, dnew = %8.4f final'
+        line = fmt % (self.stopcount, 100 * self.trainerror / lentrain, 
+                      100 * self.validerror / lenval, dold, dnew)
+        if self.lf == None:
+            print line
+        else:
+            self.lf.write(line)
+                
+        return (self)
 
 
 
