@@ -3,15 +3,18 @@ Created on Jun 28, 2012
 
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.5 $
-@date     \$Date: 2013/07/26 20:28:14 $
+@version  \$Revision: 1.6 $
+@date     \$Date: 2013/09/05 18:47:58 $
 
 make phase folded light curves
 
 $Log: makeblc.py,v $
-Revision 1.5  2013/07/26 20:28:14  paegerm
-print message only every 100 stars
+Revision 1.6  2013/09/05 18:47:58  paegerm
+Update table vars instead of stars
 
+Update table vars instead of stars
+
+Revision 1.5  2013/07/26 20:28:14  paegerm
 print message only every 100 stars
 
 Revision 1.4  2013/06/20 18:26:05  paegerm
@@ -116,7 +119,7 @@ if __name__ == '__main__':
     blcwriter.dbconn.commit()
     dictreader.dbconn.close()
     dictwriter = dbw.DbWriter(options.rootdir + options.dictname, dbc.dictcols)
-    updcmd = 'update stars set fmin = ?, fmax = ?, stddev = ? where uid = ?;'
+    updcmd = 'update vars set fmin = ?, fmax = ?, stddev = ? where staruid = ?;'
     dictwriter.update(updcmd, dictupd, True)
     dictwriter.close()
     
