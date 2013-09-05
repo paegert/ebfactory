@@ -3,10 +3,19 @@ Created on Jun 19, 2012
 
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.15 $
-@date     \$Date: 2013/08/13 19:18:13 $
+@version  \$Revision: 1.16 $
+@date     \$Date: 2013/09/05 18:44:08 $
 
 $Log: dbconfig.py,v $
+Revision 1.16  2013/09/05 18:44:08  paegerm
+adding npviewtype
+keep reference to raw lc in nplc for Asas
+change KIC to id in translation table (t)
+
+adding npviewtype
+keep reference to raw lc in nplc for Asas
+change KIC to id in translation table (t)
+
 Revision 1.15  2013/08/13 19:18:13  paegerm
 adding fmin, fmax to self.t for Asas
 
@@ -74,8 +83,9 @@ class Asas(object):
         
         # dictionary
         self.dicttname = 'stars'
-        self.t         = {'id' : 1, 'mag' : 6, 'mean' : 6, 'fmin' : 11, 
-                          'fmax' : 12, 'median' : 24, 'varcls' : 20}
+        self.t         = {'id' : 1, 'mag' : 6, 'mean' : 6, 'magamp' : 7, 
+                          'fmin' : 11, 'fmax' : 12, 'median' : 24, 
+                          'varcls' : 20}
         self.dictcols  = ['ID', 'Ra', 'Dec', 'Period', 'T0', 'Vmag', 'Vamp', 
                           'varcls', 'GCVS_ID', 'GCVS_type', 'fmin', 'fmax', 
                           'stddev', 'chi2', 'sdir', 'ir12', 'ir25', 'ir60', 
@@ -106,7 +116,38 @@ class Asas(object):
                            ('tmassname', 'a20'), ('Verr', 'f4'), 
                            ('Vmedian', 'f4'), ('plcmaxgap', 'f4'),
                            ('calcls', 'a20'), ('calprob', 'f4')]
+        
+        self.npviewtype = [('uid', 'i4'), ('id', 'a20'), 
+                           ('ra', 'f4'),  ('dec', 'f4'), 
+                           ('period', 'f4'), ('t0', 'f4'), 
+                           ('vmag', 'f4'), ('Vamp', 'f4'), ('varcls', 'a20'), 
+                           ('GCVS_ID', 'a20'), ('GCVS_type', 'a20'),            
+                           ('fmin', 'f4'), ('fmax', 'f4'), 
+                           ('stddev', 'f4'), ('chi2', 'f4'),  
+                           ('sdir', 'a5'), ('IR12', 'f4'), ('IR25', 'f4'), 
+                           ('IR60', 'f4'), ('IR100', 'f4'), 
+                           ('jmag', 'f4'), ('hmag', 'f4'), ('kmag', 'f4'), 
+                           ('tmassname', 'a20'), ('Verr', 'f4'), 
+                           ('Vmedian', 'f4'), ('plcmaxgap', 'f4'),
+                           ('calcls', 'a20'), ('calprob', 'f4'), ('tcls', 'a10')]
 
+        
+        # periodic variables = dictionary + staruid
+        self.vartname  = 'stars'
+        self.varcols   = self.dictcols.append('staruid')
+        self.vartypes  = self.dicttypes.append('INTEGER')
+        self.varnulls  = self.dictnulls.append(' NOT NULL')
+        self.npvartype = self.npdicttype.append(('staruid', 'i4'))
+        
+        # fluxratios, t0 from diffrerent lc
+        self.frt0tname = 'stars'
+        self.frt0cols  = ['staruid', 'frphase', 't0phase', 'frbin', 't0bin',
+                          'frfit', 't0fit', 
+                          'stetj', 'stetk', 'stetl']
+        self.frt0types = ['INTEGER', 'REAL', 'REAL', 'REAL', 'REAL',
+                          'REAL', 'REAL', 'REAL', 'REAL', 'REAL']
+        self.frt0nulls = ['NOT NULL', '', '', '', '', '', '', '', '', '']
+        
         # raw light curve
         self.rlctname = 'stars'
         self.rlccols  = ['staruid', 'hjd', 'vmag', 'vmag_err', 'quality']
@@ -117,10 +158,14 @@ class Asas(object):
         
         # normalized and phased raw light curve
         self.nplctname  = 'stars'
-        self.nplccols   = ['staruid', 'hjd', 'phase', 'normmag', 'errnormmag']
-        self.nplctypes  = ['INTEGER', 'REAL', 'REAL', 'REAL', 'REAL']
-        self.nplcnulls  = [' NOT NULL', ' NOT NULL', '', '', '']
-        self.nplctype   = [('uid', 'i4'), ('staruid', 'i4'), ('hjd', 'f8'),
+        self.nplccols   = ['staruid', 'rlcuid', 'hjd', 
+                           'phase', 'normmag', 'errnormmag']
+        self.nplctypes  = ['INTEGER', 'INTEGER', 'REAL', 
+                           'REAL', 'REAL', 'REAL']
+        self.nplcnulls  = [' NOT NULL', ' NOT NULL', ' NOT NULL', 
+                           '', '', '']
+        self.nplctype   = [('uid', 'i4'), ('staruid', 'i4'), ('rlcuid', 'i4'), 
+                           ('hjd', 'f8'),
                            ('phase', 'f4'), ('mag', 'f4'), ('err', 'f4')]
         
         # phased light curve
@@ -181,6 +226,8 @@ class Asas(object):
         self.fitcols  = ['staruid', 'phase', 'value']
         self.fittypes = ['INTEGER', 'REAL', 'REAL']
         self.fitnulls = [' NOT NULL', ' NOT NULL', ' NOT NULL']
+        self.npfittype = [('uid', 'i4'), ('staruid', 'i4'), 
+                          ('phase', 'f4'), ('value', 'f4')]
         
         
         # knots, midpoints, and flux from polyfit --midpoints
@@ -533,7 +580,7 @@ class Kepq3(Mast):
         self.dicttname = 'stars'
 
         # NO 0 OFFSET because col 0 is UID
-        self.t         = {'KIC' : 1, 'RA' : 2, 'DEC' : 3, 'KEPMAG' : 14}
+        self.t         = {'id' : 1, 'RA' : 2, 'DEC' : 3, 'KEPMAG' : 14}
         self.dictcols  = ['KIC', 'RA', 'DEC', 'PMRA', 'PMDEC',
                           'GMAG', 'RMAG', 'IMAG', 'ZMAG', 'D51MAG',
                           'JMAG', 'HMAG', 'KMAG', 'KEPMAG', 'VARCLS',
@@ -581,7 +628,7 @@ class Kepq3test(Mast):
         self.dicttname = 'stars'
         
         # NO 0 OFFSET because col 0 is UID
-        self.t         = {'KIC' : 1, 'RA' : 2, 'DEC' : 3, 'KEPMAG' : 14}
+        self.t         = {'id' : 1, 'RA' : 2, 'DEC' : 3, 'KEPMAG' : 14}
         self.dictcols  = ['KIC', 'RA', 'DEC', 'PMRA', 'PMDEC', 
                           'GMAG', 'RMAG', 'IMAG', 'ZMAG', 'D51MAG',
                           'JMAG', 'HMAG', 'KMAG', 'KEPMAG', 'VARCLS',
@@ -686,7 +733,7 @@ class Kepq3FC2(Mast):
         self.dicttname = 'stars'
         
         # NO 0 OFFSET because col 0 is UID
-        self.t         = {'KIC' : 1, 'RA' : 2, 'DEC' : 3, 'KEPMAG' : 14}
+        self.t         = {'id' : 1, 'RA' : 2, 'DEC' : 3, 'KEPMAG' : 14}
         self.dictcols  = ['KIC', 'RA', 'DEC', 'PMRA', 'PMDEC', 
                           'GMAG', 'RMAG', 'IMAG', 'ZMAG', 'D51MAG',
                           'JMAG', 'HMAG', 'KMAG', 'KEPMAG', 'VARCLS',
