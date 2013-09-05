@@ -3,16 +3,20 @@ Created on Jun 18, 2012
 
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.4 $
-@date     \$Date: 2013/06/25 17:03:12 $
+@version  \$Revision: 1.5 $
+@date     \$Date: 2013/09/05 18:46:04 $
 
 $Log: functions.py,v $
-Revision 1.4  2013/06/25 17:03:12  paegerm
-*** empty log message ***
+Revision 1.5  2013/09/05 18:46:04  paegerm
+makephasedlc --> phaselc. Keeping normalized and phased values in one table
+adding fluxratio, gett0, stetson
+
+
+
+Revision 1.4  2013/06/25 17:03:12  parvizm
+adding makebinnedlc_MAST
 
 Revision 1.3  2013/06/20 18:24:06  paegerm
-skip None entries, add rounding and correct actbin in makebinnedlc
-
 skip None entries, add rounding and correct actbin in makebinnedlc
 
 Revision 1.2  2012/09/24 21:26:30  paegerm
@@ -24,16 +28,86 @@ Initial revision
 
 import numpy as np
 
+from math import *
+
+
+
+def stetson(lc, idxname = 'vmag', errname = 'vmag_err'):
+    # compute Stetson indices 
+    lcdtype = [('hjd', 'f4'), ('mag', 'f4'), ('err', 'f4')]
+    lcarr   = np.zeros(len(lc), dtype = lcdtype)
+    for i in xrange(len(lc)):
+        lcarr[i]['hjd'] = lc[i]['hjd']
+        lcarr[i]['mag'] = lc[i][idxname]
+        lcarr[i]['err'] = lc[i][errname]
+    
+    wk = 1.0  #Weighting Factor
+    n = len(lcarr)
+    meanmag = lcarr['mag'].mean()
+    jt = np.zeros(n, float)
+    jb = np.zeros(n, float)
+    kt = np.zeros(n, float)
+    kb = np.zeros(n, float)
+    
+    for i in xrange(0, n -2, 2):
+        sigi = (lcarr['mag'][i] - meanmag) / (lcarr['err'][i]) * \
+               (sqrt(n / (n - 1)))
+        sigj = (lcarr['mag'][i + 1] - meanmag) / (lcarr['err'][i + 1]) * \
+               (sqrt(n / (n - 1)))
+        pk = sigi * sigj
+        sgnpk = 0.0
+        if pk > 0.0:
+            sgnpk = 1.0
+        if pk < 0.0:
+            sgnpk = -1.0
+        jt[i] = wk * sgnpk * (sqrt(abs(pk))) # Kinemuchi eq.1 (Numerator)
+        jb[i] = wk                           # Kinemuchi eq.1 (Denominator)
+        kt[i] = abs(sigi)                    # Kinemuchi eq.5 (Numerator)
+        kb[i] = abs(sigi * sigi)             # Kinemuchi eq.5 (Denominator)
+            
+    j_stet = np.sum(jt) / sum(jb)                                   # Eq 1
+    k_stet = 1.0 / n * np.sum(kt) / (sqrt((1.0 / n) * np.sum(kb)))  # Eq 5
+    l_stet = j_stet * k_stet / (0.7908)                             # Eq 7
+    
+    return (round(j_stet, 4), round(k_stet, 4), round(l_stet, 4))
+
+
+
+
+def fluxratio(npmags):
+    maxf = max(npmags)
+    medf = np.median(npmags)
+    minf = min(npmags)
+    
+    fr = (maxf - medf) / (maxf - minf)
+
+    return round(fr, 4)
+
+
+
+def gett0fr(lc, idxname = 'vmag', hjdname = 'hjd'):
+    dflux = np.zeros((len(lc),))
+    for i, row in enumerate(lc):
+        dflux[i] = row[idxname]
+
+    fr = fluxratio(dflux)     
+    if fr <= 0.5:
+        tzero = dflux.argmin()
+    else:
+        tzero = dflux.argmax()
+    
+    return (lc[tzero][hjdname], fr)
+     
      
 
-def makephasedlc(lc, t0, dictvmag, period, shift = 0.0):
+def phaselc(lc, t0, period, shift = 0.0):
     plc = []
+    if (t0 <= 0.0):
+        (t0, fr) = gett0fr(lc)
     for entry in lc:
         obstime = entry['hjd']
-        rlcuid  = entry['uid']
+        lcuid   = entry['uid']
         diff = obstime - t0
-        nmag  = 2.0 - entry['vmag'] / dictvmag
-        err   = entry['vmag_err'] / dictvmag
         phase = diff / period - diff // period
         phase -= 0.5
         if (phase < 0):
@@ -44,15 +118,14 @@ def makephasedlc(lc, t0, dictvmag, period, shift = 0.0):
             phase += 1.0
         elif phase > 0.5:
             phase -= 1.0
-        plc.append([entry['staruid'], rlcuid, round(phase, 5), 
-                    round(nmag, 5), round(err, 5)])
+        plc.append([round(phase, 5), lcuid]) 
         
-    plc = sorted(plc, key = lambda plc: plc[2])
-    maxgap = 1.0 + plc[0][2] - plc[-1][2] 
+    plc = sorted(plc, key = lambda plc: plc[0])
+    maxgap = 1.0 + plc[0][0] - plc[-1][0] 
     for i in xrange(1, len(plc)):
-        if plc[i][2] - plc[i - 1][2] > maxgap:
-            maxgap = plc[i][2] - plc[i - 1][2]
-    return (plc, maxgap)
+        if plc[i][0] - plc[i - 1][0] > maxgap:
+            maxgap = plc[i][0] - plc[i - 1][0]
+    return (plc, maxgap, t0)
 
 
 
@@ -120,6 +193,8 @@ def makebinnedlc(plc, staruid, nrbins = 100):
     
     return (blc, fmin, fmax, std)
 
+
+
 def makebinnedlc_MAST(rplc, staruid, nrbins = 200):
     binsize = 1.0 / nrbins
     oldbin = -1
@@ -128,7 +203,7 @@ def makebinnedlc_MAST(rplc, staruid, nrbins = 200):
     fluxes = np.ndarray((0,))
     sigmas = np.ndarray((0,))
     binfluxes = np.ndarray((0,))
-    binfluxuids = np.ndarray((0,))
+#    binfluxuids = np.ndarray((0,))
     for entry in rplc:
         actbin = int((0.5 + entry['phase']) * nrbins + 0.5)
         if (actbin != oldbin):
@@ -165,8 +240,6 @@ def makebinnedlc_MAST(rplc, staruid, nrbins = 200):
         fluxes = np.append(fluxes, mean)
         sigmas = np.append(sigmas, sigma)
      
-
-            
     blc_min = None
     blc_max = None
     blc_std  = None
@@ -176,6 +249,7 @@ def makebinnedlc_MAST(rplc, staruid, nrbins = 200):
         blc_std  = deriv2(phases, fluxes) / (fluxes.max() - fluxes.min())
     
     return (blc, blc_min, blc_max, blc_std)
+
 
         
 if __name__ == '__main__':
