@@ -1,15 +1,18 @@
 '''
 @package: normalize
 @author   : map
-@version  : \$Revision: 1.1 $
-@Date      : \$Date: 2013/08/13 19:32:28 $
+@version  : \$Revision: 1.2 $
+@Date      : \$Date: 2013/09/05 18:57:40 $
 
 Normalize lightcurves given in magnitudes
 
 $Log: normalize.py,v $
-Revision 1.1  2013/08/13 19:32:28  paegerm
-Initial Revision
+Revision 1.2  2013/09/05 18:57:40  paegerm
+keep uid of raw-lc entry in normalized and phased db
 
+keep uid of raw-lc entry in normalized and phased db
+
+Revision 1.1  2013/08/13 19:32:28  paegerm
 Initial revision
 '''
 
@@ -92,7 +95,8 @@ if __name__ == '__main__':
         for entry in rlc:
             nmag = round(2.0 - entry['vmag'] / vmag, 6)
             nerr = round(entry['vmag_err'] / vmag, 6)
-            nplcrows.append([star['uid'], entry['hjd'], None, nmag, nerr])
+            nplcrows.append([star['uid'], entry['uid'], entry['hjd'], 
+                             None, nmag, nerr])
         if options.delete == True:
             nplcwriter.deletebystaruid(star['uid'])
         nrentries = len(nplcrows)
