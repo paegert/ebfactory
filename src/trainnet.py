@@ -3,8 +3,8 @@ Created on Jul 5, 2012
 
 @package  trainnet
 @author   map
-@version  \$Revision: 1.7 $
-@date     \$Date: 2013/09/05 19:07:55 $
+@version  \$Revision: 1.8 $
+@date     \$Date: 2013/11/05 20:44:54 $
 
 Routines for retrieving, preparing and handing data over to a neural network 
 for training. Note: the main part is just for testing purposes, use trainnetmp
@@ -12,11 +12,12 @@ for all real training
 
 
 $Log: trainnet.py,v $
-Revision 1.7  2013/09/05 19:07:55  paegerm
-switching to npviewtype (variable view of database) adding readfulldata,
-adding vmagamp to training for asas, adding fullfit option, reassigning net
-after training
+Revision 1.8  2013/11/05 20:44:54  paegerm
+shuffling in prepdata needs 1 dimension (was arr = arr[order, :]
 
+shuffling in prepdata needs 1 dimension (was arr = arr[order, :]
+
+Revision 1.7  2013/09/05 19:07:55  paegerm
 switching to npviewtype (variable view of database) adding readfulldata,
 adding vmagamp to training for asas, adding fullfit option, reassigning net
 after training
@@ -99,8 +100,8 @@ def prepdata(options, dbc, arr, cff, shuffle = True,
     if (shuffle == True):
         order = range(nrrows)
         np.random.shuffle(order)
-        arr = arr[order, :]
-        cff = cff[order, :]
+        arr = arr[order]
+        cff = cff[order]
 
     nrinputs = 19
     newnorm = False
