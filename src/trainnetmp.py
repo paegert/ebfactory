@@ -3,18 +3,33 @@ Created on Jul 18, 2012
 
 @package  trainnetmp
 @author   map
-@version  \$Revision: 1.6 $
-@date     \$Date: 2013/09/05 19:10:33 $
+@version  \$Revision: 1.7 $
+@date     \$Date: 2013/12/05 17:38:14 $
 
 Multi-processing training of multiple networks at once. Be sue to have the 
 environment variable OMP_NUM_THREADS set to a reasonable value (number of CPUs
 for example). The default is working with just 2 processes.
 
 $Log: trainnetmp.py,v $
-Revision 1.6  2013/09/05 19:10:33  paegerm
-rassigning net after training, adding fullfit option
+Revision 1.7  2013/12/05 17:38:14  paegerm
+add prb option for database with probabilities for training (currently only
+Asas 1.1)
+adding resname option
+adding chi2 option
+store str(options) as net.comment
+change name of report files from nrhidden to fittype
+add stopval to args if not shuffling
 
-rassigning net after training, adding fullfit option
+add prb option for database with probabilities for training (currently only
+Asas 1.1)
+adding resname option
+adding chi2 option
+store str(options) as net.comment
+change name of report files from nrhidden to fittype
+add stopval to args if not shuffling
+
+Revision 1.6  2013/09/05 19:10:33  paegerm
+reassigning net after training, adding fullfit option
 
 Revision 1.5  2013/08/13 19:15:29  paegerm
 add net.select, write network options to logfile
@@ -92,8 +107,13 @@ if __name__ == '__main__':
         (dictarr, coeffarr, nrstars, noclass, nofit) = readdata(options, dbc)
     
     # prepare the data, target and normalization values
+    if options.prb != None:
+        options.prb = dbr.DbReader(options.rootdir + options.prb)
     (alld, allt, allnames, 
      normsubtract, normdevide) = prepdata(options, dbc, dictarr, coeffarr)
+    if options.prb != None:
+        options.prb.close()
+        options.prb = None
     
     options.lf.write(str(nrstars) + ' selected')
     options.lf.write(str(noclass) + ' stars with unknown class')
@@ -118,7 +138,8 @@ if __name__ == '__main__':
     if (nrprocess <= 0):
         nrprocess = 2
 
-    args = (traind, traint, validd, validt, options.eta, options.nriter, True)
+    args = (traind, traint, validd, validt, options.eta, options.nriter, 
+            options.stopval, True)
     maxpercent = 0.0
     results = []
     pool = Pool(processes = nrprocess)
@@ -128,7 +149,8 @@ if __name__ == '__main__':
                 (alld, allt, allnames) = reshuffle(alld, allt, allnames)
                 (traind, traint, trainn, 
                  validd, validt, validn, 
-                 testd, testt, testn) = splitdata(alld, allt, allnames, 0.5, 0.25)
+                 testd, testt, testn) = splitdata(alld, allt, allnames, 
+                                                  0.5, 0.25)
                 args = (traind, traint, validd, validt, 
                         options.eta, options.nriter, options.stopval, True)
 
@@ -138,7 +160,7 @@ if __name__ == '__main__':
                           multires = options.multi, mdelta = options.mdelta)
             net.subdir  = resdir
             net.select  = options.select
-            net.comment = options.fittype
+            net.comment = str(options)
             if not os.path.exists(net.subdir):
                 os.mkdir(net.subdir)
             net.lf    = Logfile(options.rootdir + options.resdir + '/' + 
@@ -159,13 +181,16 @@ if __name__ == '__main__':
     oldj = options.minhidden - 1
     mean = 0.0
     maxpercent = 0.0
+    minvalerr  = 1.0e6
     oline = '%2d:  ' % options.minhidden
-    rname = resdir + '/nrhidden' + str(options.minhidden) + '_'
+    rname = resdir + '/'  + options.fittype + str(options.minhidden) + '_'
     # resarr = (maxhidden - minhidden + 1) * [[[] for j in xrange(0, nrtests)]]
     of = open(resdir + '/' + options.repname, 'w')
     of.write('Summary report\n')
     jmax = -1
     kmax = -1
+    jvmin = -1
+    kvmin = -1
     for i in xrange(nrres):
         (net, j, k) = results[i].get(1)
         #print i, ': ', j, ', ', k 
@@ -177,7 +202,7 @@ if __name__ == '__main__':
                 mean = 0.0
                 oline = '%2d:  ' % (j)
             oldj = j
-        rname = '/nrhidden' + str(j) + '_' + str(k) + '.txt'
+        rname = '/' + options.resname + str(j) + '_' + str(k) + '.txt'
         cm = net.confmat(testd, testt, True)
         net.report('%7s ', '%7d ', '%7.2f ', options.classes, rname)
         val = net.allpercent
@@ -186,16 +211,32 @@ if __name__ == '__main__':
             jmax = j
             kmax = k
             maxpercent = val
-            pf = open(resdir + '/max' + str(options.minhidden) + '_' + 
+            pf = open(resdir + '/' + options.picklename + 'maxp' + 
+                      str(options.minhidden) + '_' + 
                       str(options.maxhidden) + '.pickle', 'w')
             pickle.dump(net, pf)
             pf.close()
             print j, ', ', k, ': maxpercent = ', maxpercent
-        oline += "%5.2f / %4d   " % (val, net.stopcount)
+        val = 100.0 * net.validerror / len(validd)
+        if val < minvalerr:
+            jvmin = j
+            kvmin = k
+            minvalerr = val
+            pf = open(resdir + '/' + options.picklename + 'minv' + 
+                      str(options.minhidden) + '_' + 
+                      str(options.maxhidden) + '.pickle', 'w')
+            pickle.dump(net, pf)
+            pf.close()
+            print j, ', ', k, ': minvalerr = ', minvalerr
+
+        oline += "%5.2f / %5.2f   " % (net.allpercent, 
+                                       100.0 * net.validerror / len(validd))
     oline += '%5.2f\n' % (mean / options.nrnets)
     of.write(oline)
     of.write('\n')
     oline = 'max = %5.2f at %d, %d\n' % (maxpercent, jmax, kmax)
+    of.write(oline)
+    oline = 'min = %5.2f at %d, %d\n' % (minvalerr, jvmin, kvmin)
     of.write(oline)
     oline = '%f minutes over all\n' % (watch.stop() / 60.0)
     of.write(oline)
