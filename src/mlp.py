@@ -1,17 +1,24 @@
 '''
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.7 $
-@date     \$Date: 2013/09/05 18:56:15 $
+@version  \$Revision: 1.8 $
+@date     \$Date: 2013/12/05 17:17:59 $
 
 A simple muulti-layer perceptron, currently restricted to one hidden layer
 
 @requires: numpy
 
 $Log: mlp.py,v $
-Revision 1.7  2013/09/05 18:56:15  paegerm
-*** empty log message ***
+Revision 1.8  2013/12/05 17:17:59  paegerm
+major overhaul of earlystopping: improve dynamic eta, remember last step saved,
+adjust stopping conditions
+add writeetafunc for debug purposes
 
+major overhaul of earlystopping: improve dynamic eta, remember last step saved,
+adjust stopping conditions
+add writeetafunc for debug purposes
+
+Revision 1.7  2013/09/05 18:56:15  paegerm
 stabilizing training in early stopping, dynamic eta, restoring previous nets
 if step leads to negative validation errors twice. 
 
@@ -211,16 +218,22 @@ class Mlp(object):
         nretareject     = 0
         lastrestored    = -10
         lastnegative    = -10
+        lastsaved       = -10
         mainbreak       = True
+        restore         = False
+        nobreak         = False
         while ((dnew > stopval * self.eta / eta) or 
                (dold > stopval * self.eta / eta)):
             if ((oldnet == None) or 
                 ((self.validerror < old_val_error1) and 
-                 (self.validerror < old_val_error2))):
+                 (self.validerror < old_val_error2) and
+                 (self.validerror < oldnet.validerror))):
                 oldnet = cp.deepcopy(self)
                 saveta = eta
                 savoldvalerror1 = old_val_error1
                 savoldvalerror2 = old_val_error2
+                lastsaved = self.stopcount
+                
             self.stopcount += 1
             self.trainerror = self.mlptrain(inputs, targets, eta, niterations)
             old_val_error2 = old_val_error1
@@ -230,16 +243,36 @@ class Mlp(object):
             addon = ''
             dold  = old_val_error2 - old_val_error1
             dnew  = old_val_error1 - self.validerror
+            
             if dnew < 0.0:
                 lastnegative = self.stopcount
-#            if self.validerror > old_val_error2:
+#                 if self.stopcount - lastsaved == 1:
+#                     self.writeetafunc(inputs, valid, targets, validtargets, 
+#                                       niterations, old_val_error1, eta, dnew, 
+#                                       oldnet)
+
             if dold <= 0.0 and dnew < 0.0:
+                restore = True
                 nretareject = 0
                 if (eta > 0.25 * self.eta):
                     eta = 0.9 * saveta
                 addon = 'restoring ' + str(oldnet.stopcount) + \
                         ', eta = ' + str(round(eta, 2))
-            elif ((dnew > 0.0) and (abs(dold - dnew) < 0.001) and 
+            elif self.stopcount - lastsaved >= 4 and \
+                 self.validerror > oldnet.validerror:
+                restore = True
+                nretareject = 0
+                if (eta > 0.25 * self.eta):
+                    if ((abs(eta - 0.9 * saveta) <= 0.01) or (eta > saveta) or
+                        (eta < 0.85 * saveta)):
+                        eta = 0.9 * eta
+                        nobreak = True
+                    else:
+                        eta = 0.9 * saveta                        
+                addon = 'restoring ' + str(oldnet.stopcount) + \
+                        ', eta = ' + str(round(eta, 2))                
+            elif ((dnew > 0.0) and 
+                  (abs(dold - dnew) < 0.001) and 
                   (self.stopcount - lastrestored > 10) and
                   (self.stopcount - lastnegative > 10)):
                 neweta = 1.1 * eta
@@ -257,6 +290,7 @@ class Mlp(object):
                     eta = neweta
                     nretareject = 0
                     addon = 'new eta = ' + str(round(eta, 2))
+
             if (self.debug > 0):
                 fmt = '%3d  trainerr = %7.4f  validerr = %7.4f, ' + \
                       'dold = %8.4f, dnew = %8.4f %s'
@@ -267,8 +301,9 @@ class Mlp(object):
                     print line
                 else:
                     self.lf.write(line)
-#            if self.validerror > old_val_error2:
-            if dold <= 0.0 and dnew < 0.0:
+
+            if restore == True:
+                restore = False
                 self = cp.deepcopy(oldnet)
                 nretareject    = 0
                 old_val_error1 = savoldvalerror1
@@ -276,20 +311,27 @@ class Mlp(object):
                 dold = old_val_error2 - old_val_error1
                 dnew = old_val_error1 - self.validerror
                 lastrestored   = self.stopcount
-                if self.stopcount == steprestored:
+                if self.stopcount == steprestored and nobreak == False:   
+                    # restore the second time
                     mainbreak = False
                     break
+                nobreak = False
                 steprestored = self.stopcount
+                
             if (nretareject > 20):
                 mainbreak = False
-                break
+                break                    
 
+        addon += 'final'
         if (mainbreak == True) and (dnew < 0.0) and (dold > 0.0):
             self = cp.deepcopy(oldnet)
             old_val_error1 = savoldvalerror1
             old_val_error2 = savoldvalerror2
             dold = old_val_error2 - old_val_error1
             dnew = old_val_error1 - self.validerror
+        elif mainbreak == True:
+            addon += ' ' + str(round(stopval * self.eta / eta, 4)) + ' ' + \
+                     str(round(self.eta, 4)) + ' ' + str(round(eta, 4))
 
         if ((self.writeweights == True) or (self.debug > 1)):
             fnhidden = '%s/hidden%d' % (self.subdir, self.stopcount)
@@ -298,9 +340,9 @@ class Mlp(object):
             savetxt(fnoutput, self.weights2, '%8.4f')
 
         fmt = '%3d  trainerr = %7.4f  validerr = %7.4f, ' + \
-              'dold = %8.4f, dnew = %8.4f final'
+              'dold = %8.4f, dnew = %8.4f %s'
         line = fmt % (self.stopcount, 100 * self.trainerror / lentrain, 
-                      100 * self.validerror / lenval, dold, dnew)
+                      100 * self.validerror / lenval, dold, dnew, addon)
         if self.lf == None:
             print line
         else:
@@ -308,6 +350,23 @@ class Mlp(object):
                 
         return (self)
 
+
+
+    def writeetafunc(self, inputs, valid, targets, validtargets, niterations,
+                     oldvalerror, eta, dnew, oldnet):
+        fname = '/home/map/data/asas11/etafunc' + str(self.stopcount)
+        etaf = open(fname, 'w')
+        etaf.write(str(eta) + '  ' + str(round(dnew, 4)) + '\n')
+        for i in xrange(10, 101):
+            neweta = i / 100.0
+            testeta = cp.deepcopy(oldnet)
+            testtrainerror = testeta.mlptrain(inputs, targets, neweta, 
+                                              niterations)
+            testvalidout = testeta._mlpfwd(valid)
+            testvaliderror = 0.5 * sum((validtargets - testvalidout) ** 2)
+            testdnew = oldvalerror - testvaliderror
+            etaf.write(str(neweta) + '  ' + str(round(testdnew, 4)) + '\n')
+        etaf.close()
 
 
     def mlptrain(self, inputs, targets, eta, niterations):
@@ -336,8 +395,6 @@ class Mlp(object):
             self.outputs = self._mlpfwd(inputs)
 
             error = 0.5 * sum((targets - self.outputs) ** 2)
-#            if (mod(n, 100) == 0):
-#                print "Iteration: ", n, " Error: ", error
 
             # Different types of output neurons
             if self.outtype == 'linear':
