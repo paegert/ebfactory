@@ -3,15 +3,16 @@ Created on Jun 19, 2012
 
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.16 $
-@date     \$Date: 2013/09/05 18:44:08 $
+@version  \$Revision: 1.17 $
+@date     \$Date: 2013/12/05 17:00:08 $
 
 $Log: dbconfig.py,v $
-Revision 1.16  2013/09/05 18:44:08  paegerm
-adding npviewtype
-keep reference to raw lc in nplc for Asas
-change KIC to id in translation table (t)
+Revision 1.17  2013/12/05 17:00:08  paegerm
+adding tcls, tprb to vars for ASAS, correcting vars table name
 
+adding tcls, tprb to vars for ASAS, correcting vars table name
+
+Revision 1.16  2013/09/05 18:44:08  paegerm
 adding npviewtype
 keep reference to raw lc in nplc for Asas
 change KIC to id in translation table (t)
@@ -129,11 +130,12 @@ class Asas(object):
                            ('jmag', 'f4'), ('hmag', 'f4'), ('kmag', 'f4'), 
                            ('tmassname', 'a20'), ('Verr', 'f4'), 
                            ('Vmedian', 'f4'), ('plcmaxgap', 'f4'),
-                           ('calcls', 'a20'), ('calprob', 'f4'), ('tcls', 'a10')]
+                           ('calcls', 'a20'), ('calprob', 'f4'), 
+                           ('tcls', 'a10'), ('tprb', 'f4')]
 
         
-        # periodic variables = dictionary + staruid
-        self.vartname  = 'stars'
+        # temporary: periodic variables = dictionary + staruid
+        self.vartname  = 'vars'
         self.varcols   = self.dictcols.append('staruid')
         self.vartypes  = self.dicttypes.append('INTEGER')
         self.varnulls  = self.dictnulls.append(' NOT NULL')
