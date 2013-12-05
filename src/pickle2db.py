@@ -3,17 +3,20 @@ Created on Sep 6, 2012
 
 @package  pickle2db
 @author   map
-@version  \$Revision: 1.2 $
-@date     \$Date: 2013/08/07 15:43:10 $
+@version  \$Revision: 1.3 $
+@date     \$Date: 2013/12/05 17:20:06 $
 
 convert pickeled net to database, devide --> divide
 
 $Log: pickle2db.py,v $
+Revision 1.3  2013/12/05 17:20:06  paegerm
+deleting classes option (obsolete, we store the classes in the network)
+
+deleting classes option (obsolete, we store the classes in the network)
+
 Revision 1.2  2013/08/07 15:43:10  paegerm
 adding select and remark to network dictionary data,
 renaming dict to ndict where the dictionary of the trained network is meant
-
-
 
 Revision 1.1  2012/09/24 21:39:34  paegerm
 convert pickeled network into database
@@ -48,9 +51,9 @@ def writevec(netuid, writer, vector, name):
 if __name__ == '__main__':
     usage = '%prog [options] [dbname]'
     parser = OptionParser(usage=usage)
-    parser.add_option('--classes', dest='clsnames', type='string', 
-                      default='classes.txt',
-                      help='file with space separated classnames (classes.txt)')
+#     parser.add_option('--classes', dest='clsnames', type='string', 
+#                       default='classes.txt',
+#                       help='file with space separated classnames (classes.txt)')
     parser.add_option('-d', dest='debug', type='int', default=1,
                       help='debug setting (default: 1)')
     parser.add_option('--dbconfig', dest='dbconfig', type = 'string', 
@@ -83,10 +86,10 @@ if __name__ == '__main__':
     if (len(args) == 1):
         options.fitname = args[0]
         
-    for line in open(options.rootdir + options.clsnames):
-        if (len(line.strip()) == 0) or (line.startswith('#')):
-            continue
-        options.classes = line.split()
+#     for line in open(options.rootdir + options.clsnames):
+#         if (len(line.strip()) == 0) or (line.startswith('#')):
+#             continue
+#         options.classes = line.split()
         
     if (options.name == None):
         pos = options.picklename.rfind('.')
