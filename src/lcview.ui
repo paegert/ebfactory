@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>802</width>
-    <height>593</height>
+    <height>724</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <property name="geometry">
      <rect>
       <x>5</x>
-      <y>80</y>
+      <y>90</y>
       <width>791</width>
       <height>291</height>
      </rect>
@@ -31,7 +31,7 @@
     <property name="geometry">
      <rect>
       <x>733</x>
-      <y>410</y>
+      <y>420</y>
       <width>58</width>
       <height>25</height>
      </rect>
@@ -44,7 +44,7 @@
     <property name="geometry">
      <rect>
       <x>12</x>
-      <y>410</y>
+      <y>420</y>
       <width>64</width>
       <height>25</height>
      </rect>
@@ -56,11 +56,11 @@
      <cstring>dnameEdit</cstring>
     </property>
    </widget>
-   <widget class="QLineEdit" name="dnameEdit">
+   <widget class="DDLineEdit" name="dnameEdit">
     <property name="geometry">
      <rect>
       <x>80</x>
-      <y>410</y>
+      <y>420</y>
       <width>649</width>
       <height>24</height>
      </rect>
@@ -70,7 +70,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>440</y>
+      <y>450</y>
       <width>781</width>
       <height>71</height>
      </rect>
@@ -80,7 +80,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>20</y>
+      <y>30</y>
       <width>781</width>
       <height>60</height>
      </rect>
@@ -97,7 +97,7 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLineEdit" name="fnameEdit"/>
+      <widget class="DDLineEdit" name="fnameEdit"/>
      </item>
      <item row="0" column="2">
       <widget class="QPushButton" name="loadButton">
@@ -132,8 +132,8 @@
    <widget class="QPushButton" name="plotButton">
     <property name="geometry">
      <rect>
-      <x>690</x>
-      <y>520</y>
+      <x>430</x>
+      <y>390</y>
       <width>99</width>
       <height>25</height>
      </rect>
@@ -145,8 +145,8 @@
    <widget class="QPushButton" name="plotnewButton">
     <property name="geometry">
      <rect>
-      <x>570</x>
-      <y>520</y>
+      <x>310</x>
+      <y>390</y>
       <width>99</width>
       <height>25</height>
      </rect>
@@ -158,8 +158,8 @@
    <widget class="QPushButton" name="prevPutton">
     <property name="geometry">
      <rect>
-      <x>290</x>
-      <y>380</y>
+      <x>10</x>
+      <y>390</y>
       <width>113</width>
       <height>27</height>
      </rect>
@@ -171,14 +171,195 @@
    <widget class="QPushButton" name="nextButton">
     <property name="geometry">
      <rect>
-      <x>430</x>
-      <y>380</y>
+      <x>680</x>
+      <y>390</y>
       <width>113</width>
       <height>27</height>
      </rect>
     </property>
     <property name="text">
      <string>&amp;&gt;</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="plcButton">
+    <property name="geometry">
+     <rect>
+      <x>733</x>
+      <y>530</y>
+      <width>58</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Load</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>530</y>
+      <width>81</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&amp;phased LC</string>
+    </property>
+    <property name="buddy">
+     <cstring>plcnameEdit</cstring>
+    </property>
+   </widget>
+   <widget class="DDLineEdit" name="plcnameEdit">
+    <property name="geometry">
+     <rect>
+      <x>98</x>
+      <y>530</y>
+      <width>631</width>
+      <height>24</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="DDLineEdit" name="blcnameEdit">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>560</y>
+      <width>631</width>
+      <height>24</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="blcButton">
+    <property name="geometry">
+     <rect>
+      <x>734</x>
+      <y>560</y>
+      <width>60</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Load</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>9</x>
+      <y>560</y>
+      <width>81</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&amp;binned LC</string>
+    </property>
+    <property name="buddy">
+     <cstring>blcnameEdit</cstring>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="fitButton">
+    <property name="geometry">
+     <rect>
+      <x>735</x>
+      <y>590</y>
+      <width>58</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Load</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>590</y>
+      <width>81</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Fi&amp;t</string>
+    </property>
+    <property name="buddy">
+     <cstring>fitnameEdit</cstring>
+    </property>
+   </widget>
+   <widget class="DDLineEdit" name="fitnameEdit">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>590</y>
+      <width>521</width>
+      <height>24</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="fittypeBox">
+    <property name="geometry">
+     <rect>
+      <x>637</x>
+      <y>590</y>
+      <width>91</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>midpoints</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>coeffs</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>fullfit</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="DDLineEdit" name="optionEdit">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>2</y>
+      <width>649</width>
+      <height>24</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>0</y>
+      <width>64</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&amp;Options</string>
+    </property>
+    <property name="buddy">
+     <cstring>optionEdit</cstring>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="optionButton">
+    <property name="geometry">
+     <rect>
+      <x>730</x>
+      <y>0</y>
+      <width>58</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Process</string>
     </property>
    </widget>
   </widget>
@@ -188,7 +369,7 @@
      <x>0</x>
      <y>0</y>
      <width>802</width>
-     <height>24</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -199,7 +380,15 @@
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
+   <widget class="QMenu" name="menuConfig">
+    <property name="title">
+     <string>&amp;Config</string>
+    </property>
+    <addaction name="actionAsas"/>
+    <addaction name="actionKepler"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuConfig"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen">
@@ -218,7 +407,27 @@
     <string>Ctrl+Q</string>
    </property>
   </action>
+  <action name="actionAsas">
+   <property name="text">
+    <string>&amp;Asas</string>
+   </property>
+  </action>
+  <action name="actionKepler">
+   <property name="text">
+    <string>&amp;Kepler</string>
+   </property>
+  </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>DDLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">qutilclasses</header>
+   <slots>
+    <signal>postDrop()</signal>
+   </slots>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
@@ -228,8 +437,8 @@
    <slot>load_file()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>756</x>
-     <y>67</y>
+     <x>789</x>
+     <y>58</y>
     </hint>
     <hint type="destinationlabel">
      <x>624</x>
@@ -244,8 +453,8 @@
    <slot>run_cmd()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>762</x>
-     <y>83</y>
+     <x>789</x>
+     <y>108</y>
     </hint>
     <hint type="destinationlabel">
      <x>754</x>
@@ -255,17 +464,17 @@
   </connection>
   <connection>
    <sender>fnameEdit</sender>
-   <signal>returnPressed()</signal>
+   <signal>editingFinished()</signal>
    <receiver>loadButton</receiver>
    <slot>click()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>600</x>
-     <y>53</y>
+     <x>669</x>
+     <y>77</y>
     </hint>
     <hint type="destinationlabel">
-     <x>740</x>
-     <y>67</y>
+     <x>789</x>
+     <y>58</y>
     </hint>
    </hints>
   </connection>
@@ -276,12 +485,12 @@
    <slot>click()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>597</x>
-     <y>83</y>
+     <x>666</x>
+     <y>107</y>
     </hint>
     <hint type="destinationlabel">
-     <x>742</x>
-     <y>96</y>
+     <x>789</x>
+     <y>88</y>
     </hint>
    </hints>
   </connection>
@@ -293,11 +502,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>566</x>
-     <y>457</y>
+     <y>445</y>
     </hint>
     <hint type="destinationlabel">
      <x>775</x>
-     <y>458</y>
+     <y>446</y>
     </hint>
    </hints>
   </connection>
@@ -309,7 +518,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>784</x>
-     <y>458</y>
+     <y>446</y>
     </hint>
     <hint type="destinationlabel">
      <x>786</x>
@@ -340,8 +549,8 @@
    <slot>plot_lc()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>712</x>
-     <y>568</y>
+     <x>452</x>
+     <y>416</y>
     </hint>
     <hint type="destinationlabel">
      <x>578</x>
@@ -356,8 +565,8 @@
    <slot>plot_newlc()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>607</x>
-     <y>568</y>
+     <x>347</x>
+     <y>416</y>
     </hint>
     <hint type="destinationlabel">
      <x>457</x>
@@ -372,8 +581,8 @@
    <slot>prev()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>321</x>
-     <y>417</y>
+     <x>41</x>
+     <y>418</y>
     </hint>
     <hint type="destinationlabel">
      <x>217</x>
@@ -388,12 +597,188 @@
    <slot>next()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>524</x>
+     <x>774</x>
      <y>418</y>
     </hint>
     <hint type="destinationlabel">
      <x>600</x>
      <y>403</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>fnameEdit</sender>
+   <signal>postDrop()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>load_file()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>228</x>
+     <y>54</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>285</x>
+     <y>536</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dnameEdit</sender>
+   <signal>postDrop()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>load_dict()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>112</x>
+     <y>445</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>126</x>
+     <y>543</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>fitButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>load_fit()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>775</x>
+     <y>631</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>777</x>
+     <y>620</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>blcButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>load_blc()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>746</x>
+     <y>594</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>712</x>
+     <y>623</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>plcButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>load_plc()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>763</x>
+     <y>563</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>608</x>
+     <y>620</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>plcnameEdit</sender>
+   <signal>postDrop()</signal>
+   <receiver>plcButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>651</x>
+     <y>568</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>737</x>
+     <y>563</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>blcnameEdit</sender>
+   <signal>postDrop()</signal>
+   <receiver>blcButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>540</x>
+     <y>595</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>761</x>
+     <y>597</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>fitnameEdit</sender>
+   <signal>postDrop()</signal>
+   <receiver>fitButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>548</x>
+     <y>628</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>749</x>
+     <y>627</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>optionButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>process_options()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>758</x>
+     <y>31</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>651</x>
+     <y>407</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>optionEdit</sender>
+   <signal>postDrop()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>process_options()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>184</x>
+     <y>37</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>195</x>
+     <y>405</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>optionEdit</sender>
+   <signal>editingFinished()</signal>
+   <receiver>optionButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>509</x>
+     <y>37</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>745</x>
+     <y>30</y>
     </hint>
    </hints>
   </connection>
@@ -407,5 +792,9 @@
   <slot>plot_newlc()</slot>
   <slot>prev()</slot>
   <slot>next()</slot>
+  <slot>load_fit()</slot>
+  <slot>load_blc()</slot>
+  <slot>load_plc()</slot>
+  <slot>process_options()</slot>
  </slots>
 </ui>
