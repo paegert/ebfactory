@@ -3,15 +3,16 @@ Created on Jun 18, 2012
 
 @package  ebf
 @author   mpaegert
-@version  \$Revision: 1.3 $
-@date     \$Date: 2013/07/26 20:29:21 $
+@version  \$Revision: 1.4 $
+@date     \$Date: 2013/12/05 17:10:54 $
 
 multi-process version of makeplc and makeblc, phases the lightcurve if T0 <= 0.0
 
 $Log: makeplcmp.py,v $
-Revision 1.3  2013/07/26 20:29:21  paegerm
-correct bin
+Revision 1.4  2013/12/05 17:10:54  paegerm
+makephasedlc --> phaselc
 
+Revision 1.3  2013/07/26 20:29:21  paegerm
 correct bin
 
 Revision 1.2  2012/11/30 20:32:04  parvizm
@@ -113,15 +114,17 @@ def runmakeplc(options, lmax, stars):
             failed += 1
             continue
         if options.delete == True:
-            plcwriter = dbw.DbWriter(options.rootdir + options.plcname, dbc.plccols, 
-                             'stars', dbc.plctypes, dbc.plcnulls, tout=60.0)
+            plcwriter = dbw.DbWriter(options.rootdir + options.plcname, 
+                                     dbc.plccols, 'stars', dbc.plctypes, 
+                                     dbc.plcnulls, tout=60.0)
             plcwriter.deletebystaruid(staruid)
             plcwriter.close()
-            blcwriter = dbw.DbWriter(options.rootdir + options.blcname, dbc.blccols, 
-                             'stars', dbc.blctypes, dbc.blcnulls, tout=60.0)
+            blcwriter = dbw.DbWriter(options.rootdir + options.blcname, 
+                                     dbc.blccols, 'stars', dbc.blctypes, 
+                                     dbc.blcnulls, tout=60.0)
             blcwriter.deletebystaruid(staruid)
             blcwriter.close()
-        (plc, gap) = makephasedlc(lc, t0, star[dbc.t['mag']], 
+        (plc, gap) = phaselc(lc, t0, star[dbc.t['mag']], 
                                   period, 0.0)
         (blc, mmin, mmax, fmin, fmax) = binlc(plc, staruid, options.nrbins)
         if (t0 <= 0.0):
@@ -201,7 +204,7 @@ if __name__ == '__main__':
                       default='./',
                       help='directory for database files (default = ./)')
     parser.add_option('--select', dest='select', type='string', 
-                      default='select * from stars;',
+                      default='select * from vardict;',
                       help='select statement for dictionary (Default: select * from stars;)')
     parser.add_option('--selfile', dest='selfile', type='string', 
                       default=None,
