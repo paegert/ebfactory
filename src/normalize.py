@@ -1,15 +1,18 @@
 '''
 @package: normalize
 @author   : map
-@version  : \$Revision: 1.2 $
-@Date      : \$Date: 2013/09/05 18:57:40 $
+@version  : \$Revision: 1.3 $
+@Date      : \$Date: 2013/12/05 17:19:24 $
 
 Normalize lightcurves given in magnitudes
 
 $Log: normalize.py,v $
-Revision 1.2  2013/09/05 18:57:40  paegerm
-keep uid of raw-lc entry in normalized and phased db
+Revision 1.3  2013/12/05 17:19:24  paegerm
+rawlcsel option added
 
+rawlcsel option added 
+
+Revision 1.2  2013/09/05 18:57:40  paegerm
 keep uid of raw-lc entry in normalized and phased db
 
 Revision 1.1  2013/08/13 19:32:28  paegerm
@@ -41,6 +44,11 @@ if __name__ == '__main__':
                       help='dictionary database file')
     parser.add_option('--rawlc', dest='rawlcname', type='string', 
                       default='asaslc.sqlite',
+                      help='database file with raw light curves')
+    parser.add_option('--rawlcsel', dest='rlccmd', type='string', 
+                      default="select * from stars where staruid = ? and " +
+                      "(quality is NULL or quality = 'A' or quality = 'B') " +
+                      "order by hjd asc;",
                       help='database file with raw light curves')
     parser.add_option('--nplc', dest='nplcname', type='string', 
                       default='asasnplc.sqlite',
@@ -82,10 +90,11 @@ if __name__ == '__main__':
     rlcreader  = dbr.DbReader(options.rootdir + options.rawlcname)
     nplcwriter = dbw.DbWriter(options.rootdir + options.nplcname, dbc.nplccols, 
                              'stars', dbc.nplctypes, dbc.nplcnulls)
-    rlccmd = "select * from stars " \
-             "where staruid = ? and " \
-             "(quality is NULL or quality = 'A' or quality = 'B') " \
-             "order by hjd asc;"
+#     rlccmd = "select * from stars " \
+#              "where staruid = ? and " \
+#              "(quality is NULL or quality = 'A' or quality = 'B') " \
+#              "order by hjd asc;"
+    rlccmd = options.rlccmd
     nrtotal = 0
     for star in generator:
         nrstars += 1
