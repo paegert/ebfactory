@@ -3,8 +3,8 @@ Created on Jul 5, 2012
 
 @package  trainnet
 @author   map
-@version  \$Revision: 1.8 $
-@date     \$Date: 2013/11/05 20:44:54 $
+@version  \$Revision: 1.9 $
+@date     \$Date: 2013/12/05 17:35:19 $
 
 Routines for retrieving, preparing and handing data over to a neural network 
 for training. Note: the main part is just for testing purposes, use trainnetmp
@@ -12,9 +12,22 @@ for all real training
 
 
 $Log: trainnet.py,v $
-Revision 1.8  2013/11/05 20:44:54  paegerm
-shuffling in prepdata needs 1 dimension (was arr = arr[order, :]
+Revision 1.9  2013/12/05 17:35:19  paegerm
+adding prb option (take probability from target database (currently asas11 only)
+store str(options) as net.comment
+adding resname option
+adding chi2 option
+adding asas11target function for storing probabilities to result vectors
+setting default stopval to 0.01
 
+adding prb option (take probability from target database (currently asas11 only)
+store str(options) as net.comment
+adding resname option
+adding chi2 option
+adding asas11target function for storing probabilities to result vectors
+setting default stopval to 0.01
+
+Revision 1.8  2013/11/05 20:44:54  paegerm
 shuffling in prepdata needs 1 dimension (was arr = arr[order, :]
 
 Revision 1.7  2013/09/05 19:07:55  paegerm
@@ -81,29 +94,51 @@ def maketarget(classes, varcls, target):
 
 
 
-def prepdata(options, dbc, arr, cff, shuffle = True, 
+def asas11target(prbr, staruid, classes, varcls, target):
+    '''
+    Set the target vector for a single object using probabilites from
+    database
+    '''
+    if (varcls == None):
+        return
+    
+    if varcls not in classes:
+        options.lf.write('ERROR: unknown class ' + varcls)
+    
+    prb = prbr.fetchall('select * from classification where staruid = ?', (staruid,))
+    sprb = 0.0
+    for i, cls in enumerate(classes):
+        target[i] = prb[0][cls]
+        sprb += prb[0][cls]
+    target /= sprb
+
+
+
+def prepdata(options, dbc, arr, cff, 
              normsubtract = None, normdivide = None):
     '''
     Prepare data for neural network (assemble and normalize). Note: the polyfit
-    coefficients and normalized row-wise, NOT column-wise as usual. Within a 
+    coefficients are normalized row-wise, NOT column-wise as usual. Within a 
     row each block of 3 coefficients is normalized individually
     
-    Used: 4 blocks of node cff1, cff2, cff3 (second order fit)
+    Used: 4 blocks of 3 coefficients cff1, cff2, cff3 (second order fit)
           log10(Period)
           Vmag
-          Max - Min for normalized magnitutes
+          Max - Min for normalized magnitudes
           chi2 from polyfit
     '''
     nrrows = np.shape(arr)[0]
     
     # randomize order
-    if (shuffle == True):
+    if (options.shuffle == True):
         order = range(nrrows)
         np.random.shuffle(order)
         arr = arr[order]
         cff = cff[order]
 
     nrinputs = 19
+    if options.chi2 == True:
+        nrinputs += 1
     newnorm = False
     alld = np.zeros((nrrows, nrinputs))
     if (normsubtract == None) or (normdivide == None):
@@ -113,10 +148,11 @@ def prepdata(options, dbc, arr, cff, shuffle = True,
     allt = np.zeros((nrrows, len(options.classes)))
     allnames = []
     for i in xrange(nrrows):
+        staruid = int(arr[i][0])
         allnames.append(arr[i][dbc.t['id']])
         # normalize coefficients per row
         coeffs = np.asarray(tuple(cff[i]))
-        if options.fittype == 'coeffs':    # no normalization for midpoints
+        if options.fittype == 'coeffs':    # only coeffs need normalization
             coeffs[3:6]   = (coeffs[3:6] - coeffs[3:6].mean()) / \
                                coeffs[3:6].std()
             coeffs[7:10]  = (coeffs[7:10] - coeffs[7:10].mean()) / \
@@ -136,13 +172,18 @@ def prepdata(options, dbc, arr, cff, shuffle = True,
         alld[i, 16]  = np.log10(arr[i]['period'])
         alld[i, 17]  = arr[i][dbc.t['magamp']]
         alld[i, 18]  = arr[i][dbc.t['fmax']] - arr[i][dbc.t['fmin']]
-#        alld[i, 19]  = arr[i]['chi2']
+        if options.chi2 == True:
+            alld[i, 19]  = arr[i]['chi2']
         
         # make the target value line
         varcls = None
         if options.clscol != None:
             varcls = arr[i][options.clscol]
-        maketarget(options.classes, varcls, allt[i])
+        if options.prb == None:
+            maketarget(options.classes, varcls, allt[i])
+        else:
+            asas11target(options.prb, staruid, options.classes, varcls, allt[i])
+            
 
     # normalize vmag
     if (newnorm == True):
@@ -153,10 +194,11 @@ def prepdata(options, dbc, arr, cff, shuffle = True,
     # skip normalized magnitude difference (already small enough)
 
     # chi2 (divide by 5 * std to avoid overflows due to huge spread
-#    if (newnorm == True):
-#        normsubtract[19] = alld[:, 19].mean()
-#        normdivide[19]   = 5.0 * alld[:, 19].std()
-#    alld[:, 19] = (alld[:, 19] - normsubtract[19]) / normdivide[19] 
+    if options.chi2 == True:
+        if (newnorm == True):
+            normsubtract[19] = alld[:, 19].mean()
+            normdivide[19]   = 5.0 * alld[:, 19].std()
+        alld[:, 19] = (alld[:, 19] - normsubtract[19]) / normdivide[19] 
 
     return (alld, allt, allnames, normsubtract, normdivide)
 
@@ -308,6 +350,9 @@ def parseoptions():
     parser.add_option('--beta', dest='beta', type='float', 
                       default=1.0,
                       help='scale factor for activation function (1.0)')
+    parser.add_option('--chi2', dest='chi2', action='store_true', 
+                      default=False,
+                      help='add chi2 from polyfit as input')
     parser.add_option('--classes', dest='clsnames', type='string', 
                       default='classes.txt',
                       help='file with space separated classnames (classes.txt)')
@@ -330,7 +375,7 @@ def parseoptions():
                       help='database file with fitted light curves')
     parser.add_option('--fittype', dest='fittype', type='string', 
                       default='coeffs',
-                      help='coeffs (default) / midpoints')
+                      help='coeffs (default) / midpoints / fullfit')
     parser.add_option('--logfile', dest='logfile', type='string', 
                       default='trainlog.txt',
                       help='name of logfile (trainlog.txt)')
@@ -364,12 +409,18 @@ def parseoptions():
     parser.add_option('--pname', dest='picklename', type='string', 
                       default='mlp.pickle',
                       help='filename for the trained, pickled network (mlp.pickle)')
+    parser.add_option('--prb', dest='prb', type='string', 
+                      default=None,
+                      help='filename with probability database for target vector')
     parser.add_option('--repname', dest='repname', type='string', 
                       default='report.txt',
                       help='filename for written report (default = report.txt)')
     parser.add_option('--resdir', dest='resdir', type='string', 
                       default='results',
                       help='subdirectory for results (default = results)')
+    parser.add_option('--resname', dest='resname', type='string', 
+                      default='nrresults',
+                      help='name for individual result reports)')
     parser.add_option('--rootdir', dest='rootdir', type='string', 
                       default='./',
                       help='directory for database files (default = ./)')
@@ -381,8 +432,8 @@ def parseoptions():
                       default=None,
                       help='file containing select statement (default: None)')
     parser.add_option('--stopval', dest='stopval', type='float', 
-                      default=0.001,
-                      help='allowed deviation for multiple classes (0.001)')
+                      default=0.01,
+                      help='allowed deviation for multiple classes (0.01)')
     
     (options, args) = parser.parse_args()
     
@@ -457,8 +508,7 @@ if __name__ == '__main__':
     watchprep.start()
     
     options.lf.write('Select statement:')
-    options.lf.write(options.select)
-    
+    options.lf.write(options.select)    
     
     # read from database
     dictarr = None
@@ -473,8 +523,14 @@ if __name__ == '__main__':
         (dictarr, coeffarr, nrstars, noclass, nofit) = readdata(options, dbc)
     
     # prepare the data, target and normalization values
+    if options.prb != None:
+        options.prb = dbr.DbReader(options.rootdir + options.prb)
     (alld, allt, allnames, 
-     normsubtract, normdivide) = prepdata(options, dbc, dictarr, coeffarr)
+     normsubtract, normdivide) = prepdata(options, dbc, dictarr, 
+                                                          coeffarr)
+    if options.prb != None:
+        options.prb.close()
+        options.prb = None
     
     options.lf.write(str(nrstars) + ' selected')
     options.lf.write(str(noclass) + ' stars skipped because of unknown class')
@@ -504,7 +560,7 @@ if __name__ == '__main__':
     net.lf      = options.lf
     net.debug   = options.debug
     net.select  = options.select
-    net.comment = options.fittype
+    net.comment = str(options)
     net.setnormvalues(normsubtract, normdivide)
     try:
         net = net.earlystopping(traind, traint, validd, validt, 
