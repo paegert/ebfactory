@@ -3,12 +3,25 @@ Created on Jul 6, 2012
 
 @package  runtrained
 @author   map
-@version  \$Revision: 1.4 $
-@date     \$Date: 2013/08/07 15:50:33 $
+@version  \$Revision: 1.5 $
+@date     \$Date: 2013/12/05 17:45:23 $
 
 Sample program for running a trained network
 
 $Log: runtrained.py,v $
+Revision 1.5  2013/12/05 17:45:23  paegerm
+add prb option for database with probabilities for training (currently only
+Asas 1.1)
+adding chi2 option
+adding shuffle option
+switching to npviewtype
+
+add prb option for database with probabilities for training (currently only
+Asas 1.1)
+adding chi2 option
+adding shuffle option
+switching to npviewtype
+
 Revision 1.4  2013/08/07 15:50:33  paegerm
 add reading from pickle file, adding fittype
 formatting text output, write reports to files
@@ -46,6 +59,9 @@ import trainnet
 if __name__ == '__main__':
     usage = '%prog [options] [fitname]'
     parser = OptionParser(usage=usage)
+    parser.add_option('--chi2', dest='chi2', action='store_true', 
+                      default=False,
+                      help='add chi2 from polyfit as input')
     parser.add_option('--clscol', dest='clscol', type='string', 
                       default=None,
                       help='dictionary column for class (None)')
@@ -80,6 +96,12 @@ if __name__ == '__main__':
     parser.add_option('--netuid', dest='netuid', type='int', 
                       default=None,
                       help='UID of the trained network to use (None)')    
+    parser.add_option('--prb', dest='prb', type='string', 
+                      default=None,
+                      help='filename with probability database for target vector')
+    parser.add_option('--shuffle', dest='shuffle', action='store_true', 
+                      default=False,
+                      help='shuffle the data (False)')
     parser.add_option('--repname', dest='repname', type='string', 
                       default=None,
                       help='filename for written report (default = None)')
@@ -87,13 +109,13 @@ if __name__ == '__main__':
                       default='./',
                       help='directory for database files (default = ./)')
     parser.add_option('--select', dest='select', type='string', 
-                      default='select * from stars where chi2 is not null;',
+                      default='select * from vardict where chi2 is not null;',
 #                       Kepler
 #                       default='select * from stars where chi2 < 10' +
 #                       ' and blc_min is not null and blc_max < 2.0 and ' + 
 #                       ' kmag > 0;',
                       help='select statement for dictionary ' +
-                           '(Def: select * from stars where chi2 is not null;)')
+                           '(Def: select * from vardict where chi2 is not null;)')
     parser.add_option('--selfile', dest='selfile', type='string', 
                       default=None,
                       help='file containing select statement (default: None)')
@@ -141,31 +163,28 @@ if __name__ == '__main__':
     noclass   = 0
     nofit     = 0
     curidx    = 0
-    dictarr   = np.zeros(0, dtype = dbc.npdicttype)
+    dictarr   = np.zeros(0, dtype = dbc.npviewtype)
     fitarr    = np.zeros(0, dtype = dbc.npcoefftype)
     if options.fittype == 'midpoints':
         fitarr = np.zeros(0, dtype = dbc.npkmntype)
         
     staruids  = []
-    forbidden = [14359]
     stars = dictreader.fetchall(options.select)
     for star in stars:
         nrstars += 1
         coeffs = []
         if options.fittype == 'midpoints':
-            coeffs = fitreader.getlc(star['staruid'], dbc.kmntname) #xyzzy
+            coeffs = fitreader.getlc(star['uid'], dbc.kmntname)
         else:
-            coeffs = fitreader.getlc(star['staruid'], dbc.cfftname) #xyzzy
+            coeffs = fitreader.getlc(star['uid'], dbc.cfftname)
         if len(coeffs) == 0:
             nofit += 1
             print 'Warning: no fit for', star['uid'], star[dbc.t['id']], 'skipping'
             continue
         if (len(coeffs) > 1):
             print 'Warning: ', len(coeffs), ' fits for', star[dbc.t['id']], 'taking first'
-        if (star['uid'] in forbidden):
-            continue
-        staruids.append(star['staruid'])  #xyzzy
-        dictarr = np.append(dictarr, np.zeros(1, dbc.npdicttype))
+        staruids.append(star['uid'])
+        dictarr = np.append(dictarr, np.zeros(1, dbc.npviewtype))
         dictarr[curidx] = tuple(star)
         if (options.fittype == 'coeffs'):
             fitarr = np.append(fitarr, np.zeros(1, dbc.npcoefftype))
@@ -187,7 +206,7 @@ if __name__ == '__main__':
     # prepare the data, target and normalization values
     (alld, allt, allnames, 
      normsubtract, normdivide) = trainnet.prepdata(options, dbc, dictarr, 
-                                                   fitarr, False,
+                                                   fitarr,
                                                    net.normsubtract, 
                                                    net.normdivide)
     preptime = watch2.stop()
@@ -247,7 +266,7 @@ if __name__ == '__main__':
         if repf != None:
             varcls = ''
             if options.clscol != None:
-                varcls = dictarr[i][dbc.t['varcls']]
+                varcls = dictarr[i][options.clscol]
             oline = '%-20s  %10s  %10s  %6.4f  %10s  %6.4f  %10s  %6.4f\n' % \
                     (allnames[i], varcls, 
                      net.classes[probidx[i][maxidx]], 
