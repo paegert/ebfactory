@@ -1,15 +1,18 @@
 '''
 @package: plotwindow
 @author   : map
-@version  : \$Revision: 1.2 $
-@Date      : \$Date: 2013/09/05 19:00:03 $
+@version  : \$Revision: 1.3 $
+@Date      : \$Date: 2013/12/05 17:21:28 $
 
 Code for the plotwindow of lcview
  
 $Log: plotwindow.py,v $
-Revision 1.2  2013/09/05 19:00:03  paegerm
-checking for symbols to be none, adding limits and labels
+Revision 1.3  2013/12/05 17:21:28  paegerm
+adding toolbar, streamlining code
 
+adding toolbar, streamlining code
+
+Revision 1.2  2013/09/05 19:00:03  paegerm
 checking for symbols to be none, adding limits and labels
 
 Revision 1.1  2013/08/13 19:34:32  paegerm
@@ -17,31 +20,32 @@ Initial revision
 '''
 
 import sys
-import numpy as np
+#import numpy as np
 
 from PyQt4 import QtCore, QtGui
 from plotwindowui import Ui_plotWindow
 
-from sqlitetools import dbreader as dbr
-
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt4agg \
+     import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt4agg \
+     import NavigationToolbar2QTAgg as NavigationToolbar
 from matplotlib.figure import Figure
-import matplotlib.pyplot as pl
+
 
 
 
 class MyMplCanvas(FigureCanvas):
     """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
     def __init__(self, parent=None, width=5, height=4, dpi=100):
-        fig = Figure(figsize=(width, height), dpi=dpi)
-        self.axes = fig.add_subplot(111)
+        self.fig = Figure(figsize=(width, height), dpi=dpi)
+        self.axes = self.fig.add_subplot(111)
         
         # We want the axes cleared every time plot() is called
         # self.axes.hold(False)
 
         #self.compute_initial_figure()
 
-        FigureCanvas.__init__(self, fig)
+        FigureCanvas.__init__(self, self.fig)
         self.setParent(parent)
 
         FigureCanvas.setSizePolicy(self,
@@ -51,24 +55,6 @@ class MyMplCanvas(FigureCanvas):
 
 
 
-    def compute_initial_figure(self):
-        pass
-    
-    def plot_figure(self, data):
-        pass
-
-
-
-class MyStaticMplCanvas(MyMplCanvas):
-    """Simple canvas with a sine plot."""
-    def compute_initial_figure(self):
-        t = np.arange(0.0, 3.0, 0.01)
-        s = np.sin(2 * np.pi * t)
-        u = np.cos(2 * np.pi * t)
-        self.axes.plot(t, s, 'b')
-        self.axes.plot(t, u, 'g')
-    
-    
     def plot_figure(self, data):
         for (x, y, symbol) in data:
             if symbol == None:
@@ -89,16 +75,19 @@ class PlotWindow(QtGui.QMainWindow):
             
         self.main_widget = QtGui.QWidget(self)
         l = QtGui.QVBoxLayout(self.main_widget)
-        self.pwidget = MyStaticMplCanvas(self.main_widget, width=5, height=4, 
-                                         dpi=100)
-        l.addWidget(self.pwidget)
-        self.setCentralWidget(self.main_widget)
 
+        self.pwidget = MyMplCanvas(self.main_widget, width = 5, height = 4, 
+                                   dpi = 100)
+        ntb = NavigationToolbar(self.pwidget, self.main_widget)
+        l.addWidget(self.pwidget)
+        l.addWidget(ntb)
+        self.setCentralWidget(self.main_widget)
+        
 
 
     def plot_figure(self, data, title, xlabel, xlim = None, 
-                    ylabel = None, ylim = None, legends = None):
-        self.fsize = 18
+                    ylabel = None, ylim = None, legends = None, fsize = 16):
+        self.fsize = fsize
         if xlim != None:
             self.pwidget.axes.set_xlim(xlim)
         for label in self.pwidget.axes.get_xticklabels() + \
@@ -110,7 +99,7 @@ class PlotWindow(QtGui.QMainWindow):
             self.pwidget.axes.set_ylabel(ylabel, fontsize = self.fsize)
         self.pwidget.plot_figure(data)
         if legends != None:
-            self.pwidget.axes.legend(legends, fontsize=16)
+            self.pwidget.axes.legend(legends, fontsize = self.fsize)
         self.pwidget.draw()
         self.main_widget.setFocus()
         # self.statusBar().showMessage("All hail matplotlib!", 2000)
