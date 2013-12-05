@@ -1,15 +1,19 @@
 '''
 @package: dicttest
 @author   : map
-@version  : \$Revision: 1.2 $
-@Date      : \$Date: 2013/09/05 18:38:20 $
+@version  : \$Revision: 1.3 $
+@Date      : \$Date: 2013/12/05 17:06:21 $
 
 Viewer for classified lightcurves
 
 $Log: lcview.py,v $
+Revision 1.3  2013/12/05 17:06:21  paegerm
+Adding edit for command line options, enabling drag and drop
+
+Adding edit for command line options, enabling drag and drop
+
 Revision 1.2  2013/09/05 18:38:20  paegerm
 adding 4 chain and 2 chain fit, adding event filters for ddrag and drop
-
 
 Revision 1.1  2013/08/13 19:25:53  paegerm
 initial revision
@@ -17,6 +21,7 @@ initial revision
 
 import sys
 
+import numpy as np
 from optparse import OptionParser
 
 from PyQt4 import QtCore, QtGui
@@ -28,8 +33,11 @@ import dbconfig
 from plotwindow import *
 
 
-
 options = None
+dbc = None
+usage = '%prog [options]'
+parser = OptionParser(usage=usage)
+
 
 class MainWindow(QtGui.QMainWindow):
     def __init__(self, parent = None):
@@ -42,6 +50,11 @@ class MainWindow(QtGui.QMainWindow):
                                self.select_file)
         QtCore.QObject.connect(self.ui.actionQuit, QtCore.SIGNAL('triggered()'),
                                QtGui.qApp, QtCore.SLOT('quit()'))
+        QtCore.QObject.connect(self.ui.actionAsas, QtCore.SIGNAL('triggered()'),
+                               self.actionAsas)
+        QtCore.QObject.connect(self.ui.actionKepler, QtCore.SIGNAL('triggered()'),
+                               self.actionKepler)
+
         
         # make tableWidgets read only
         self.ui.lcWidget.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
@@ -53,73 +66,116 @@ class MainWindow(QtGui.QMainWindow):
         self.offset = 0
         self.newrun = True
         self.db = None
-        if options.clsname != None:
-            self.ui.fnameEdit.setText(options.rootdir + options.clsname)
-            self.load_file()
-            self.run_cmd()
 
         self.dictdb  = None
         self.vardb   = None
         self.star    = None
         self.staruid = 0
-        self.cls1 = None
+        self.cls1  = None
         self.prob1 = None
+            
+        self.plcdb = None            
+        self.blcdb = None
+        self.fitdb = None
+        
+        self.init_options()
+        
+        # enable drag and drop without subclassing QLineEdit
+#        self.ui.fnameEdit.installEventFilter(self)   
+#        self.ui.dnameEdit.installEventFilter(self)   
+
+        
+
+#     def eventFilter(self, object, event):
+#         if object is self.ui.fnameEdit:
+#             if (event.type() == QtCore.QEvent.DragEnter):
+#                 if (event.mimeData().hasUrls()):
+#                     event.accept()  # otherwise the drop can't occur
+#                 else:
+#                     event.ignore()
+#             if (event.type() == QtCore.QEvent.Drop):
+#                 if (event.mimeData().hasUrls()):
+#                     event.accept()
+#                     url = (event.mimeData().urls())[0]
+#                     self.ui.fnameEdit.setText(url.toLocalFile())
+#                     self.ui.lcWidget.clear()
+#                     self.ui.lcWidget.setRowCount(0)
+#                     self.load_file()
+#                     return True     # we did process the event
+#         elif object is self.ui.dnameEdit:
+#             if (event.type() == QtCore.QEvent.DragEnter):
+#                 if (event.mimeData().hasUrls()):
+#                     event.accept()  # otherwise the drop can't occur
+#                 else:
+#                     event.ignore()
+#             if (event.type() == QtCore.QEvent.Drop):
+#                 if (event.mimeData().hasUrls()):
+#                     event.accept()
+#                     url = (event.mimeData().urls())[0]
+#                     self.ui.dnameEdit.setText(url.toLocalFile())
+#                     self.ui.dictWidget.clear()
+#                     self.ui.dictWidget.setRowCount(0)
+#                     self.load_dict()
+#                     return True     # we did process the event
+#             
+#         return False     # let event continue
+    
+    
+    
+    def init_options(self):
+        global dbc, options
+        
+        if (options.rootdir[-1] != '/'):
+            options.rootdir += '/'
+    
+        cls = getattr(dbconfig, options.dbconfig)
+        dbc = cls()
+        
+        if options.clsname != None:
+            self.ui.fnameEdit.setText(options.rootdir + options.clsname)
+            self.load_file()
+            self.run_cmd()
+
         if options.dictname != None:
             self.ui.dnameEdit.setText(options.rootdir + options.dictname)
             self.load_dict()
-            
-        self.plcdb = None
+
         if options.plcname != None:
+            self.ui.plcnameEdit.setText(options.rootdir + options.plcname)
             self.plcdb = dbr.DbReader(options.rootdir + options.plcname)
-            
-        self.blcdb = None
+
         if options.blcname != None:
+            self.ui.blcnameEdit.setText(options.rootdir + options.blcname)
             self.blcdb = dbr.DbReader(options.rootdir + options.blcname)
-        
-        self.fitdb = None
+
         if options.fitname != None:
+            self.ui.fitnameEdit.setText(options.rootdir + options.fitname)
             self.fitdb = dbr.DbReader(options.rootdir + options.fitname)
-        
-        # enable drag and drop without subclassing QLineEdit
-        self.ui.fnameEdit.installEventFilter(self)   
-        self.ui.dnameEdit.installEventFilter(self)   
 
         
-
-    def eventFilter(self, object, event):
-        if object is self.ui.fnameEdit:
-            if (event.type() == QtCore.QEvent.DragEnter):
-                if (event.mimeData().hasUrls()):
-                    event.accept()  # otherwise the drop can't occur
-                else:
-                    event.ignore()
-            if (event.type() == QtCore.QEvent.Drop):
-                if (event.mimeData().hasUrls()):
-                    event.accept()
-                    url = (event.mimeData().urls())[0]
-                    self.ui.fnameEdit.setText(url.toLocalFile())
-                    self.ui.lcWidget.clear()
-                    self.ui.lcWidget.setRowCount(0)
-                    self.load_file()
-                    return True     # we did process the event
-        elif object is self.ui.dnameEdit:
-            if (event.type() == QtCore.QEvent.DragEnter):
-                if (event.mimeData().hasUrls()):
-                    event.accept()  # otherwise the drop can't occur
-                else:
-                    event.ignore()
-            if (event.type() == QtCore.QEvent.Drop):
-                if (event.mimeData().hasUrls()):
-                    event.accept()
-                    url = (event.mimeData().urls())[0]
-                    self.ui.dnameEdit.setText(url.toLocalFile())
-                    self.ui.dictWidget.clear()
-                    self.ui.dictWidget.setRowCount(0)
-                    self.load_dict()
-                    return True     # we did process the event
-            
-        return False     # let event continue
     
+    def process_options(self):
+        global parser, options, dbc
+        argstr = str(self.ui.optionEdit.text())
+        argv = argstr.split()
+        (options, args) = parser.parse_args(argv)
+        self.init_options()
+        
+    
+    def actionAsas(self):
+        global options, dbc
+        options.dbconfig = 'Asas'
+        cls = getattr(dbconfig, options.dbconfig)
+        dbc = cls()
+    
+    
+    
+    def actionKepler(self):
+        global options, dbc
+        options.dbconfig = 'Kepq3'
+        cls = getattr(dbconfig, options.dbconfig)
+        dbc = cls()
+        
 
 
     def select_file(self):
@@ -147,6 +203,30 @@ class MainWindow(QtGui.QMainWindow):
         if self.dictdb != None:
             self.dictdb.close()
         self.dictdb = dbr.DbReader(dname)
+        
+    
+    
+    def load_plc(self):
+        fname = str(self.ui.plcnameEdit.text())
+        if self.plcdb != None:
+            self.plcdb.close()
+        self.plcdb = dbr.DbReader(fname)
+        
+    
+    
+    def load_blc(self):
+        fname = str(self.ui.blcnameEdit.text())
+        if self.blcdb != None:
+            self.blcdb.close()
+        self.blcdb = dbr.DbReader(fname)
+        
+    
+    
+    def load_fit(self):
+        fname = str(self.ui.fitnameEdit.text())
+        if self.fitdb != None:
+            self.fitdb.close()
+        self.fitdb = dbr.DbReader(fname)
         
         
         
@@ -276,11 +356,12 @@ class MainWindow(QtGui.QMainWindow):
         plcmags   = None
         if self.plcdb != None:
             res = self.plcdb.getlc(self.staruid, 'stars', 'phase asc')
-            plcphases = [x[3] for x in res]
             if type(dbc) == dbconfig.Kepq3:
-                plcmags = [x[10] for x in res]
+                plcphases = [x[3] for x in res]
+                plcmags   = [x[10] for x in res]
             else:
-                plcmags = [x[4] for x in res]
+                plcphases = [x[4] for x in res]
+                plcmags   = [x[5] for x in res]
 
         blcphases = None
         blcmags   = None
@@ -367,8 +448,6 @@ class MainWindow(QtGui.QMainWindow):
 
 
 if __name__ == '__main__':
-    usage = '%prog [options]'
-    parser = OptionParser(usage=usage)
     parser.add_option('--blc', dest='blcname', type='string', 
                       default='asasblc.sqlite',
                       help='database file with binned light curves')
